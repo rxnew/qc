@@ -1,23 +1,25 @@
 cmake_minimum_required(VERSION 2.8)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src/util)
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(TARGET qc)
 
-set(FILE_LIST bit gate step circuit)
+set(UTIL_FILE_LIST container_helper)
 
-set(LIB_LIST ddmf clique-and-vertex-color)
+set(QC_FILE_LIST bit gate step circuit)
 
 set(SOURCE_LIST)
 
-foreach(FILE_NAME ${FILE_LIST})
-  list(APPEND SOURCE_LIST ${CMAKE_CURRENT_SOURCE_DIR}/src/${FILE_NAME}.cpp)
+foreach(FILE_NAME ${UTIL_FILE_LIST})
+  list(APPEND SOURCE_LIST ${CMAKE_CURRENT_SOURCE_DIR}/src/util/${FILE_NAME}.cpp)
+endforeach(FILE_NAME)
+
+foreach(FILE_NAME ${QC_FILE_LIST})
+  list(APPEND SOURCE_LIST ${CMAKE_CURRENT_SOURCE_DIR}/src/qc/${FILE_NAME}.cpp)
 endforeach(FILE_NAME)
 
 add_library(${TARGET} STATIC ${SOURCE_LIST})
 
-target_link_libraries(${TARGET} ${LIB_LIST})
-
-add_definitions("-std=c++11")
+add_definitions("-std=c++11 -Wall")

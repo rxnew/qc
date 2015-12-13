@@ -19,7 +19,8 @@ Circuit::Circuit() : ddmf_mgr_(10000, 1000, DDMFMgr::GC_TYPE_LIST_SIZE, 10) {
  * @brief copy constructor
  * @param [in] other another Circuit class object
  */
-Circuit::Circuit(const Circuit& other) : ddmf_mgr_(10000, 1000, DDMFMgr::GC_TYPE_LIST_SIZE, 10) {
+Circuit::Circuit(const Circuit& other) :
+  ddmf_mgr_(10000, 1000, DDMFMgr::GC_TYPE_LIST_SIZE, 10) {
   for(const auto& step : other.steps_)
     this->addStep(new Step(*step));
 }

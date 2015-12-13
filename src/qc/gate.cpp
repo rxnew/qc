@@ -12,18 +12,17 @@ namespace qc {
  * @param [in] tbit target bit
  * @detail none control bit, one target bit quantum gate constructor
  */
-Gate::Gate(const Tbit& tbit) {
-  this->tbits_.insert(tbit);
+Gate::Gate(const Tbit& tbit) : tbits_{tbit} {
 }
 
 /**
- * @fn Gate(const TbitList& tbits)
+ * @fn Gate(const Tbit& tbit1, const Tbit& tbit2)
  * @brief constructor
- * @param [in] tbits target bits
- * @detail none control bit, some target bits quantum gate constructor
- *         from the list tbits the gate is constructed
+ * @param [in] tbit1 control bit
+ * @param [in] tbit2 target bit
+ * @detail two target bit quantum gate constructor
  */
-Gate::Gate(const TbitList& tbits) : tbits_(tbits) {
+Gate::Gate(const Tbit& tbit1, const Tbit& tbit2) : tbits_{tbit1, tbit2} {
 }
 
 /**
@@ -33,9 +32,31 @@ Gate::Gate(const TbitList& tbits) : tbits_(tbits) {
  * @param [in] tbit target bit
  * @detail one control bit, one target bit quantum gate constructor
  */
-Gate::Gate(const Cbit& cbit, const Tbit& tbit) {
-  this->cbits_.insert(cbit);
-  this->tbits_.insert(tbit);
+Gate::Gate(const Cbit& cbit, const Tbit& tbit) : cbits_{cbit}, tbits_{tbit} {
+}
+
+/**
+ * @fn Gate(const Cbit& cbit, const TbitList& tbits)
+ * @brief constructor
+ * @param [in] cbit control bit
+ * @param [in] tbits target bits
+ * @detail one control bit, some target bits quantum gate constructor
+ *         from the list tbits the gate is constructed
+ */
+Gate::Gate(const Cbit& cbit, const TbitList& tbits) :
+  cbits_{cbit}, tbits_(tbits) {
+}
+
+/**
+ * @fn Gate(const Cbit& cbit, const std::initializer_list<Tbit>& tbits)
+ * @brief constructor
+ * @param [in] cbit control bit
+ * @param [in] tbits target bits
+ * @detail one control bit, some target bits quantum gate constructor
+ *         from the list tbits the gate is constructed
+ */
+Gate::Gate(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
+  cbits_{cbit}, tbits_(tbits) {
 }
 
 /**
@@ -46,10 +67,8 @@ Gate::Gate(const Cbit& cbit, const Tbit& tbit) {
  * @param [in] tbit target bit
  * @detail two control bits, one target bit quantum gate constructor
  */
-Gate::Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) {
-  this->cbits_.insert(cbit1);
-  this->cbits_.insert(cbit2);
-  this->tbits_.insert(tbit);
+Gate::Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
+  cbits_{cbit1, cbit2}, tbits_{tbit} {
 }
 
 /**
@@ -60,8 +79,20 @@ Gate::Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) {
  * @detail some control bits, one target bit quantum gate constructor
  *         from the list cbits and one tbit the gate is constructed
  */
-Gate::Gate(const CbitList& cbits, const Tbit& tbit) : cbits_(cbits) {
-  this->tbits_.insert(tbit);
+Gate::Gate(const CbitList& cbits, const Tbit& tbit) :
+  cbits_(cbits), tbits_{tbit} {
+}
+
+/**
+ * @fn Gate(const std::initializer_list<Cbit>& cbits, const Tbit& tbit)
+ * @brief constructor
+ * @param [in] cbits control bits
+ * @param [in] tbit target bit
+ * @detail some control bits, one target bit quantum gate constructor
+ *         from the list cbits and one tbit the gate is constructed
+ */
+Gate::Gate(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
+  cbits_(cbits), tbits_{tbit} {
 }
 
 /**
@@ -73,6 +104,20 @@ Gate::Gate(const CbitList& cbits, const Tbit& tbit) : cbits_(cbits) {
  *         from the list cbits and tbits the gate is constructed
  */
 Gate::Gate(const CbitList& cbits, const TbitList& tbits) :
+  cbits_(cbits), tbits_(tbits) {
+}
+
+/**
+ * @fn Gate(const std::initializer_list<Cbit>& cbits, \
+ *          const std::initializer_list<Tbit>& tbits)
+ * @brief constructor
+ * @param [in] cbits control bits
+ * @param [in] tbits target bits
+ * @detail some control bits, some target bits quantum gate constructor
+ *         from the list cbits and tbits the gate is constructed
+ */
+Gate::Gate(const std::initializer_list<Cbit>& cbits, \
+           const std::initializer_list<Tbit>& tbits) :
   cbits_(cbits), tbits_(tbits) {
 }
 
@@ -172,10 +217,14 @@ void Gate::print(std::ostream& os) const {
 V::V(const Tbit& tbit) : Gate(tbit) {
 }
 
-V::V(const TbitList& tbits) : Gate(tbits) {
+V::V(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
 }
 
-V::V(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
+V::V(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
+}
+
+V::V(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
+  Gate(cbit, tbits) {
 }
 
 V::V(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
@@ -185,7 +234,16 @@ V::V(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
 V::V(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
 }
 
+V::V(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
+  Gate(cbits, tbit) {
+}
+
 V::V(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
+}
+
+V::V(const std::initializer_list<Cbit>& cbits, \
+     const std::initializer_list<Tbit>& tbits) :
+  Gate(cbits, tbits) {
 }
 
 void V::print(std::ostream& os) const {
@@ -197,10 +255,14 @@ void V::print(std::ostream& os) const {
 VPlus::VPlus(const Tbit& tbit) : Gate(tbit) {
 }
 
-VPlus::VPlus(const TbitList& tbits) : Gate(tbits) {
+VPlus::VPlus(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
 }
 
-VPlus::VPlus(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
+VPlus::VPlus(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
+}
+
+VPlus::VPlus(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
+  Gate(cbit, tbits) {
 }
 
 VPlus::VPlus(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
@@ -210,7 +272,15 @@ VPlus::VPlus(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
 VPlus::VPlus(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
 }
 
-VPlus::VPlus(const CbitList& cbits, const TbitList& tbits) :
+VPlus::VPlus(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
+  Gate(cbits, tbit) {
+}
+
+VPlus::VPlus(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
+}
+
+VPlus::VPlus(const std::initializer_list<Cbit>& cbits, \
+             const std::initializer_list<Tbit>& tbits) :
   Gate(cbits, tbits) {
 }
 
@@ -223,20 +293,9 @@ void VPlus::print(std::ostream& os) const {
 H::H(const Tbit& tbit) : Gate(tbit) {
 }
 
-H::H(const TbitList& tbits) : Gate(tbits) {
-}
-
-H::H(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
-}
-
-H::H(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
-  Gate(cbit1, cbit2, tbit) {
-}
-
-H::H(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
-}
-
 H::H(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
+  assert(cbits.empty());
+  assert(static_cast<int>(tbits.size()) == 1);
 }
 
 void H::print(std::ostream& os) const {
@@ -248,10 +307,14 @@ void H::print(std::ostream& os) const {
 Not::Not(const Tbit& tbit) : Gate(tbit) {
 }
 
-Not::Not(const TbitList& tbits) : Gate(tbits) {
+Not::Not(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
 }
 
-Not::Not(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
+Not::Not(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
+}
+
+Not::Not(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
+  Gate(cbit, tbits) {
 }
 
 Not::Not(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
@@ -261,7 +324,16 @@ Not::Not(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
 Not::Not(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
 }
 
+Not::Not(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
+  Gate(cbits, tbit) {
+}
+
 Not::Not(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
+}
+
+Not::Not(const std::initializer_list<Cbit>& cbits, \
+         const std::initializer_list<Tbit>& tbits) :
+  Gate(cbits, tbits) {
 }
 
 void Not::print(std::ostream& os) const {
@@ -273,10 +345,14 @@ void Not::print(std::ostream& os) const {
 Z::Z(const Tbit& tbit) : Gate(tbit) {
 }
 
-Z::Z(const TbitList& tbits) : Gate(tbits) {
+Z::Z(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
 }
 
-Z::Z(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
+Z::Z(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
+}
+
+Z::Z(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
+  Gate(cbit, tbits) {
 }
 
 Z::Z(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
@@ -286,11 +362,48 @@ Z::Z(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
 Z::Z(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
 }
 
+Z::Z(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
+  Gate(cbits, tbit) {
+}
+
 Z::Z(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
+}
+
+Z::Z(const std::initializer_list<Cbit>& cbits, \
+     const std::initializer_list<Tbit>& tbits) :
+  Gate(cbits, tbits) {
 }
 
 void Z::print(std::ostream& os) const {
   os << "Z ";
+  Gate::print(os);
+  os << "\\ \\ " << std::endl;
+}
+
+Swap::Swap(const Tbit& tbit1, const Tbit& tbit2) : Gate(tbit1, tbit2) {
+}
+
+Swap::Swap(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
+  assert(static_cast<int>(tbits.size()) == 2);
+}
+
+Swap::Swap(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
+  Gate(cbit, tbits) {
+  assert(static_cast<int>(tbits.size()) == 2);
+}
+
+Swap::Swap(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
+  assert(static_cast<int>(tbits.size()) == 2);
+}
+
+Swap::Swap(const std::initializer_list<Cbit>& cbits, \
+           const std::initializer_list<Tbit>& tbits) :
+  Gate(cbits, tbits) {
+  assert(static_cast<int>(tbits.size()) == 2);
+}
+
+void Swap::print(std::ostream& os) const {
+  os << "Swap ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
 }

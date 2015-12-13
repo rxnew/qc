@@ -32,11 +32,16 @@ class Gate {
   TbitList tbits_;
 
   Gate(const Tbit& tbit);
-  Gate(const TbitList& tbits);
+  Gate(const Tbit& tbit1, const Tbit& tbit2);
   Gate(const Cbit& cbit, const Tbit& tbit);
+  Gate(const Cbit& cbit, const TbitList& tbits);
+  Gate(const Cbit& cbit, const std::initializer_list<Tbit>& tbits);
   Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   Gate(const CbitList& cbits, const Tbit& tbit);
+  Gate(const std::initializer_list<Cbit>& cbits, const Tbit& tbit);
   Gate(const CbitList& cbits, const TbitList& tbits);
+  Gate(const std::initializer_list<Cbit>& cbits, \
+       const std::initializer_list<Tbit>& tbits);
   Gate(const Gate& other);
 
  public:
@@ -71,11 +76,15 @@ class Gate {
 class V : public Gate {
 public:
   V(const Tbit& tbit);
-  V(const TbitList& tbits);
   V(const Cbit& cbit, const Tbit& tbit);
+  V(const Cbit& cbit, const TbitList& tbits);
+  V(const Cbit& cbit, const std::initializer_list<Tbit>& tbits);
   V(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   V(const CbitList& cbits, const Tbit& tbit);
+  V(const std::initializer_list<Cbit>& cbits, const Tbit& tbit);
   V(const CbitList& cbits, const TbitList& tbits);
+  V(const std::initializer_list<Cbit>& cbits, \
+    const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
     return move(std::make_shared<V>(*this));
@@ -96,11 +105,15 @@ public:
 class VPlus : public Gate {
 public:
   VPlus(const Tbit& tbit);
-  VPlus(const TbitList& tbits);
   VPlus(const Cbit& cbit, const Tbit& tbit);
+  VPlus(const Cbit& cbit, const TbitList& tbits);
+  VPlus(const Cbit& cbit, const std::initializer_list<Tbit>& tbits);
   VPlus(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   VPlus(const CbitList& cbits, const Tbit& tbit);
+  VPlus(const std::initializer_list<Cbit>& cbits, const Tbit& tbit);
   VPlus(const CbitList& cbits, const TbitList& tbits);
+  VPlus(const std::initializer_list<Cbit>& cbits, \
+        const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
     return move(std::make_shared<VPlus>(*this));
@@ -121,10 +134,6 @@ public:
 class H : public Gate {
 public:
   H(const Tbit& tbit);
-  H(const TbitList& tbits);
-  H(const Cbit& cbit, const Tbit& tbit);
-  H(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
-  H(const CbitList& cbits, const Tbit& tbit);
   H(const CbitList& cbits, const TbitList& tbits);
 
   inline GatePtr clone() const {
@@ -146,11 +155,15 @@ public:
 class Not : public Gate {
 public:
   Not(const Tbit& tbit);
-  Not(const TbitList& tbits);
   Not(const Cbit& cbit, const Tbit& tbit);
+  Not(const Cbit& cbit, const TbitList& tbits);
+  Not(const Cbit& cbit, const std::initializer_list<Tbit>& tbits);
   Not(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   Not(const CbitList& cbits, const Tbit& tbit);
+  Not(const std::initializer_list<Cbit>& cbits, const Tbit& tbit);
   Not(const CbitList& cbits, const TbitList& tbits);
+  Not(const std::initializer_list<Cbit>& cbits, \
+      const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
     return move(std::make_shared<Not>(*this));
@@ -171,17 +184,46 @@ public:
 class Z : public Gate {
 public:
   Z(const Tbit& tbit);
-  Z(const TbitList& tbits);
   Z(const Cbit& cbit, const Tbit& tbit);
+  Z(const Cbit& cbit, const TbitList& tbits);
+  Z(const Cbit& cbit, const std::initializer_list<Tbit>& tbits);
   Z(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   Z(const CbitList& cbits, const Tbit& tbit);
+  Z(const std::initializer_list<Cbit>& cbits, const Tbit& tbit);
   Z(const CbitList& cbits, const TbitList& tbits);
+  Z(const std::initializer_list<Cbit>& cbits, \
+    const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
     return move(std::make_shared<Z>(*this));
   }
   inline int getGateType() const {
     return 6;
+  }
+  inline Matrix getTargetUnitary() const {
+    return Matrix();
+  }
+  void print(std::ostream& os) const;
+};
+
+/**
+ * @brief Swap gate class
+ * @note gate type is 12
+ */
+class Swap : public Gate {
+public:
+  Swap(const Tbit& tbit1, const Tbit& tbit2);
+  Swap(const Cbit& cbit, const TbitList& tbits);
+  Swap(const Cbit& cbit, const std::initializer_list<Tbit>& tbits);
+  Swap(const CbitList& cbits, const TbitList& tbits);
+  Swap(const std::initializer_list<Cbit>& cbits, \
+       const std::initializer_list<Tbit>& tbits);
+
+  inline GatePtr clone() const {
+    return move(std::make_shared<Swap>(*this));
+  }
+  inline int getGateType() const {
+    return 12;
   }
   inline Matrix getTargetUnitary() const {
     return Matrix();
