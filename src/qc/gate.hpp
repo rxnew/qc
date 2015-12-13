@@ -87,7 +87,7 @@ public:
     const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
-    return move(std::make_shared<V>(*this));
+    return std::move(std::make_shared<V>(*this));
   }
   inline int getGateType() const {
     return 16;
@@ -116,7 +116,7 @@ public:
         const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
-    return move(std::make_shared<VPlus>(*this));
+    return std::move(std::make_shared<VPlus>(*this));
   }
   inline int getGateType() const {
     return 15;
@@ -137,7 +137,7 @@ public:
   H(const CbitList& cbits, const TbitList& tbits);
 
   inline GatePtr clone() const {
-    return move(std::make_shared<H>(*this));
+    return std::move(std::make_shared<H>(*this));
   }
   inline int getGateType() const {
     return 1;
@@ -166,7 +166,7 @@ public:
       const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
-    return move(std::make_shared<Not>(*this));
+    return std::move(std::make_shared<Not>(*this));
   }
   inline int getGateType() const {
     return 2;
@@ -195,7 +195,7 @@ public:
     const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
-    return move(std::make_shared<Z>(*this));
+    return std::move(std::make_shared<Z>(*this));
   }
   inline int getGateType() const {
     return 6;
@@ -220,7 +220,7 @@ public:
        const std::initializer_list<Tbit>& tbits);
 
   inline GatePtr clone() const {
-    return move(std::make_shared<Swap>(*this));
+    return std::move(std::make_shared<Swap>(*this));
   }
   inline int getGateType() const {
     return 12;
