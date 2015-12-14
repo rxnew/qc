@@ -204,8 +204,8 @@ bool Gate::isAllPositive() const {
  * @param [in] os output stream object
  */
 void Gate::print(std::ostream& os) const {
-  auto ordered_cbits = util::getOrderedContainer(this->cbits_);
-  auto ordered_tbits = util::getOrderedContainer(this->tbits_);
+  auto ordered_cbits = util::ContainerConverter::to_set(this->cbits_);
+  auto ordered_tbits = util::ContainerConverter::to_set(this->tbits_);
 
   os << "\\ ";
   for(const auto& cbit : ordered_cbits)

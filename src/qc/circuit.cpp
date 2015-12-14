@@ -164,7 +164,7 @@ bool Circuit::isExistGate(const GatePtr& gate) const {
 void Circuit::calcDDMF() {
   if(this->steps_.empty()) return;
 
-  auto used_bits = util::getOrderedContainer(this->getUsedBits());
+  auto used_bits = util::ContainerConverter::to_set(this->getUsedBits());
   for(const auto& bit : used_bits)
     this->initial_ddmf_.insert(std::make_pair(bit, this->ddmf_mgr_.ddmfVar()));
 
