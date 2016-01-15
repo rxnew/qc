@@ -33,7 +33,9 @@ class Circuit {
   Circuit& operator=(const Circuit& other);
   bool operator==(const Circuit& other) const;
   bool operator!=(const Circuit& other) const;
-  inline const StepList& getStepList() const {return this->steps_;}
+  inline const StepList& getStepList() const {
+    return this->steps_;
+  }
   inline void addStep(const StepPtr& step) {
     assert(step.get() != nullptr);
     this->steps_.push_back(step);
