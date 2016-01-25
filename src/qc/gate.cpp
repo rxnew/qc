@@ -207,8 +207,8 @@ auto Gate::isAllPositive() const -> bool {
  * @param [in] os output stream object
  */
 auto Gate::print(std::ostream& os) const -> void {
-  auto ordered_cbits = util::ContainerConverter::to_set(this->cbits_);
-  auto ordered_tbits = util::ContainerConverter::to_set(this->tbits_);
+  auto ordered_cbits = util::ContainerHelper::convert<std::set>(this->cbits_);
+  auto ordered_tbits = util::ContainerHelper::convert<std::set>(this->tbits_);
 
   os << "\\ ";
   for(const auto& cbit : ordered_cbits) {

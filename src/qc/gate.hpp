@@ -6,6 +6,7 @@
 #pragma once
 
 #include <set>
+#include <map>
 #include <unordered_set>
 #include <memory>
 #include <algorithm>
@@ -265,6 +266,23 @@ inline auto Swap::clone() const -> GatePtr {
 
 inline auto Swap::getGateType() const -> int {
   return 12;
+}
+
+struct GateBuilder {
+  template <class... Args>
+  static auto create(const std::string& str, Args&&... args) -> GatePtr;
+};
+
+template <class... Args>
+auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
+  GatePtr gate;
+  if(str == "V")             gate = std::make_shared<V>(args...);
+  else if(str == "VPlus")    gate = std::make_shared<VPlus>(args...);
+  else if(str == "Hadamard") gate = std::make_shared<Hadamard>(args...);
+  else if(str == "Not")      gate = std::make_shared<Not>(args...);
+  else if(str == "Z")        gate = std::make_shared<Z>(args...);
+  else if(str == "Swap")     gate = std::make_shared<Swap>(args...);
+  return std::move(gate);
 }
 }
 

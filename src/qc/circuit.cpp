@@ -75,7 +75,7 @@ auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
 }
 
-auto Circuit::append(const Circuit& circ) -> void {
+inline auto Circuit::append(const Circuit& circ) -> void {
   for(const auto& gate : circ.gates_) {
     this->addGate(gate->clone());
   }
@@ -115,6 +115,71 @@ auto Circuit::getUsedBits() const -> BitList {
 auto Circuit::print(std::ostream& os) const -> void {
   for(const auto& gate : this->gates_) {
     gate->print(os);
+  }
+}
+
+auto Circuit::FileManager::ignoreComments(const std::vector<std::string>& elems)
+  -> std::vector<std::string> {
+  std::vector<std::string> result;
+  for(const auto& elem : elems) {
+    if(elem == "\\\\") break;
+    result.push_back(elem);
+  }
+  return std::move(result);
+}
+
+auto Circuit::FileManager::verifyFormat(const std::vector<std::string>& elems)
+  -> bool {
+  int size = static_cast<int>(elems.size());
+  if(size < 3) return false;
+  if(elems[1] != "\\") return false;
+  return true;
+}
+
+auto Circuit::FileManager::getCbit(std::string bit) -> Cbit {
+  std::string bit_no = bit;
+  bool polarity = true;
+  if(bit[0] == '!') {
+    bit_no = std::string(bit_no.cbegin() + 1, bit_no.cend());
+    polarity = false;
+  }
+  assert(!util::StringHelper::isNumeric(bit_no));
+  return std::move(Cbit(static_cast<Bitno>(std::stoi(bit_no)), polarity));
+}
+
+auto Circuit::FileManager::getTbit(std::string bit) -> Tbit {
+  std::string bit_no = std::string(bit.cbegin() + 1, bit.cend());
+  assert(!util::StringHelper::isNumeric(bit_no));
+  return std::move(Tbit(static_cast<Bitno>(std::stoi(bit_no))));
+}
+
+auto Circuit::FileManager::getGate(const std::vector<std::string>& elems)
+  -> GatePtr {
+  assert(Circuit::FileManager::verifyFormat(elems));
+  auto gate_name = elems[0];
+  std::vector<std::string> bits(elems.cbegin() + 2, elems.cend());
+  CbitList cbits;
+  TbitList tbits;
+  for(const auto& bit : bits) {
+    if(bit[0] == 'T') {
+      tbits.insert(Circuit::FileManager::getTbit(bit));
+    }
+    else {
+      cbits.insert(Circuit::FileManager::getCbit(bit));
+    }
+  }
+  return std::move(GateBuilder::create(gate_name, cbits, tbits));
+}
+
+auto Circuit::FileManager::open(const std::string& filename) -> void {
+  std::ifstream ifs(filename);
+  std::string line;
+  assert(ifs.fail());
+  while(getline(ifs, line)) {
+    auto elems = util::StringHelper::split(line);
+    elems = Circuit::FileManager::ignoreComments(elems);
+    if(elems.empty()) continue;
+    GatePtr gate = Circuit::FileManager::getGate(elems);
   }
 }
 }

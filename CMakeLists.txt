@@ -6,7 +6,7 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(TARGET qc)
 
-set(UTIL_FILE_LIST container_helper)
+set(UTIL_FILE_LIST container_helper string_helper)
 
 set(QC_FILE_LIST bit gate circuit)
 
