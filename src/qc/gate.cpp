@@ -180,10 +180,12 @@ auto Gate::operator!=(const Gate& other) const -> bool {
  */
 auto Gate::getUsedBits() const -> BitList {
   BitList used_bits;
-  for(const auto& cbit : this->cbits_)
+  for(const auto& cbit : this->cbits_) {
     used_bits.insert(cbit.bitno_);
-  for(const auto& tbit : this->tbits_)
+  }
+  for(const auto& tbit : this->tbits_) {
     used_bits.insert(tbit.bitno_);
+  }
   return std::move(used_bits);
 }
 
@@ -193,8 +195,9 @@ auto Gate::getUsedBits() const -> BitList {
  * @return true or false
  */
 auto Gate::isAllPositive() const -> bool {
-  for(const auto& cbit : this->cbits_)
+  for(const auto& cbit : this->cbits_) {
     if(!cbit.polarity_) return false;
+  }
   return true;
 }
 
@@ -208,10 +211,12 @@ auto Gate::print(std::ostream& os) const -> void {
   auto ordered_tbits = util::ContainerConverter::to_set(this->tbits_);
 
   os << "\\ ";
-  for(const auto& cbit : ordered_cbits)
+  for(const auto& cbit : ordered_cbits) {
     os << cbit << " ";
-  for(const auto& tbit : ordered_tbits)
+  }
+  for(const auto& tbit : ordered_tbits) {
     os << tbit << " ";
+  }
 }
 
 V::V(const Tbit& tbit) : Gate(tbit) {

@@ -75,8 +75,9 @@ auto Cbit::operator!=(const Cbit& other) const -> bool {
  * @return true or false
  */
 auto Cbit::operator<(const Cbit& other) const -> bool {
-  if(this->bitno_ != other.bitno_)
+  if(this->bitno_ != other.bitno_) {
     return this->bitno_ < other.bitno_;
+  }
   return !this->polarity_;
 }
 
