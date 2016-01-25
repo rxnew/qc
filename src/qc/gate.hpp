@@ -11,6 +11,8 @@
 #include <memory>
 #include <algorithm>
 
+#include "string_helper.hpp"
+
 #include "bit.hpp"
 
 namespace qc {
@@ -275,14 +277,22 @@ struct GateBuilder {
 
 template <class... Args>
 auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
-  GatePtr gate(nullptr);
-  if(str == "V")             gate = std::make_shared<V>(args...);
-  else if(str == "VPlus")    gate = std::make_shared<VPlus>(args...);
-  else if(str == "Hadamard") gate = std::make_shared<Hadamard>(args...);
-  else if(str == "Not")      gate = std::make_shared<Not>(args...);
-  else if(str == "Z")        gate = std::make_shared<Z>(args...);
-  else if(str == "Swap")     gate = std::make_shared<Swap>(args...);
-  return std::move(gate);
+  #define COMP(type) util::StringHelper::equalCaseInsensitive(str, #type)
+  #define GEN(type) std::make_shared<type>(args...)
+  #define IF_GEN(type) if(COMP(type)) return std::move(GEN(type))
+
+  IF_GEN(V);
+  IF_GEN(VPlus);
+  IF_GEN(Hadamard);
+  IF_GEN(Not);
+  IF_GEN(Z);
+  IF_GEN(Swap);
+
+  #undef IF_GEN
+  #undef GEN
+  #undef COMP
+
+  return std::move(GatePtr(nullptr));
 }
 }
 

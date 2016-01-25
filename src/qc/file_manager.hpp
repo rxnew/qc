@@ -2,8 +2,6 @@
 
 #include <fstream>
 
-#include "string_helper.hpp"
-
 #include "circuit.hpp"
 
 namespace qc {

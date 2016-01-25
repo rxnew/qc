@@ -27,4 +27,13 @@ auto StringHelper::isNumeric(const std::string& str) -> bool {
   }
   return true;
 }
+
+auto StringHelper::equalCaseInsensitive(const std::string& lhs, \
+                                        const std::string& rhs) -> bool {
+  auto cmp = [](const char& lhs, const char& rhs) {
+    std::locale locale;
+    return std::tolower(lhs, locale) == std::tolower(rhs, locale);
+  };
+  return std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin(), cmp);
+}
 }
