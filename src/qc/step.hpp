@@ -15,29 +15,30 @@ namespace qc {
 class Step;
 
 using StepPtr = std::shared_ptr<Step>;
-using GateList = std::unordered_set<GatePtr>;
-using IterGateList = GateList::iterator;
-using CIterGateList = GateList::const_iterator;
+
+using GateSet = std::unordered_set<GatePtr>;
+using IterGateSet = GateSet::iterator;
+using CIterGateSet = GateSet::const_iterator;
 
 /**
  * @brief parallel quantum gate class
  */
 class Step {
  private:
-  GateList gates_;
+  GateSet gates_;
   std::map<Bitno, DDMF> ddmf_;
 
  public:
   Step();
   Step(const GatePtr& gate);
   Step(Gate*&& gate);
-  Step(const GateList& gates);
+  Step(const GateSet& gates);
   Step(const Step& other);
   virtual ~Step();
   Step& operator=(const Step& other);
   bool operator==(const Step& other) const;
   bool operator!=(const Step& other) const;
-  inline const GateList& getGateList() const {
+  inline const GateSet& getGateSet() const {
     return this->gates_;
   }
   inline void addGate(const GatePtr& gate) {
@@ -49,15 +50,15 @@ class Step {
   inline void eraseGate(const GatePtr& gate) {
     this->gates_.erase(gate);
   }
-  inline CIterGateList eraseGate(CIterGateList pos) {
+  inline CIterGateSet eraseGate(CIterGateSet pos) {
     return this->gates_.erase(pos);
   }
   inline void clear() {
     this->gates_.clear();
   }
-  CIterGateList findSameGate(const GatePtr& gate) const;
+  CIterGateSet findSameGate(const GatePtr& gate) const;
   BitList getUsedBits() const;
-  inline CIterGateList findGate(const GatePtr& gate) const {
+  inline CIterGateSet findGate(const GatePtr& gate) const {
     return this->gates_.find(gate);
   }
   inline bool isExistGate(const GatePtr& gate) const {

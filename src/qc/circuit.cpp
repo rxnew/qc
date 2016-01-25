@@ -21,8 +21,8 @@ Circuit::Circuit() : ddmf_mgr_(10000, 1000, DDMFMgr::GC_TYPE_LIST_SIZE, 10) {
  */
 Circuit::Circuit(const Circuit& other) :
   ddmf_mgr_(10000, 1000, DDMFMgr::GC_TYPE_LIST_SIZE, 10) {
-  for(const auto& step : other.steps_)
-    this->addStep(new Step(*step));
+  for(const auto& gate : other.gates_)
+    this->addGate(new Gate(*gate));
 }
 
 /**
@@ -30,7 +30,7 @@ Circuit::Circuit(const Circuit& other) :
  * @brief destructor
  */
 Circuit::~Circuit() {
-  this->steps_.clear();
+  this->gates_.clear();
 }
 
 /**
@@ -40,8 +40,8 @@ Circuit::~Circuit() {
  * @return reference to this object
  */
 Circuit& Circuit::operator=(const Circuit& other) {
-  for(const auto& step : other.steps_)
-    this->addStep(new Step(*step));
+  for(const auto& gate : other.gates_)
+    this->addGate(new Gate(*gate));
   return *this;
 }
 
@@ -52,11 +52,11 @@ Circuit& Circuit::operator=(const Circuit& other) {
  * @return true or false
  */
 bool Circuit::operator==(const Circuit& other) const {
-  if(this->steps_.size() != other.steps_.size()) return false;
+  if(this->gates_.size() != other.gates_.size()) return false;
 
-  auto it = this->steps_.cbegin();
-  auto jt = other.steps_.cbegin();
-  while(it != this->steps_.cend() || jt != other.steps_.cend()) {
+  auto it = this->gates_.cbegin();
+  auto jt = other.gates_.cbegin();
+  while(it != this->gates_.cend() || jt != other.gates_.cend()) {
     if(**it != **jt) return false;
     it++, jt++;
   }
@@ -74,17 +74,17 @@ bool Circuit::operator!=(const Circuit& other) const {
   return !(*this == other);
 }
 
-StepPtr Circuit::getAnyStep(int n) const {
+GatePtr Circuit::getAnyGate(int n) const {
   int cnt = 0;
-  for(const auto& step_i : this->steps_)
-    if(cnt++ == n) return step_i;
-  return StepPtr(nullptr);
+  for(const auto& gate_i : this->gates_)
+    if(cnt++ == n) return gate_i;
+  return GatePtr(nullptr);
 }
 
-int Circuit::getStepIndex(const StepPtr& step) const {
+int Circuit::getGateIndex(const GatePtr& gate) const {
   int cnt = 0;
-  for(const auto& step_i : this->steps_) {
-    if(step_i == step) return cnt;
+  for(const auto& gate_i : this->gates_) {
+    if(gate_i == gate) return cnt;
     cnt++;
   }
   return -1;
@@ -97,8 +97,8 @@ int Circuit::getStepIndex(const StepPtr& step) const {
  */
 int Circuit::countGates() const {
   int cnt = 0;
-  for(const auto& step : this->steps_)
-    cnt += static_cast<int>(step->getGateList().size());
+  for(const auto& gate : this->gates_)
+    cnt += static_cast<int>(gate->getGateList().size());
   return cnt;
 }
 
@@ -109,51 +109,11 @@ int Circuit::countGates() const {
  */
 BitList Circuit::getUsedBits() const {
   BitList used_bits;
-  for(const auto& step : this->steps_) {
-    auto step_used_bits = step->getUsedBits();
-    used_bits.insert(step_used_bits.cbegin(), step_used_bits.cend());
+  for(const auto& gate : this->gates_) {
+    auto gate_used_bits = gate->getUsedBits();
+    used_bits.insert(gate_used_bits.cbegin(), gate_used_bits.cend());
   }
   return std::move(used_bits);
-}
-
-/**
- * @fn void doFlat()
- * @brief build flat circuit
- * @detail flat circuit is that all pqgates include one qgate
- */
-void Circuit::doFlat() {
-  for(auto it = this->steps_.begin(); it != this->steps_.end(); it++) {
-    auto& step = *it;
-    while(!step->isOnlyOneGate()) {
-      auto gate = *(step->getGateList().cbegin());
-      step->eraseGate(gate);
-      this->insertStep(it, new Step(gate));
-    }
-  }
-}
-
-/**
- * @fn bool isFlat() const
- * @brief check whether this circuit is flat
- * @detail flat circuit is that all pqgates include one qgate
- * @return true or false
- */
-bool Circuit::isFlat() const {
-  for(const auto& step : this->steps_)
-    if(!step->isOnlyOneGate()) return false;
-  return true;
-}
-
-/**
- * @fn inline bool isExistGate(const GatePtr& qgate) const
- * @brief check whether the quantum gate is included this circuit
- * @param [in] pqgate pointer to the quantum gate
- * @return true or false
- */
-bool Circuit::isExistGate(const GatePtr& gate) const {
-  for(const auto& step : this->steps_)
-    if(step->isExistGate(gate)) return true;
-  return false;
 }
 
 /**

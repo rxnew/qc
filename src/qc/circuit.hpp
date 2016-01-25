@@ -7,22 +7,23 @@
 
 #include <fstream>
 
-#include "step.hpp"
+#include "gate.hpp"
 
 namespace qc {
 class Circuit;
 
 using CircuitPtr = std::shared_ptr<Circuit>;
-using StepList = std::list<StepPtr>;
-using IterStepList = StepList::iterator;
-using CIterStepList = StepList::const_iterator;
+
+using GateList = std::list<GatePtr>;
+using IterGateList = GateList::iterator;
+using CIterGateList = GateList::const_iterator;
 
 /**
  * @brief quantum circuit class
  */
 class Circuit {
- private:
-  StepList steps_;
+ protected:
+  GateList gates_;
   DDMFMgr ddmf_mgr_;
   std::map<Bitno, DDMF> initial_ddmf_;
 
@@ -33,74 +34,59 @@ class Circuit {
   Circuit& operator=(const Circuit& other);
   bool operator==(const Circuit& other) const;
   bool operator!=(const Circuit& other) const;
-  inline const StepList& getStepList() const {
-    return this->steps_;
-  }
-  inline void addStep(const StepPtr& step) {
-    assert(step.get() != nullptr);
-    this->steps_.push_back(step);
-  }
-  inline void addStep(Step*&& step) {
-    assert(step != nullptr);
-    this->steps_.emplace_back(step);
+  inline const GateList& getGateList() const {
+    return this->gates_;
   }
   inline void addGate(const GatePtr& gate) {
     assert(gate.get() != nullptr);
-    this->addStep(new Step(gate));
+    this->gates_.push_back(gate);
   }
   inline void addGate(Gate*&& gate) {
     assert(gate != nullptr);
-    this->addStep(new Step(std::move(gate)));
+    this->gates_.emplace_back(gate);
   }
-  inline CIterStepList insertStep(CIterStepList pos, const StepPtr& step) {
-    assert(pos != this->steps_.cend());
-    assert(step.get() != nullptr);
-    return this->steps_.insert(pos, step);
+  inline CIterGateList insertGate(CIterGateList pos, const GatePtr& gate) {
+    assert(pos != this->gates_.cend());
+    assert(gate.get() != nullptr);
+    return this->gates_.insert(pos, gate);
   }
-  inline CIterStepList insertStep(CIterStepList pos, Step*&& step) {
-    assert(pos != this->steps_.cend());
-    assert(step != nullptr);
-    return this->steps_.emplace(pos, step);
+  inline CIterGateList insertGate(CIterGateList pos, Gate*&& gate) {
+    assert(pos != this->gates_.cend());
+    assert(gate != nullptr);
+    return this->gates_.emplace(pos, gate);
   }
-  inline void insertStep(const StepPtr& pos, const StepPtr& step) {
-    insertStep(this->findStep(pos), step);
+  inline void insertGate(const GatePtr& pos, const GatePtr& gate) {
+    insertGate(this->findGate(pos), gate);
   }
-  inline void insertStep(const StepPtr& pos, Step*&& step) {
-    insertStep(this->findStep(pos), std::move(step));
+  inline void insertGate(const GatePtr& pos, Gate*&& gate) {
+    insertGate(this->findGate(pos), std::move(gate));
   }
-  inline void eraseStep(const StepPtr& step) {
-    this->steps_.remove(step);
+  inline void eraseGate(const GatePtr& gate) {
+    this->gates_.remove(gate);
   }
-  inline CIterStepList eraseStep(CIterStepList pos) {
-    return this->steps_.erase(pos);
-  }
-  inline void eraseEmptySteps() {
-    for(auto it = this->steps_.begin(); it != this->steps_.end(); it++)
-      if((*it)->isEmpty()) it = this->steps_.erase(it);
+  inline CIterGateList eraseGate(CIterGateList pos) {
+    return this->gates_.erase(pos);
   }
   inline void append(const Circuit& circ) {
-    for(const auto& step : circ.steps_)
-      this->addStep(new Step(*step));
+    for(const auto& gate : circ.gates_)
+      this->addGate(new Gate(*gate));
   }
-  inline StepPtr getFirstStep() const {
-    return this->steps_.front();
+  inline GatePtr getFirstGate() const {
+    return this->gates_.front();
   }
-  inline StepPtr getLastStep() const {
-    return this->steps_.back();
+  inline GatePtr getLastGate() const {
+    return this->gates_.back();
   }
-  StepPtr getAnyStep(int n) const;
-  int getStepIndex(const StepPtr& step) const;
+  GatePtr getAnyGate(int n) const;
+  int getGateIndex(const GatePtr& gate) const;
   int countGates() const;
   BitList getUsedBits() const;
-  void doFlat();
-  bool isFlat() const;
-  inline CIterStepList findStep(const StepPtr& step) const {
-    return std::find(this->steps_.cbegin(), this->steps_.cend(), step);
+  inline CIterGateList findGate(const GatePtr& gate) const {
+    return std::find(this->gates_.cbegin(), this->gates_.cend(), gate);
   }
-  inline bool isExistStep(const StepPtr& step) const {
-    return this->steps_.cend() != this->findStep(step);
+  inline bool isExistGate(const GatePtr& gate) const {
+    return this->gates_.cend() != this->findGate(gate);
   }
-  bool isExistGate(const GatePtr& gate) const;
   void calcDDMF();
   DDMF getDDMF(Bitno bitno, const StepPtr& step) const;
   inline DDMF getDDMF(Bitno bitno) const {
@@ -111,8 +97,8 @@ class Circuit {
     return this->getDDMF(this->getLastStep());
   }
   inline void print(std::ostream& os) const {
-    for(const auto& step : this->steps_)
-      step->print(os);
+    for(const auto& gate : this->gates_)
+      gate->print(os);
   }
   void open(const std::string& filename);
   void open(const char* filename);

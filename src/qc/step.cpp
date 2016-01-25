@@ -35,12 +35,12 @@ Step::Step(Gate*&& gate) {
 }
 
 /**
- * @fn Step(const GateList& gates)
+ * @fn Step(const GateSet& gates)
  * @brief constructor
  * @param [in] gates reference to the list of included quantum gates
  * @detail included some quantum gates Step class constructor
  */
-Step::Step(const GateList& gates): gates_(gates) {
+Step::Step(const GateSet& gates): gates_(gates) {
 }
 
 /**
@@ -97,7 +97,7 @@ bool Step::operator!=(const Step& other) const {
   return !(*this == other);
 }
 
-CIterGateList Step::findSameGate(const GatePtr& gate) const {
+CIterGateSet Step::findSameGate(const GatePtr& gate) const {
   auto comp = [&gate](const GatePtr& obj) {return *gate == *obj;};
   return std::find_if(this->gates_.cbegin(), this->gates_.cend(), comp);
 }

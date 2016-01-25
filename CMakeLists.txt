@@ -8,7 +8,7 @@ set(TARGET qc)
 
 set(UTIL_FILE_LIST container_helper)
 
-set(QC_FILE_LIST bit gate step circuit)
+set(QC_FILE_LIST bit gate circuit)
 
 set(SOURCE_LIST)
 
