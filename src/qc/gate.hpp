@@ -10,8 +10,6 @@
 #include <memory>
 #include <algorithm>
 
-#include "ddmf.hpp"
-
 #include "bit.hpp"
 
 namespace qc {
@@ -63,7 +61,7 @@ class Gate {
   inline void setTbits(const TbitList& tbits) {
     this->tbits_ = tbits;
   }
-  virtual Matrix getTargetUnitary() const = 0;
+  //virtual Matrix getTargetUnitary() const = 0;
   BitList getUsedBits() const;
   bool isAllPositive() const;
   virtual void print(std::ostream& os) const;
@@ -92,9 +90,11 @@ public:
   inline int getGateType() const {
     return 16;
   }
+  /*
   inline Matrix getTargetUnitary() const {
     return Matrix(Matrix::TYPE_V);
   }
+  */
   void print(std::ostream& os) const;
 };
 
@@ -121,9 +121,11 @@ public:
   inline int getGateType() const {
     return 15;
   }
+  /*
   inline Matrix getTargetUnitary() const {
     return Matrix(Matrix::TYPE_VI);
   }
+  */
   void print(std::ostream& os) const;
 };
 
@@ -142,9 +144,11 @@ public:
   inline int getGateType() const {
     return 1;
   }
+  /*
   inline Matrix getTargetUnitary() const {
     return Matrix();
   }
+  */
   void print(std::ostream& os) const;
 };
 
@@ -171,9 +175,11 @@ public:
   inline int getGateType() const {
     return 2;
   }
+  /*
   inline Matrix getTargetUnitary() const {
     return Matrix(Matrix::TYPE_N);
   }
+  */
   void print(std::ostream& os) const;
 };
 
@@ -200,9 +206,11 @@ public:
   inline int getGateType() const {
     return 6;
   }
+  /*
   inline Matrix getTargetUnitary() const {
     return Matrix();
   }
+  */
   void print(std::ostream& os) const;
 };
 
@@ -225,9 +233,11 @@ public:
   inline int getGateType() const {
     return 12;
   }
+  /*
   inline Matrix getTargetUnitary() const {
     return Matrix();
   }
+  */
   void print(std::ostream& os) const;
 };
 }
