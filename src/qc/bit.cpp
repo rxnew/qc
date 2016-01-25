@@ -42,7 +42,7 @@ Cbit::Cbit(const Cbit& other) : bitno_(other.bitno_), polarity_(other.polarity_)
  * @param [in] other another Cbit class object
  * @return reference to this object
  */
-Cbit& Cbit::operator=(const Cbit& other) {
+auto Cbit::operator=(const Cbit& other) -> Cbit& {
   this->bitno_ = other.bitno_;
   this->polarity_ = other.polarity_;
   return *this;
@@ -54,7 +54,7 @@ Cbit& Cbit::operator=(const Cbit& other) {
  * @param [in] other another Cbit class object
  * @return true or false
  */
-bool Cbit::operator==(const Cbit& other) const {
+auto Cbit::operator==(const Cbit& other) const -> bool {
   return this->bitno_ == other.bitno_ && this->polarity_ == other.polarity_;
 }
 
@@ -64,7 +64,7 @@ bool Cbit::operator==(const Cbit& other) const {
  * @param [in] other another Cbit class object
  * @return true or false
  */
-bool Cbit::operator!=(const Cbit& other) const {
+auto Cbit::operator!=(const Cbit& other) const -> bool {
   return !(*this == other);
 }
 
@@ -74,7 +74,7 @@ bool Cbit::operator!=(const Cbit& other) const {
  * @param [in] other another Cbit class object
  * @return true or false
  */
-bool Cbit::operator<(const Cbit& other) const {
+auto Cbit::operator<(const Cbit& other) const -> bool {
   if(this->bitno_ != other.bitno_)
     return this->bitno_ < other.bitno_;
   return !this->polarity_;
@@ -105,7 +105,7 @@ Tbit::Tbit(const Tbit& other) : bitno_(other.bitno_) {
  * @param [in] other another Tbit class object
  * @return reference to this object
  */
-Tbit& Tbit::operator=(const Tbit& other) {
+auto Tbit::operator=(const Tbit& other) -> Tbit& {
   this->bitno_ = other.bitno_;
   return *this;
 }
@@ -116,7 +116,7 @@ Tbit& Tbit::operator=(const Tbit& other) {
  * @param [in] other another Tbit class object
  * @return true or false
  */
-bool Tbit::operator==(const Tbit& other) const {
+auto Tbit::operator==(const Tbit& other) const -> bool{
   return this->bitno_ == other.bitno_;
 }
 
@@ -126,7 +126,7 @@ bool Tbit::operator==(const Tbit& other) const {
  * @param [in] other another Tbit class object
  * @return true or false
  */
-bool Tbit::operator!=(const Tbit& other) const {
+auto Tbit::operator!=(const Tbit& other) const -> bool {
   return !(*this == other);
 }
 
@@ -136,7 +136,7 @@ bool Tbit::operator!=(const Tbit& other) const {
  * @param [in] other another Tbit class object
  * @return true or false
  */
-bool Tbit::operator<(const Tbit& other) const {
+auto Tbit::operator<(const Tbit& other) const -> bool {
   return this->bitno_ < other.bitno_;
 }
 
@@ -147,7 +147,7 @@ bool Tbit::operator<(const Tbit& other) const {
  * @param [in] other Cbit class object
  * @return reference to the ostream object
  */
-std::ostream& operator<<(std::ostream& os, const Cbit& obj) {
+auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream& {
   char sign = obj.polarity_ ? '\0' : '!';
   return os << sign << obj.bitno_;
 }
@@ -159,7 +159,7 @@ std::ostream& operator<<(std::ostream& os, const Cbit& obj) {
  * @param [in] other Cbit class object
  * @return reference to the ostream object
  */
-std::ostream& operator<<(std::ostream& os, const Tbit& obj) {
+auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream& {
   return os << 'T' << obj.bitno_;
 }
 }

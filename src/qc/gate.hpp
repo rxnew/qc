@@ -44,28 +44,36 @@ class Gate {
 
  public:
   virtual ~Gate();
-  Gate& operator=(const Gate& other);
-  bool operator==(const Gate& other) const;
-  bool operator!=(const Gate& other) const;
-  virtual GatePtr clone() const = 0;
-  virtual int getGateType() const = 0;
-  inline const CbitList& getCbitList() const {
-    return this->cbits_;
-  }
-  inline const TbitList& getTbitList() const {
-    return this->tbits_;
-  }
-  inline void setCbits(const CbitList& cbits) {
-    this->cbits_ = cbits;
-  }
-  inline void setTbits(const TbitList& tbits) {
-    this->tbits_ = tbits;
-  }
+  auto operator=(const Gate& other) -> Gate&;
+  auto operator==(const Gate& other) const -> bool;
+  auto operator!=(const Gate& other) const -> bool;
+  virtual auto clone() const -> GatePtr = 0;
+  virtual auto getGateType() const -> int = 0;
+  auto getCbitList() const -> const CbitList&;
+  auto getTbitList() const -> const TbitList&;
+  auto setCbits(const CbitList& cbits) -> void;
+  auto setTbits(const TbitList& tbits) -> void;
   //virtual Matrix getTargetUnitary() const = 0;
-  BitList getUsedBits() const;
-  bool isAllPositive() const;
-  virtual void print(std::ostream& os) const;
+  auto getUsedBits() const -> BitList;
+  auto isAllPositive() const -> bool;
+  virtual auto print(std::ostream& os) const -> void;
 };
+
+inline auto Gate::getCbitList() const -> const CbitList& {
+  return this->cbits_;
+}
+
+inline auto Gate::getTbitList() const -> const TbitList& {
+  return this->tbits_;
+}
+
+inline auto Gate::setCbits(const CbitList& cbits) -> void {
+  this->cbits_ = cbits;
+}
+
+inline auto Gate::setTbits(const TbitList& tbits) -> void {
+  this->tbits_ = tbits;
+}
 
 /**
  * @brief V gate class
@@ -83,13 +91,8 @@ public:
   V(const CbitList& cbits, const TbitList& tbits);
   V(const std::initializer_list<Cbit>& cbits, \
     const std::initializer_list<Tbit>& tbits);
-
-  inline GatePtr clone() const {
-    return std::move(std::make_shared<V>(*this));
-  }
-  inline int getGateType() const {
-    return 16;
-  }
+  auto clone() const -> GatePtr;
+  auto getGateType() const -> int;
   /*
   inline Matrix getTargetUnitary() const {
     return Matrix(Matrix::TYPE_V);
@@ -97,6 +100,14 @@ public:
   */
   void print(std::ostream& os) const;
 };
+
+inline auto V::clone() const -> GatePtr {
+  return std::move(std::make_shared<V>(*this));
+}
+
+inline auto V::getGateType() const -> int {
+  return 16;
+}
 
 /**
  * @brief V+ gate class
@@ -114,13 +125,8 @@ public:
   VPlus(const CbitList& cbits, const TbitList& tbits);
   VPlus(const std::initializer_list<Cbit>& cbits, \
         const std::initializer_list<Tbit>& tbits);
-
-  inline GatePtr clone() const {
-    return std::move(std::make_shared<VPlus>(*this));
-  }
-  inline int getGateType() const {
-    return 15;
-  }
+  auto clone() const -> GatePtr;
+  auto getGateType() const -> int;
   /*
   inline Matrix getTargetUnitary() const {
     return Matrix(Matrix::TYPE_VI);
@@ -128,6 +134,14 @@ public:
   */
   void print(std::ostream& os) const;
 };
+
+inline auto VPlus::clone() const -> GatePtr {
+  return std::move(std::make_shared<VPlus>(*this));
+}
+
+inline auto VPlus::getGateType() const -> int {
+  return 15;
+}
 
 /**
  * @brief Hadamard gate class
@@ -137,13 +151,8 @@ class H : public Gate {
 public:
   H(const Tbit& tbit);
   H(const CbitList& cbits, const TbitList& tbits);
-
-  inline GatePtr clone() const {
-    return std::move(std::make_shared<H>(*this));
-  }
-  inline int getGateType() const {
-    return 1;
-  }
+  auto clone() const -> GatePtr;
+  auto getGateType() const -> int;
   /*
   inline Matrix getTargetUnitary() const {
     return Matrix();
@@ -151,6 +160,14 @@ public:
   */
   void print(std::ostream& os) const;
 };
+
+inline auto H::clone() const -> GatePtr {
+  return std::move(std::make_shared<H>(*this));
+}
+
+inline auto H::getGateType() const -> int {
+  return 1;
+}
 
 /**
  * @brief NOT gate class
@@ -168,13 +185,8 @@ public:
   Not(const CbitList& cbits, const TbitList& tbits);
   Not(const std::initializer_list<Cbit>& cbits, \
       const std::initializer_list<Tbit>& tbits);
-
-  inline GatePtr clone() const {
-    return std::move(std::make_shared<Not>(*this));
-  }
-  inline int getGateType() const {
-    return 2;
-  }
+  auto clone() const -> GatePtr;
+  auto getGateType() const -> int;
   /*
   inline Matrix getTargetUnitary() const {
     return Matrix(Matrix::TYPE_N);
@@ -182,6 +194,14 @@ public:
   */
   void print(std::ostream& os) const;
 };
+
+inline auto Not::clone() const -> GatePtr {
+  return std::move(std::make_shared<Not>(*this));
+}
+
+inline auto Not::getGateType() const -> int {
+  return 2;
+}
 
 /**
  * @brief Z gate class
@@ -199,13 +219,8 @@ public:
   Z(const CbitList& cbits, const TbitList& tbits);
   Z(const std::initializer_list<Cbit>& cbits, \
     const std::initializer_list<Tbit>& tbits);
-
-  inline GatePtr clone() const {
-    return std::move(std::make_shared<Z>(*this));
-  }
-  inline int getGateType() const {
-    return 6;
-  }
+  auto clone() const -> GatePtr;
+  auto getGateType() const -> int;
   /*
   inline Matrix getTargetUnitary() const {
     return Matrix();
@@ -213,6 +228,14 @@ public:
   */
   void print(std::ostream& os) const;
 };
+
+inline auto Z::clone() const -> GatePtr {
+  return std::move(std::make_shared<Z>(*this));
+}
+
+inline auto Z::getGateType() const -> int {
+  return 6;
+}
 
 /**
  * @brief Swap gate class
@@ -226,13 +249,8 @@ public:
   Swap(const CbitList& cbits, const TbitList& tbits);
   Swap(const std::initializer_list<Cbit>& cbits, \
        const std::initializer_list<Tbit>& tbits);
-
-  inline GatePtr clone() const {
-    return std::move(std::make_shared<Swap>(*this));
-  }
-  inline int getGateType() const {
-    return 12;
-  }
+  auto clone() const -> GatePtr;
+  auto getGateType() const -> int;
   /*
   inline Matrix getTargetUnitary() const {
     return Matrix();
@@ -240,12 +258,20 @@ public:
   */
   void print(std::ostream& os) const;
 };
+
+inline auto Swap::clone() const -> GatePtr {
+  return std::move(std::make_shared<Swap>(*this));
+}
+
+inline auto Swap::getGateType() const -> int {
+  return 12;
+}
 }
 
 namespace std {
 template <class T>
 struct hash<unordered_set<T>> {
-  size_t operator()(const unordered_set<T>& obj) const {
+  auto operator()(const unordered_set<T>& obj) const -> size_t {
     size_t hash_value;
     for(const auto& elem : obj)
       hash_value ^= hash<T>()(elem) + 0x9e3779b9 + (hash_value << 6);
@@ -255,7 +281,7 @@ struct hash<unordered_set<T>> {
 
 template <>
 struct hash<qc::Gate> {
-  size_t operator()(const qc::Gate& obj) const {
+  auto operator()(const qc::Gate& obj) const -> size_t {
     auto cbit_hash = hash<unordered_set<qc::Cbit>>()(obj.getCbitList());
     auto tbit_hash = hash<unordered_set<qc::Tbit>>()(obj.getTbitList());
     return cbit_hash ^ tbit_hash;

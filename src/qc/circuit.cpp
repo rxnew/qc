@@ -38,7 +38,7 @@ Circuit::~Circuit() {
  * @param [in] other another Circuit class object
  * @return reference to this object
  */
-Circuit& Circuit::operator=(const Circuit& other) {
+auto Circuit::operator=(const Circuit& other) -> Circuit& {
   for(const auto& gate : other.gates_)
     this->addGate(gate->clone());
   return *this;
@@ -50,7 +50,7 @@ Circuit& Circuit::operator=(const Circuit& other) {
  * @param [in] other another Circuit class object
  * @return true or false
  */
-bool Circuit::operator==(const Circuit& other) const {
+auto Circuit::operator==(const Circuit& other) const -> bool {
   if(this->gates_.size() != other.gates_.size()) return false;
 
   auto it = this->gates_.cbegin();
@@ -69,18 +69,18 @@ bool Circuit::operator==(const Circuit& other) const {
  * @param [in] other another Circuit class object
  * @return true or false
  */
-bool Circuit::operator!=(const Circuit& other) const {
+auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
 }
 
-GatePtr Circuit::getAnyGate(int n) const {
+auto Circuit::getAnyGate(int n) const -> GatePtr {
   int cnt = 0;
   for(const auto& gate_i : this->gates_)
     if(cnt++ == n) return gate_i;
   return GatePtr(nullptr);
 }
 
-int Circuit::getGateIndex(const GatePtr& gate) const {
+auto Circuit::getGateIndex(const GatePtr& gate) const -> int {
   int cnt = 0;
   for(const auto& gate_i : this->gates_) {
     if(gate_i == gate) return cnt;
@@ -94,7 +94,7 @@ int Circuit::getGateIndex(const GatePtr& gate) const {
  * @brief take used bits of all included parallel quanutm gates
  * @return used bits
  */
-BitList Circuit::getUsedBits() const {
+auto Circuit::getUsedBits() const -> BitList {
   BitList used_bits;
   for(const auto& gate : this->gates_) {
     auto gate_used_bits = gate->getUsedBits();

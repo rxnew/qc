@@ -144,7 +144,7 @@ Gate::~Gate() {
  * @param [in] other another Gate class object
  * @return reference to this object
  */
-Gate& Gate::operator=(const Gate& other) {
+auto Gate::operator=(const Gate& other) -> Gate& {
   this->cbits_ = other.cbits_;
   this->tbits_ = other.tbits_;
   return *this;
@@ -156,7 +156,7 @@ Gate& Gate::operator=(const Gate& other) {
  * @param [in] other another Gate class object
  * @return true or false
  */
-bool Gate::operator==(const Gate& other) const {
+auto Gate::operator==(const Gate& other) const -> bool {
   if(this->getGateType() != other.getGateType()) return false;
   if(this->cbits_ != other.cbits_) return false;
   if(this->tbits_ != other.tbits_) return false;
@@ -169,7 +169,7 @@ bool Gate::operator==(const Gate& other) const {
  * @param [in] other another Gate class object
  * @return true or false
  */
-bool Gate::operator!=(const Gate& other) const {
+auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
@@ -178,7 +178,7 @@ bool Gate::operator!=(const Gate& other) const {
  * @brief take used bits are control bits and target bits
  * @return used bits
  */
-BitList Gate::getUsedBits() const {
+auto Gate::getUsedBits() const -> BitList {
   BitList used_bits;
   for(const auto& cbit : this->cbits_)
     used_bits.insert(cbit.bitno_);
@@ -192,7 +192,7 @@ BitList Gate::getUsedBits() const {
  * @brief check whether all bits are positive
  * @return true or false
  */
-bool Gate::isAllPositive() const {
+auto Gate::isAllPositive() const -> bool {
   for(const auto& cbit : this->cbits_)
     if(!cbit.polarity_) return false;
   return true;
@@ -203,7 +203,7 @@ bool Gate::isAllPositive() const {
  * @brief print this gate
  * @param [in] os output stream object
  */
-void Gate::print(std::ostream& os) const {
+auto Gate::print(std::ostream& os) const -> void {
   auto ordered_cbits = util::ContainerConverter::to_set(this->cbits_);
   auto ordered_tbits = util::ContainerConverter::to_set(this->tbits_);
 
@@ -246,7 +246,7 @@ V::V(const std::initializer_list<Cbit>& cbits, \
   Gate(cbits, tbits) {
 }
 
-void V::print(std::ostream& os) const {
+auto V::print(std::ostream& os) const -> void {
   os << "V ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
@@ -284,7 +284,7 @@ VPlus::VPlus(const std::initializer_list<Cbit>& cbits, \
   Gate(cbits, tbits) {
 }
 
-void VPlus::print(std::ostream& os) const {
+auto VPlus::print(std::ostream& os) const -> void {
   os << "VPlus ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
@@ -298,7 +298,7 @@ H::H(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
   assert(static_cast<int>(tbits.size()) == 1);
 }
 
-void H::print(std::ostream& os) const {
+auto H::print(std::ostream& os) const -> void {
   os << "H ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
@@ -336,7 +336,7 @@ Not::Not(const std::initializer_list<Cbit>& cbits, \
   Gate(cbits, tbits) {
 }
 
-void Not::print(std::ostream& os) const {
+auto Not::print(std::ostream& os) const -> void {
   os << "Not ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
@@ -374,7 +374,7 @@ Z::Z(const std::initializer_list<Cbit>& cbits, \
   Gate(cbits, tbits) {
 }
 
-void Z::print(std::ostream& os) const {
+auto Z::print(std::ostream& os) const -> void {
   os << "Z ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
@@ -402,7 +402,7 @@ Swap::Swap(const std::initializer_list<Cbit>& cbits, \
   assert(static_cast<int>(tbits.size()) == 2);
 }
 
-void Swap::print(std::ostream& os) const {
+auto Swap::print(std::ostream& os) const -> void {
   os << "Swap ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
