@@ -273,8 +273,9 @@ template <class T>
 struct hash<unordered_set<T>> {
   auto operator()(const unordered_set<T>& obj) const -> size_t {
     size_t hash_value;
-    for(const auto& elem : obj)
+    for(const auto& elem : obj) {
       hash_value ^= hash<T>()(elem) + 0x9e3779b9 + (hash_value << 6);
+    }
     return hash_value;
   }
 };
