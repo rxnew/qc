@@ -130,8 +130,7 @@ auto Circuit::FileManager::ignoreComments(const std::vector<std::string>& elems)
 
 auto Circuit::FileManager::verifyFormat(const std::vector<std::string>& elems)
   -> bool {
-  int size = static_cast<int>(elems.size());
-  if(size < 3) return false;
+  if(static_cast<int>(elems.size()) < 3) return false;
   if(elems[1] != "\\") return false;
   return true;
 }
@@ -156,25 +155,26 @@ auto Circuit::FileManager::getTbit(std::string bit) -> Tbit {
 auto Circuit::FileManager::getGate(const std::vector<std::string>& elems)
   -> GatePtr {
   assert(Circuit::FileManager::verifyFormat(elems));
+
   auto gate_name = elems[0];
   std::vector<std::string> bits(elems.cbegin() + 2, elems.cend());
+
   CbitList cbits;
   TbitList tbits;
   for(const auto& bit : bits) {
-    if(bit[0] == 'T') {
-      tbits.insert(Circuit::FileManager::getTbit(bit));
-    }
-    else {
-      cbits.insert(Circuit::FileManager::getCbit(bit));
-    }
+    if(bit[0] == 'T') tbits.insert(Circuit::FileManager::getTbit(bit));
+    else              cbits.insert(Circuit::FileManager::getCbit(bit));
   }
+
   return std::move(GateBuilder::create(gate_name, cbits, tbits));
 }
 
 auto Circuit::FileManager::open(const std::string& filename) -> void {
   std::ifstream ifs(filename);
   std::string line;
+
   assert(ifs.fail());
+
   while(getline(ifs, line)) {
     auto elems = util::StringHelper::split(line);
     elems = Circuit::FileManager::ignoreComments(elems);
