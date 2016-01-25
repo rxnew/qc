@@ -5,10 +5,7 @@
 
 #pragma once
 
-#include <fstream>
 #include <list>
-
-#include "string_helper.hpp"
 
 #include "gate.hpp"
 
@@ -54,21 +51,6 @@ class Circuit {
   auto findGate(const GatePtr& gate) const -> CIterGateList;
   auto isExistGate(const GatePtr& gate) const -> bool;
   auto print(std::ostream& os) const -> void;
-  auto open(const std::string& filename) -> void {}
-  auto open(const char* filename) -> void {}
-
-  class FileManager {
-   private:
-    auto ignoreComments(const std::vector<std::string>& elems)
-      -> std::vector<std::string>;
-    auto verifyFormat(const std::vector<std::string>& elems) -> bool;
-    auto getCbit(std::string bit) -> Cbit;
-    auto getTbit(std::string bit) -> Tbit;
-    auto getGate(const std::vector<std::string>& elems) -> GatePtr;
-
-   public:
-    auto open(const std::string& filename) -> void;
-  };
 };
 
 inline auto Circuit::getGateList() const -> const GateList& {
@@ -76,7 +58,7 @@ inline auto Circuit::getGateList() const -> const GateList& {
 }
 
 inline auto Circuit::addGate(const GatePtr& gate) -> void {
-  assert(gate.get() != nullptr);
+  assert(gate);
   this->gates_.push_back(gate);
 }
 
@@ -88,7 +70,7 @@ inline auto Circuit::addGate(Gate*&& gate) -> void {
 inline auto Circuit::insertGate(CIterGateList pos, const GatePtr& gate)
   -> CIterGateList {
   assert(pos != this->gates_.cend());
-  assert(gate.get() != nullptr);
+  assert(gate);
   return this->gates_.insert(pos, gate);
 }
 

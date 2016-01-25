@@ -8,7 +8,7 @@ set(TARGET qc)
 
 set(UTIL_FILE_LIST container_helper string_helper)
 
-set(QC_FILE_LIST bit gate circuit)
+set(QC_FILE_LIST bit gate circuit file_manager)
 
 set(SOURCE_LIST)
 

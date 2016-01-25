@@ -275,7 +275,7 @@ struct GateBuilder {
 
 template <class... Args>
 auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
-  GatePtr gate;
+  GatePtr gate(nullptr);
   if(str == "V")             gate = std::make_shared<V>(args...);
   else if(str == "VPlus")    gate = std::make_shared<VPlus>(args...);
   else if(str == "Hadamard") gate = std::make_shared<Hadamard>(args...);
