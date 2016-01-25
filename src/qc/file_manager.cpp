@@ -4,17 +4,21 @@ namespace qc {
 auto FileManager::_ignoreComments(const std::vector<std::string>& elems)
   -> std::vector<std::string> {
   std::vector<std::string> result;
+  std::smatch match;
+  std::regex re(R"(^\\.*)");
+
   for(const auto& elem : elems) {
-    if(elem == "\\\\") break;
+    if(std::regex_match(elem, match, re)) break;
     result.push_back(elem);
   }
+
   return std::move(result);
 }
 
 auto FileManager::_verifyFormat(const std::vector<std::string>& elems)
   -> bool {
   if(static_cast<int>(elems.size()) < 3) return false;
-  if(elems[1] != "\\") return false;
+  if(elems[1] != R"(\)") return false;
   return true;
 }
 
