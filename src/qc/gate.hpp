@@ -147,10 +147,10 @@ inline auto VPlus::getGateType() const -> int {
  * @brief Hadamard gate class
  * @note gate type is 1
  */
-class H : public Gate {
+class Hadamard : public Gate {
 public:
-  H(const Tbit& tbit);
-  H(const CbitList& cbits, const TbitList& tbits);
+  Hadamard(const Tbit& tbit);
+  Hadamard(const CbitList& cbits, const TbitList& tbits);
   auto clone() const -> GatePtr;
   auto getGateType() const -> int;
   /*
@@ -161,11 +161,11 @@ public:
   void print(std::ostream& os) const;
 };
 
-inline auto H::clone() const -> GatePtr {
-  return std::move(std::make_shared<H>(*this));
+inline auto Hadamard::clone() const -> GatePtr {
+  return std::move(std::make_shared<Hadamard>(*this));
 }
 
-inline auto H::getGateType() const -> int {
+inline auto Hadamard::getGateType() const -> int {
   return 1;
 }
 

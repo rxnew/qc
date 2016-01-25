@@ -290,16 +290,16 @@ auto VPlus::print(std::ostream& os) const -> void {
   os << "\\ \\ " << std::endl;
 }
 
-H::H(const Tbit& tbit) : Gate(tbit) {
+Hadamard::Hadamard(const Tbit& tbit) : Gate(tbit) {
 }
 
-H::H(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
+Hadamard::Hadamard(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
   assert(cbits.empty());
   assert(static_cast<int>(tbits.size()) == 1);
 }
 
-auto H::print(std::ostream& os) const -> void {
-  os << "H ";
+auto Hadamard::print(std::ostream& os) const -> void {
+  os << "Hadamard ";
   Gate::print(os);
   os << "\\ \\ " << std::endl;
 }
