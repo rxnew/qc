@@ -20,8 +20,9 @@ Circuit::Circuit() {
  * @param [in] other another Circuit class object
  */
 Circuit::Circuit(const Circuit& other) {
-  for(const auto& gate : other.gates_)
+  for(const auto& gate : other.gates_) {
     this->addGate(gate->clone());
+  }
 }
 
 /**
@@ -39,8 +40,9 @@ Circuit::~Circuit() {
  * @return reference to this object
  */
 auto Circuit::operator=(const Circuit& other) -> Circuit& {
-  for(const auto& gate : other.gates_)
+  for(const auto& gate : other.gates_) {
     this->addGate(gate->clone());
+  }
   return *this;
 }
 
@@ -73,10 +75,17 @@ auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
 }
 
+auto Circuit::append(const Circuit& circ) -> void {
+  for(const auto& gate : circ.gates_) {
+    this->addGate(gate->clone());
+  }
+}
+
 auto Circuit::getAnyGate(int n) const -> GatePtr {
   int cnt = 0;
-  for(const auto& gate_i : this->gates_)
+  for(const auto& gate_i : this->gates_) {
     if(cnt++ == n) return gate_i;
+  }
   return GatePtr(nullptr);
 }
 
@@ -101,5 +110,11 @@ auto Circuit::getUsedBits() const -> BitList {
     used_bits.insert(gate_used_bits.cbegin(), gate_used_bits.cend());
   }
   return std::move(used_bits);
+}
+
+auto Circuit::print(std::ostream& os) const -> void {
+  for(const auto& gate : this->gates_) {
+    gate->print(os);
+  }
 }
 }

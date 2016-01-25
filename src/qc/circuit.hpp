@@ -22,7 +22,7 @@ using CIterGateList = GateList::const_iterator;
  * @brief quantum circuit class
  */
 class Circuit {
- protected:
+ private:
   GateList gates_;
 
  public:
@@ -52,7 +52,7 @@ class Circuit {
   auto isExistGate(const GatePtr& gate) const -> bool;
   auto print(std::ostream& os) const -> void;
   auto open(const std::string& filename) -> void {}
-  auto open(const char* filename) -> void{}
+  auto open(const char* filename) -> void {}
 };
 
 inline auto Circuit::getGateList() const -> const GateList& {
@@ -100,11 +100,6 @@ inline auto Circuit::eraseGate(CIterGateList pos) -> CIterGateList {
   return this->gates_.erase(pos);
 }
 
-inline auto Circuit::append(const Circuit& circ) -> void {
-  for(const auto& gate : circ.gates_)
-    this->addGate(gate->clone());
-}
-
 inline auto Circuit::getFirstGate() const -> GatePtr {
   return this->gates_.front();
 }
@@ -115,7 +110,7 @@ inline auto Circuit::getLastGate() const -> GatePtr {
 
 inline auto Circuit::getGateCount() const -> int {
   return static_cast<int>(this->gates_.size());
-};
+}
 
 inline auto Circuit::findGate(const GatePtr& gate) const -> CIterGateList {
   return std::find(this->gates_.cbegin(), this->gates_.cend(), gate);
@@ -123,10 +118,5 @@ inline auto Circuit::findGate(const GatePtr& gate) const -> CIterGateList {
 
 inline auto Circuit::isExistGate(const GatePtr& gate) const -> bool {
   return this->gates_.cend() != this->findGate(gate);
-}
-
-inline auto Circuit::print(std::ostream& os) const -> void {
-  for(const auto& gate : this->gates_)
-    gate->print(os);
 }
 }
