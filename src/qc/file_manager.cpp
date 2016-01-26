@@ -1,31 +1,33 @@
 #include "file_manager.hpp"
 
 namespace qc {
-auto FileManager::_ignoreComments(const std::vector<std::string>& elems)
-  -> std::vector<std::string> {
-  std::vector<std::string> result;
-  std::smatch match;
-  std::regex re(R"(^\\.*)");
-
-  for(const auto& elem : elems) {
-    if(std::regex_match(elem, match, re)) break;
-    result.push_back(elem);
-  }
-
-  return std::move(result);
+auto FileManager::_divideIntoGroups(const std::string& line) -> strings {
+  auto groups = util::StringHelper::split(line, '\\', false);
+  assert(static_cast<int>(groups.size()) == 4);
+  return std::move(groups);
 }
 
-auto FileManager::_verifyFormat(const std::vector<std::string>& elems)
-  -> bool {
-  if(static_cast<int>(elems.size()) < 3) return false;
-  if(elems[1] != R"(\)") return false;
-  return true;
+auto FileManager::_getGateString(const std::string& str) -> std::string {
+  auto gate_strs = util::StringHelper::split(str);
+  assert(static_cast<int>(gate_strs.size()) == 1);
+  return std::move(gate_strs.front());
 }
 
-auto FileManager::_getCbit(std::string bit) -> Cbit {
-  std::string bit_no = bit;
+auto FileManager::_getBitStrings(const std::string& str) -> strings {
+  auto bit_strs = util::StringHelper::split(str);
+  assert(!bit_strs.empty());
+  return std::move(bit_strs);
+}
+
+auto FileManager::_getOptionStrings(const std::string& str) -> strings {
+  auto option_strs = util::StringHelper::split(str);
+  return std::move(option_strs);
+}
+
+auto FileManager::_getCbit(const std::string& bit_str) -> Cbit {
+  std::string bit_no = bit_str;
   bool polarity = true;
-  if(bit[0] == '!') {
+  if(bit_no[0] == '!') {
     bit_no = std::string(bit_no.cbegin() + 1, bit_no.cend());
     polarity = false;
   }
@@ -33,27 +35,33 @@ auto FileManager::_getCbit(std::string bit) -> Cbit {
   return std::move(Cbit(static_cast<Bitno>(std::stoi(bit_no)), polarity));
 }
 
-auto FileManager::_getTbit(std::string bit) -> Tbit {
-  std::string bit_no = std::string(bit.cbegin() + 1, bit.cend());
+auto FileManager::_getTbit(const std::string& bit_str) -> Tbit {
+  std::string bit_no = std::string(bit_str.cbegin() + 1, bit_str.cend());
   assert(!util::StringHelper::isNumeric(bit_no));
   return std::move(Tbit(static_cast<Bitno>(std::stoi(bit_no))));
 }
 
-auto FileManager::_getGate(const std::vector<std::string>& elems)
-  -> GatePtr {
-  assert(FileManager::_verifyFormat(elems));
-
-  auto gate_name = elems[0];
-  std::vector<std::string> bits(elems.cbegin() + 2, elems.cend());
-
+auto FileManager::_getBits(const strings& bit_strs)
+  -> std::tuple<CbitList, TbitList> {
   CbitList cbits;
   TbitList tbits;
-  for(const auto& bit : bits) {
-    if(bit[0] == 'T') tbits.insert(FileManager::_getTbit(bit));
-    else              cbits.insert(FileManager::_getCbit(bit));
+  for(const auto& bit_str : bit_strs) {
+    if(bit_str[0] == 'T') {
+      tbits.insert(FileManager::_getTbit(bit_str));
+    }
+    else {
+      cbits.insert(FileManager::_getCbit(bit_str));
+    }
   }
+  return std::move(BitListTuple(cbits, tbits));
+}
 
-  return std::move(GateBuilder::create(gate_name, cbits, tbits));
+auto FileManager::_getGate(const std::string& gate_str, \
+                           const BitListTuple& bits)
+  -> GatePtr {
+  const CbitList& cbits = std::get<0>(bits);
+  const TbitList& tbits = std::get<1>(bits);
+  return std::move(GateBuilder::create(gate_str, cbits, tbits));
 }
 
 auto FileManager::open(const std::string& filename) -> Circuit {
@@ -65,10 +73,20 @@ auto FileManager::open(const std::string& filename) -> Circuit {
   assert(ifs.fail());
 
   while(getline(ifs, line)) {
-    auto elems = util::StringHelper::split(line);
-    elems = FileManager::_ignoreComments(elems);
-    if(elems.empty()) continue;
-    GatePtr gate = FileManager::_getGate(elems);
+    auto groups = FileManager::_divideIntoGroups(line);
+
+    auto gate_str = FileManager::_getGateString(groups[0]);
+    auto bit_strs = FileManager::_getBitStrings(groups[1]);
+    auto var_strs = FileManager::_getOptionStrings(groups[2]);
+    auto function_strs = FileManager::_getOptionStrings(groups[3]);
+
+    auto bits = FileManager::_getBits(bit_strs);
+    //auto vars = FileManager::_getVariables(var_strs);
+    //auto functions = FileManager::_getFunctions(function_strs);
+
+    //auto gate = FileManager::_getGate(gate_str, bits, vars, functions);
+    auto gate = FileManager::_getGate(gate_str, bits);
+
     assert(gate);
     circuit.addGate(gate);
   }

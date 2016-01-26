@@ -231,6 +231,10 @@ auto Gate::print(std::ostream& os) const -> void {
   for(const auto& tbit : ordered_tbits) {
     os << tbit << ' ';
   }
-  os << R"(\\)" << std::endl;
+  os << R"(\ )";
+  //os << this->getVariable() << ' ';
+  os << R"(\ )";
+  //os << this->getFunction();
+  os << std::endl;
 }
 }

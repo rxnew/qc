@@ -1,21 +1,22 @@
 #include "string_helper.hpp"
 
 namespace util {
-auto StringHelper::split(const std::string& str, const char delim)
+auto StringHelper::split(const std::string& str, \
+                         const char delim, \
+                         bool ignore_empty)
   -> std::vector<std::string> {
   std::vector<std::string> result;
 
   size_t current = 0;
   size_t found;
-  size_t length;
 
   while((found = str.find_first_of(delim, current)) != std::string::npos) {
-    length = found - current;
-    if(length) result.emplace_back(str, current, length);
+    size_t length = found - current;
+    if(!ignore_empty || length) result.emplace_back(str, current, length);
     current = found + 1;
   }
-  length = str.size() - current;
-  if(length) result.emplace_back(str, current, length);
+  size_t length = str.size() - current;
+  if(!ignore_empty || length) result.emplace_back(str, current, length);
 
   return result;
 }
