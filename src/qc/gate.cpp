@@ -6,6 +6,19 @@
 #include "gate.hpp"
 
 namespace qc {
+#define DEF_TYPE_NAME(type) const std::string type::TYPE_NAME = #type
+
+DEF_TYPE_NAME(Gate);
+DEF_TYPE_NAME(V);
+DEF_TYPE_NAME(VPlus);
+DEF_TYPE_NAME(Hadamard);
+DEF_TYPE_NAME(Not);
+DEF_TYPE_NAME(Z);
+DEF_TYPE_NAME(Swap);
+DEF_TYPE_NAME(T);
+
+#undef DEF_TYPE_NAME
+
 /**
  * @fn Gate(const Tbit& tbit)
  * @brief constructor
@@ -157,7 +170,7 @@ auto Gate::operator=(const Gate& other) -> Gate& {
  * @return true or false
  */
 auto Gate::operator==(const Gate& other) const -> bool {
-  if(this->getGateType() != other.getGateType()) return false;
+  if(this->getTypeName() != other.getTypeName()) return false;
   if(this->cbits_ != other.cbits_) return false;
   if(this->tbits_ != other.tbits_) return false;
   return true;
@@ -210,206 +223,14 @@ auto Gate::print(std::ostream& os) const -> void {
   auto ordered_cbits = util::ContainerHelper::convert<std::set>(this->cbits_);
   auto ordered_tbits = util::ContainerHelper::convert<std::set>(this->tbits_);
 
-  os << "\\ ";
+  os << this->getTypeName() << ' ';
+  os << R"(\ )";
   for(const auto& cbit : ordered_cbits) {
-    os << cbit << " ";
+    os << cbit << ' ';
   }
   for(const auto& tbit : ordered_tbits) {
-    os << tbit << " ";
+    os << tbit << ' ';
   }
-}
-
-V::V(const Tbit& tbit) : Gate(tbit) {
-}
-
-V::V(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
-}
-
-V::V(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
-}
-
-V::V(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
-  Gate(cbit, tbits) {
-}
-
-V::V(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
-  Gate(cbit1, cbit2, tbit) {
-}
-
-V::V(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
-}
-
-V::V(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
-  Gate(cbits, tbit) {
-}
-
-V::V(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
-}
-
-V::V(const std::initializer_list<Cbit>& cbits, \
-     const std::initializer_list<Tbit>& tbits) :
-  Gate(cbits, tbits) {
-}
-
-auto V::print(std::ostream& os) const -> void {
-  os << "V ";
-  Gate::print(os);
-  os << "\\ \\ " << std::endl;
-}
-
-VPlus::VPlus(const Tbit& tbit) : Gate(tbit) {
-}
-
-VPlus::VPlus(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
-}
-
-VPlus::VPlus(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
-}
-
-VPlus::VPlus(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
-  Gate(cbit, tbits) {
-}
-
-VPlus::VPlus(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
-  Gate(cbit1, cbit2, tbit) {
-}
-
-VPlus::VPlus(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
-}
-
-VPlus::VPlus(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
-  Gate(cbits, tbit) {
-}
-
-VPlus::VPlus(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
-}
-
-VPlus::VPlus(const std::initializer_list<Cbit>& cbits, \
-             const std::initializer_list<Tbit>& tbits) :
-  Gate(cbits, tbits) {
-}
-
-auto VPlus::print(std::ostream& os) const -> void {
-  os << "VPlus ";
-  Gate::print(os);
-  os << "\\ \\ " << std::endl;
-}
-
-Hadamard::Hadamard(const Tbit& tbit) : Gate(tbit) {
-}
-
-Hadamard::Hadamard(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
-  assert(cbits.empty());
-  assert(static_cast<int>(tbits.size()) == 1);
-}
-
-auto Hadamard::print(std::ostream& os) const -> void {
-  os << "Hadamard ";
-  Gate::print(os);
-  os << "\\ \\ " << std::endl;
-}
-
-Not::Not(const Tbit& tbit) : Gate(tbit) {
-}
-
-Not::Not(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
-}
-
-Not::Not(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
-}
-
-Not::Not(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
-  Gate(cbit, tbits) {
-}
-
-Not::Not(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
-  Gate(cbit1, cbit2, tbit) {
-}
-
-Not::Not(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
-}
-
-Not::Not(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
-  Gate(cbits, tbit) {
-}
-
-Not::Not(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
-}
-
-Not::Not(const std::initializer_list<Cbit>& cbits, \
-         const std::initializer_list<Tbit>& tbits) :
-  Gate(cbits, tbits) {
-}
-
-auto Not::print(std::ostream& os) const -> void {
-  os << "Not ";
-  Gate::print(os);
-  os << "\\ \\ " << std::endl;
-}
-
-Z::Z(const Tbit& tbit) : Gate(tbit) {
-}
-
-Z::Z(const Cbit& cbit, const Tbit& tbit) : Gate(cbit, tbit) {
-}
-
-Z::Z(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
-}
-
-Z::Z(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
-  Gate(cbit, tbits) {
-}
-
-Z::Z(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit) :
-  Gate(cbit1, cbit2, tbit) {
-}
-
-Z::Z(const CbitList& cbits, const Tbit& tbit) : Gate(cbits, tbit) {
-}
-
-Z::Z(const std::initializer_list<Cbit>& cbits, const Tbit& tbit) :
-  Gate(cbits, tbit) {
-}
-
-Z::Z(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
-}
-
-Z::Z(const std::initializer_list<Cbit>& cbits, \
-     const std::initializer_list<Tbit>& tbits) :
-  Gate(cbits, tbits) {
-}
-
-auto Z::print(std::ostream& os) const -> void {
-  os << "Z ";
-  Gate::print(os);
-  os << "\\ \\ " << std::endl;
-}
-
-Swap::Swap(const Tbit& tbit1, const Tbit& tbit2) : Gate(tbit1, tbit2) {
-}
-
-Swap::Swap(const Cbit& cbit, const TbitList& tbits) : Gate(cbit, tbits) {
-  assert(static_cast<int>(tbits.size()) == 2);
-}
-
-Swap::Swap(const Cbit& cbit, const std::initializer_list<Tbit>& tbits) :
-  Gate(cbit, tbits) {
-  assert(static_cast<int>(tbits.size()) == 2);
-}
-
-Swap::Swap(const CbitList& cbits, const TbitList& tbits) : Gate(cbits, tbits) {
-  assert(static_cast<int>(tbits.size()) == 2);
-}
-
-Swap::Swap(const std::initializer_list<Cbit>& cbits, \
-           const std::initializer_list<Tbit>& tbits) :
-  Gate(cbits, tbits) {
-  assert(static_cast<int>(tbits.size()) == 2);
-}
-
-auto Swap::print(std::ostream& os) const -> void {
-  os << "Swap ";
-  Gate::print(os);
-  os << "\\ \\ " << std::endl;
+  os << R"(\\)" << std::endl;
 }
 }
