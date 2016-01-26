@@ -31,13 +31,13 @@ auto FileManager::_getCbit(const std::string& bit_str) -> Cbit {
     bit_no = std::string(bit_no.cbegin() + 1, bit_no.cend());
     polarity = false;
   }
-  assert(!util::StringHelper::isNumeric(bit_no));
+  assert(util::StringHelper::isNumeric(bit_no));
   return std::move(Cbit(static_cast<Bitno>(std::stoi(bit_no)), polarity));
 }
 
 auto FileManager::_getTbit(const std::string& bit_str) -> Tbit {
   std::string bit_no = std::string(bit_str.cbegin() + 1, bit_str.cend());
-  assert(!util::StringHelper::isNumeric(bit_no));
+  assert(util::StringHelper::isNumeric(bit_no));
   return std::move(Tbit(static_cast<Bitno>(std::stoi(bit_no))));
 }
 
@@ -69,7 +69,7 @@ auto FileManager::open(const std::string& filename) -> Circuit {
   std::ifstream ifs(filename);
   std::string line;
 
-  assert(ifs.fail());
+  assert(!ifs.fail());
 
   while(getline(ifs, line)) {
     auto groups = FileManager::_divideIntoGroups(line);
