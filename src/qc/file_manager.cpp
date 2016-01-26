@@ -41,8 +41,7 @@ auto FileManager::_getTbit(const std::string& bit_str) -> Tbit {
   return std::move(Tbit(static_cast<Bitno>(std::stoi(bit_no))));
 }
 
-auto FileManager::_getBits(const strings& bit_strs)
-  -> std::tuple<CbitList, TbitList> {
+auto FileManager::_getBits(const strings& bit_strs) -> BitListTuple {
   CbitList cbits;
   TbitList tbits;
   for(const auto& bit_str : bit_strs) {
@@ -53,7 +52,7 @@ auto FileManager::_getBits(const strings& bit_strs)
       cbits.insert(FileManager::_getCbit(bit_str));
     }
   }
-  return std::move(BitListTuple(cbits, tbits));
+  return std::move(std::make_tuple(cbits, tbits));
 }
 
 auto FileManager::_getGate(const std::string& gate_str, \
