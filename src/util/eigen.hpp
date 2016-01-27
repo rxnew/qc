@@ -1,19 +1,17 @@
 #pragma once
 
 #include <vector>
-#include <complex>
 
+#include "sprout/complex.hpp"
 #include "Eigen/Dense"
 
 namespace util {
 namespace eigen {
-using Real = double;
-using Complex = std::complex<Real>;
-using Unitary = Eigen::Matrix<Complex, Eigen::Dynamic, Eigen::Dynamic>;
+using sprout::udl::complex::operator"" _i;
 
-inline constexpr auto operator"" _i(long double val) -> Complex {
-  return Complex(0, val);
-}
+using Real = double;
+using Complex = sprout::complex<Real>;
+using Unitary = Eigen::Matrix<Complex, Eigen::Dynamic, Eigen::Dynamic>;
 
 template <class T>
 inline auto createUnitary(const std::initializer_list<T>& list)

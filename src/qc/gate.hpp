@@ -67,7 +67,7 @@ class Gate {
   auto getTbitList() const -> const TbitList&;
   auto setCbits(const CbitList& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
-  //virtual Matrix getTargetUnitary() const = 0;
+  virtual auto getTargetUnitary() const -> const Unitary& = 0;
   auto getUsedBits() const -> BitList;
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os) const -> void;
@@ -115,8 +115,8 @@ class V : public Gate {
 
 inline auto V::_createTargetUnitaryList()
   -> std::initializer_list<Complex> {
-  auto a = 0.5 + 0.5_i;
-  auto b = 0.5 - 0.5_i;
+  constexpr auto a = 0.5 + 0.5_i;
+  constexpr auto b = 0.5 - 0.5_i;
   return {a, b, b, a};
 }
 
@@ -156,8 +156,8 @@ class VPlus : public Gate {
 
 inline auto VPlus::_createTargetUnitaryList()
   -> std::initializer_list<Complex> {
-  auto a = 0.5 + 0.5_i;
-  auto b = 0.5 - 0.5_i;
+  constexpr auto a = 0.5 + 0.5_i;
+  constexpr auto b = 0.5 - 0.5_i;
   return {b, a, a, b};
 }
 
@@ -192,11 +192,12 @@ class Hadamard : public Gate {
   Hadamard(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
+  auto getTargetUnitary() const -> const Unitary&;
 };
 
 inline auto Hadamard::_createTargetUnitaryList()
   -> std::initializer_list<Complex> {
-  auto a = 1.0 / std::sqrt(2) + 0.0_i;
+  constexpr auto a = 1.0 / std::sqrt(2) + 0.0_i;
   return {a, a, a, -a};
 }
 
@@ -212,6 +213,10 @@ inline auto Hadamard::clone() const -> GatePtr {
 
 inline auto Hadamard::getTypeName() const -> const std::string& {
   return Hadamard::TYPE_NAME;
+}
+
+inline auto Hadamard::getTargetUnitary() const -> const Unitary& {
+  return Hadamard::TARGET_UNITARY;
 }
 
 /**
@@ -230,6 +235,7 @@ class Not : public Gate {
   Not(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
+  auto getTargetUnitary() const -> const Unitary&;
 };
 
 inline auto Not::_createTargetUnitaryList()
@@ -248,6 +254,10 @@ inline auto Not::getTypeName() const -> const std::string& {
   return Not::TYPE_NAME;
 }
 
+inline auto Not::getTargetUnitary() const -> const Unitary& {
+  return Not::TARGET_UNITARY;
+}
+
 /**
  * @brief Z gate class
  * @note gate type is 6
@@ -264,6 +274,7 @@ class Z : public Gate {
   Z(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
+  auto getTargetUnitary() const -> const Unitary&;
 };
 
 inline auto Z::_createTargetUnitaryList()
@@ -282,6 +293,10 @@ inline auto Z::getTypeName() const -> const std::string& {
   return Z::TYPE_NAME;
 }
 
+inline auto Z::getTargetUnitary() const -> const Unitary& {
+  return Z::TARGET_UNITARY;
+}
+
 /**
  * @brief Swap gate class
  * @note gate type is 12
@@ -298,6 +313,7 @@ class Swap : public Gate {
   Swap(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
+  auto getTargetUnitary() const -> const Unitary&;
 };
 
 inline auto Swap::_createTargetUnitaryList()
@@ -321,6 +337,10 @@ inline auto Swap::getTypeName() const -> const std::string& {
   return Swap::TYPE_NAME;
 }
 
+inline auto Swap::getTargetUnitary() const -> const Unitary& {
+  return Swap::TARGET_UNITARY;
+}
+
 class T : public Gate {
  private:
   static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
@@ -333,6 +353,7 @@ class T : public Gate {
   T(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
+  auto getTargetUnitary() const -> const Unitary&;
 };
 
 inline auto T::_createTargetUnitaryList()
@@ -349,6 +370,10 @@ inline auto T::clone() const -> GatePtr {
 
 inline auto T::getTypeName() const -> const std::string& {
   return T::TYPE_NAME;
+}
+
+inline auto T::getTargetUnitary() const -> const Unitary& {
+  return T::TARGET_UNITARY;
 }
 
 struct GateBuilder {
