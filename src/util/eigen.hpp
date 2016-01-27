@@ -17,8 +17,26 @@ using Unitary = SparseMatrix<Complex>;
 
 template <class T>
 auto tensor(const SparseMatrix<T>& lhs, const SparseMatrix<T>& rhs)
+  -> SparseMatrix<T>;
+
+template <class T>
+inline auto createUnitary(const std::initializer_list<T>& list) -> Unitary;
+
+template <>
+inline auto createUnitary<Complex>(const std::initializer_list<Complex>& list)
+  -> Unitary;
+
+// Private methods
+template <class T, class F>
+auto _createUnitary(const std::initializer_list<T>& list, const F& convert)
+  -> Unitary;
+
+// Implementations
+template <class T>
+auto tensor(const SparseMatrix<T>& lhs, const SparseMatrix<T>& rhs)
   -> SparseMatrix<T> {
   SparseMatrix<T> result(lhs.rows() * rhs.rows(), lhs.cols() * rhs.cols());
+
   for(int i = 0; i < lhs.outerSize(); i++) {
     for(typename SparseMatrix<T>::InnerIterator it(lhs, i); it; ++it) {
       int row = it.row() * rhs.rows();
@@ -31,6 +49,7 @@ auto tensor(const SparseMatrix<T>& lhs, const SparseMatrix<T>& rhs)
       }
     }
   }
+
   return std::move(result);
 }
 
@@ -42,18 +61,14 @@ auto _createUnitary(const std::initializer_list<T>& list, const F& convert)
   assert(list.size() == size * size);
 
   Unitary result(size, size);
-  std::vector<Eigen::Triplet<Complex>> triplets;
   int index = 0;
 
   for(const auto& x : list) {
     int row = index % size;
     int col = index / size;
-    auto val = convert(x);
-    triplets.push_back(Eigen::Triplet<Complex>(row, col, val));
+    result.insert(row, col) = convert(x);
     index++;
   }
-
-  result.setFromTriplets(triplets.begin(), triplets.end());
 
   return std::move(result);
 }
