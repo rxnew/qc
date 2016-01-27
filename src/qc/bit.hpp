@@ -8,8 +8,6 @@
 #include <iostream>
 #include <cassert>
 
-#include "container_helper.hpp"
-
 namespace qc {
 using Bitno = unsigned short;
 /**

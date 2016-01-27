@@ -2,25 +2,25 @@
 
 namespace qc {
 auto FileManager::_divideIntoGroups(const std::string& line) -> strings {
-  auto groups = util::StringHelper::split(line, '\\', false);
+  auto groups = util::string::split(line, '\\', false);
   assert(static_cast<int>(groups.size()) == 4);
   return std::move(groups);
 }
 
 auto FileManager::_getGateString(const std::string& str) -> std::string {
-  auto gate_strs = util::StringHelper::split(str);
+  auto gate_strs = util::string::split(str);
   assert(static_cast<int>(gate_strs.size()) == 1);
   return std::move(gate_strs.front());
 }
 
 auto FileManager::_getBitStrings(const std::string& str) -> strings {
-  auto bit_strs = util::StringHelper::split(str);
+  auto bit_strs = util::string::split(str);
   assert(!bit_strs.empty());
   return std::move(bit_strs);
 }
 
 auto FileManager::_getOptionStrings(const std::string& str) -> strings {
-  auto option_strs = util::StringHelper::split(str);
+  auto option_strs = util::string::split(str);
   return std::move(option_strs);
 }
 
@@ -31,13 +31,13 @@ auto FileManager::_getCbit(const std::string& bit_str) -> Cbit {
     bit_no = std::string(bit_no.cbegin() + 1, bit_no.cend());
     polarity = false;
   }
-  assert(util::StringHelper::isNumeric(bit_no));
+  assert(util::string::isNumeric(bit_no));
   return std::move(Cbit(static_cast<Bitno>(std::stoi(bit_no)), polarity));
 }
 
 auto FileManager::_getTbit(const std::string& bit_str) -> Tbit {
   std::string bit_no = std::string(bit_str.cbegin() + 1, bit_str.cend());
-  assert(util::StringHelper::isNumeric(bit_no));
+  assert(util::string::isNumeric(bit_no));
   return std::move(Tbit(static_cast<Bitno>(std::stoi(bit_no))));
 }
 

@@ -6,18 +6,21 @@
 #include "gate.hpp"
 
 namespace qc {
-#define DEF_TYPE_NAME(type) const std::string type::TYPE_NAME = #type
+#define DEF_GATE_MEMBER(type) \
+  const std::string type::TYPE_NAME = #type; \
+  const Unitary type::TARGET_UNITARY = \
+    util::eigen::createUnitary(type::_createTargetUnitaryList());
 
-DEF_TYPE_NAME(Gate);
-DEF_TYPE_NAME(V);
-DEF_TYPE_NAME(VPlus);
-DEF_TYPE_NAME(Hadamard);
-DEF_TYPE_NAME(Not);
-DEF_TYPE_NAME(Z);
-DEF_TYPE_NAME(Swap);
-DEF_TYPE_NAME(T);
+DEF_GATE_MEMBER(Gate);
+DEF_GATE_MEMBER(V);
+DEF_GATE_MEMBER(VPlus);
+DEF_GATE_MEMBER(Hadamard);
+DEF_GATE_MEMBER(Not);
+DEF_GATE_MEMBER(Z);
+DEF_GATE_MEMBER(Swap);
+DEF_GATE_MEMBER(T);
 
-#undef DEF_TYPE_NAME
+#undef DEF_GATE_MEMBER
 
 /**
  * @fn Gate(const Tbit& tbit)
@@ -220,8 +223,8 @@ auto Gate::isAllPositive() const -> bool {
  * @param [in] os output stream object
  */
 auto Gate::print(std::ostream& os) const -> void {
-  auto ordered_cbits = util::ContainerHelper::convert<std::set>(this->cbits_);
-  auto ordered_tbits = util::ContainerHelper::convert<std::set>(this->tbits_);
+  auto ordered_cbits = util::container::convert<std::set>(this->cbits_);
+  auto ordered_tbits = util::container::convert<std::set>(this->tbits_);
 
   os << this->getTypeName() << ' ';
   os << R"(\ )";

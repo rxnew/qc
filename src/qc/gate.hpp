@@ -10,7 +10,9 @@
 #include <memory>
 #include <algorithm>
 
-#include "string_helper.hpp"
+#include "container.hpp"
+#include "string.hpp"
+#include "eigen.hpp"
 
 #include "bit.hpp"
 
@@ -22,11 +24,18 @@ using BitList = std::unordered_set<Bitno>;
 using CbitList = std::unordered_set<Cbit>;
 using TbitList = std::unordered_set<Tbit>;
 
+using util::eigen::Complex;
+using util::eigen::Unitary;
+using util::eigen::operator"" _i;
+
 /**
  * @brief quantum gate class
  * @note this class is abstract
  */
 class Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  protected:
   CbitList cbits_;
   TbitList tbits_;
@@ -46,6 +55,7 @@ class Gate {
 
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   virtual ~Gate();
   auto operator=(const Gate& other) -> Gate&;
@@ -62,6 +72,11 @@ class Gate {
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os) const -> void;
 };
+
+inline auto Gate::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  return {};
+}
 
 inline auto Gate::getCbitList() const -> const CbitList& {
   return this->cbits_;
@@ -84,14 +99,26 @@ inline auto Gate::setTbits(const TbitList& tbits) -> void {
  * @note gate type is 16
  */
 class V : public Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   template <class... Args>
   V(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
+  auto getTargetUnitary() const -> const Unitary&;
 };
+
+inline auto V::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  auto a = 0.5 + 0.5_i;
+  auto b = 0.5 - 0.5_i;
+  return {a, b, b, a};
+}
 
 template <class... Args>
 V::V(Args&&... args) : Gate(args...) {}
@@ -104,19 +131,35 @@ inline auto V::getTypeName() const -> const std::string& {
   return V::TYPE_NAME;
 }
 
+inline auto V::getTargetUnitary() const -> const Unitary& {
+  return V::TARGET_UNITARY;
+}
+
 /**
  * @brief V+ gate class
  * @note gate type is 15
  */
 class VPlus : public Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   template <class... Args>
   VPlus(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
+  auto getTargetUnitary() const -> const Unitary&;
 };
+
+inline auto VPlus::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  auto a = 0.5 + 0.5_i;
+  auto b = 0.5 - 0.5_i;
+  return {b, a, a, b};
+}
 
 template <class... Args>
 VPlus::VPlus(Args&&... args) : Gate(args...) {}
@@ -129,19 +172,33 @@ inline auto VPlus::getTypeName() const -> const std::string& {
   return VPlus::TYPE_NAME;
 }
 
+inline auto VPlus::getTargetUnitary() const -> const Unitary& {
+  return VPlus::TARGET_UNITARY;
+}
+
 /**
  * @brief Hadamard gate class
  * @note gate type is 1
  */
 class Hadamard : public Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   template <class... Args>
   Hadamard(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
 };
+
+inline auto Hadamard::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  auto a = 1.0 / std::sqrt(2) + 0.0_i;
+  return {a, a, a, -a};
+}
 
 template <class... Args>
 Hadamard::Hadamard(Args&&... args) : Gate(args...) {
@@ -162,14 +219,23 @@ inline auto Hadamard::getTypeName() const -> const std::string& {
  * @note gate type is 2
  */
 class Not : public Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   template <class... Args>
   Not(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
 };
+
+inline auto Not::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  return {0, 1, 1, 0};
+}
 
 template <class... Args>
 Not::Not(Args&&... args) : Gate(args...) {}
@@ -187,14 +253,23 @@ inline auto Not::getTypeName() const -> const std::string& {
  * @note gate type is 6
  */
 class Z : public Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   template <class... Args>
   Z(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
 };
+
+inline auto Z::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  return {1, 0, 0, -1};
+}
 
 template <class... Args>
 Z::Z(Args&&... args) : Gate(args...) {}
@@ -212,14 +287,26 @@ inline auto Z::getTypeName() const -> const std::string& {
  * @note gate type is 12
  */
 class Swap : public Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   template <class... Args>
   Swap(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
 };
+
+inline auto Swap::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  return {1, 0, 0, 0, \
+          0, 0, 1, 0, \
+          0, 1, 0, 0, \
+          0, 0, 0, 1};
+}
 
 template <class... Args>
 Swap::Swap(Args&&... args) : Gate(args...) {
@@ -235,14 +322,23 @@ inline auto Swap::getTypeName() const -> const std::string& {
 }
 
 class T : public Gate {
+ private:
+  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+
  public:
   static const std::string TYPE_NAME;
+  static const Unitary TARGET_UNITARY;
 
   template <class... Args>
   T(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
 };
+
+inline auto T::_createTargetUnitaryList()
+  -> std::initializer_list<Complex> {
+  return {1.0 + 0.0_i, 0.0_i, 0.0_i, 1.0_i};
+}
 
 template <class... Args>
 T::T(Args&&... args) : Gate(args...) {}
@@ -262,10 +358,8 @@ struct GateBuilder {
 
 template <class... Args>
 auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
-  using util::StringHelper;
-
 #define IF_GEN(type) \
-  if(StringHelper::equalCaseInsensitive(str, type::TYPE_NAME)) \
+  if(util::string::equalCaseInsensitive(str, type::TYPE_NAME)) \
     return std::move(std::make_shared<type>(args...)) \
 
   IF_GEN(V);
