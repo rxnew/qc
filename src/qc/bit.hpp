@@ -8,8 +8,6 @@
 #include <iostream>
 #include <cassert>
 
-#include "container_helper.hpp"
-
 namespace qc {
 using Bitno = unsigned short;
 /**
@@ -23,10 +21,10 @@ class Cbit {
   Cbit(Bitno bitno);
   Cbit(Bitno bitno, bool polarity);
   Cbit(const Cbit& other);
-  Cbit& operator=(const Cbit& other);
-  bool operator==(const Cbit& other) const;
-  bool operator!=(const Cbit& other) const;
-  bool operator<(const Cbit& other) const;
+  auto operator=(const Cbit& other) -> Cbit&;
+  auto operator==(const Cbit& other) const -> bool;
+  auto operator!=(const Cbit& other) const -> bool;
+  auto operator<(const Cbit& other) const -> bool;
 };
 
 /**
@@ -38,20 +36,20 @@ class Tbit {
   Tbit();
   Tbit(Bitno bitno);
   Tbit(const Tbit& other);
-  Tbit& operator=(const Tbit& other);
-  bool operator==(const Tbit& other) const;
-  bool operator!=(const Tbit& other) const;
-  bool operator<(const Tbit& other) const;
+  auto operator=(const Tbit& other) -> Tbit&;
+  auto operator==(const Tbit& other) const -> bool;
+  auto operator!=(const Tbit& other) const -> bool;
+  auto operator<(const Tbit& other) const -> bool;
 };
 
-std::ostream& operator<<(std::ostream& os, const Cbit& obj);
-std::ostream& operator<<(std::ostream& os, const Tbit& obj);
+auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;
+auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream&;
 }
 
 namespace std {
 template <>
 struct hash<qc::Cbit> {
-  size_t operator()(const qc::Cbit& obj) const {
+  auto operator()(const qc::Cbit& obj) const -> size_t {
     auto bitno = obj.bitno_;
     if(!obj.polarity_) {
       decltype(bitno) mask = 1 << (8 * sizeof(decltype(bitno)) - 1);
@@ -63,7 +61,7 @@ struct hash<qc::Cbit> {
 
 template <>
 struct hash<qc::Tbit> {
-  size_t operator()(const qc::Tbit& obj) const {
+  auto operator()(const qc::Tbit& obj) const -> size_t {
     return hash<unsigned short>()(static_cast<unsigned short>(obj.bitno_));
   }
 };
