@@ -6,21 +6,21 @@
 #include "gate.hpp"
 
 namespace qc {
-#define DEF_GATE_MEMBER(type) \
+#define DEF_GATE_MEMBER_VAR(type) \
   const std::string type::TYPE_NAME = #type; \
   const Unitary type::TARGET_UNITARY = \
     util::eigen::createUnitary(type::_createTargetUnitaryList());
 
-DEF_GATE_MEMBER(Gate);
-DEF_GATE_MEMBER(V);
-DEF_GATE_MEMBER(VPlus);
-DEF_GATE_MEMBER(Hadamard);
-DEF_GATE_MEMBER(Not);
-DEF_GATE_MEMBER(Z);
-DEF_GATE_MEMBER(Swap);
-DEF_GATE_MEMBER(T);
+DEF_GATE_MEMBER_VAR(Gate);
+DEF_GATE_MEMBER_VAR(V);
+DEF_GATE_MEMBER_VAR(VPlus);
+DEF_GATE_MEMBER_VAR(Hadamard);
+DEF_GATE_MEMBER_VAR(Not);
+DEF_GATE_MEMBER_VAR(Z);
+DEF_GATE_MEMBER_VAR(Swap);
+DEF_GATE_MEMBER_VAR(T);
 
-#undef DEF_GATE_MEMBER
+#undef DEF_GATE_MEMBER_VAR
 
 /**
  * @fn Gate(const Tbit& tbit)
