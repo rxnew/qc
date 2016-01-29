@@ -14,7 +14,6 @@ class Circuit;
 
 using CircuitPtr = std::shared_ptr<Circuit>;
 
-using GateList = std::list<GatePtr>;
 using IterGateList = GateList::iterator;
 using CIterGateList = GateList::const_iterator;
 

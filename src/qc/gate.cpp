@@ -8,8 +8,8 @@
 namespace qc {
 #define DEF_GATE_MEMBER_VAR(type) \
   const std::string type::TYPE_NAME = #type; \
-  const Unitary type::TARGET_UNITARY = \
-    util::eigen::createUnitary(type::_createTargetUnitaryList());
+  const Matrix type::TARGET_MATRIX = \
+    util::eigen::create(type::_createTargetMatrixList());
 
 DEF_GATE_MEMBER_VAR(Gate);
 DEF_GATE_MEMBER_VAR(V);
@@ -189,6 +189,32 @@ auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
+auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  auto size = static_cast<size_t>(std::pow(2, bits.size()));
+  auto result = util::eigen::identity(size);
+
+  for(const auto& tbit : this->tbits_) {
+    Matrix op0, op1;
+    for(const auto& bit : bits) {
+      if(this->cbits_.find(Cbit(bit)) != this->cbits_.cend()) {
+        op0 = util::eigen::tensor(op0, util::eigen::braket<0>());
+        op1 = util::eigen::tensor(op1, util::eigen::braket<1>());
+      }
+      else if(bit == tbit.bitno_) {
+        op0 = util::eigen::tensor(op0, util::eigen::identity());
+        op1 = util::eigen::tensor(op1, this->getTargetMatrix());
+      }
+      else {
+        op0 = util::eigen::tensor(op0, util::eigen::identity());
+        op1 = util::eigen::tensor(op1, util::eigen::identity());
+      }
+    }
+    result = result * (op0 + op1);
+  }
+
+  return std::move(result);
+}
+
 /**
  * @fn BitList getUsedBits() const
  * @brief take used bits are control bits and target bits
@@ -239,5 +265,31 @@ auto Gate::print(std::ostream& os) const -> void {
   os << R"(\ )";
   //os << this->getFunction();
   os << std::endl;
+}
+
+auto Swap::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  auto gates = this->decompose();
+  auto size = static_cast<size_t>(std::pow(2, bits.size()));
+  auto result = util::eigen::identity(size);
+  for(const auto& gate : gates) {
+    result = result * gate->getMatrix(bits);
+  }
+  return std::move(result);
+}
+
+auto Swap::decompose() const -> GateList {
+  assert(static_cast<int>(this->tbits_.size()) == 2);
+
+  auto tbits = util::container::convert<std::vector>(this->tbits_);
+  std::vector<CbitList> cbit_lists(2, this->cbits_);
+  cbit_lists[0].insert(Cbit(tbits[0].bitno_));
+  cbit_lists[1].insert(Cbit(tbits[1].bitno_));
+
+  GateList gates;
+  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
+  gates.emplace_back(new Not(cbit_lists[1], tbits[0]));
+  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
+
+  return std::move(gates);
 }
 }

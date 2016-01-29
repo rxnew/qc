@@ -13,25 +13,60 @@ using Eigen::SparseMatrix;
 
 using Real = double;
 using Complex = sprout::complex<Real>;
-using Unitary = SparseMatrix<Complex>;
+using Matrix = SparseMatrix<Complex>;
+
+auto identity(size_t size) -> Matrix;
+
+auto identity() -> Matrix;
+
+template <int>
+auto braket() -> Matrix;
+
+template <>
+auto braket<0>() -> Matrix;
+
+template <>
+auto braket<1>() -> Matrix;
 
 template <class T>
 auto tensor(const SparseMatrix<T>& lhs, const SparseMatrix<T>& rhs)
   -> SparseMatrix<T>;
 
 template <class T>
-inline auto createUnitary(const std::initializer_list<T>& list) -> Unitary;
+inline auto create(const std::initializer_list<T>& list) -> Matrix;
 
 template <>
-inline auto createUnitary<Complex>(const std::initializer_list<Complex>& list)
-  -> Unitary;
+inline auto create<Complex>(const std::initializer_list<Complex>& list)
+  -> Matrix;
 
 // Private methods
 template <class T, class F>
-auto _createUnitary(const std::initializer_list<T>& list, const F& convert)
-  -> Unitary;
+auto _create(const std::initializer_list<T>& list, const F& convert)
+  -> Matrix;
 
 // Implementations
+auto identity(size_t size) -> Matrix {
+  Matrix result(size, size);
+  for(size_t i = 0; i < size; i++) {
+    result.insert(i, i) = Complex(1);
+  }
+  return std::move(result);
+}
+
+inline auto identity() -> Matrix {
+  return identity(2);
+}
+
+template <>
+inline auto braket<0>() -> Matrix {
+  return create({1, 0, 0, 0});
+}
+
+template <>
+inline auto braket<1>() -> Matrix {
+  return create({0, 0, 0, 1});
+}
+
 template <class T>
 auto tensor(const SparseMatrix<T>& lhs, const SparseMatrix<T>& rhs)
   -> SparseMatrix<T> {
@@ -54,13 +89,13 @@ auto tensor(const SparseMatrix<T>& lhs, const SparseMatrix<T>& rhs)
 }
 
 template <class T, class F>
-auto _createUnitary(const std::initializer_list<T>& list, const F& convert)
-  -> Unitary {
+auto _create(const std::initializer_list<T>& list, const F& convert)
+  -> Matrix {
   size_t size = std::sqrt(list.size());
 
   assert(list.size() == size * size);
 
-  Unitary result(size, size);
+  Matrix result(size, size);
   int index = 0;
 
   for(const auto& x : list) {
@@ -76,16 +111,16 @@ auto _createUnitary(const std::initializer_list<T>& list, const F& convert)
 }
 
 template <class T>
-inline auto createUnitary(const std::initializer_list<T>& list) -> Unitary {
+inline auto create(const std::initializer_list<T>& list) -> Matrix {
   auto convert = [](const T& x) {return Complex(static_cast<Real>(x));};
-  return _createUnitary(list, convert);
+  return _create(list, convert);
 }
 
 template <>
-inline auto createUnitary<Complex>(const std::initializer_list<Complex>& list)
-  -> Unitary {
+inline auto create<Complex>(const std::initializer_list<Complex>& list)
+  -> Matrix {
   auto convert = [](const Complex& x) {return x;};
-  return _createUnitary(list, convert);
+  return _create(list, convert);
 }
 }
 }
