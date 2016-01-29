@@ -64,9 +64,11 @@ auto _createUnitary(const std::initializer_list<T>& list, const F& convert)
   int index = 0;
 
   for(const auto& x : list) {
+    auto val = convert(x);
+    if(val == 0.0_i) continue;
     int row = index % size;
     int col = index / size;
-    result.insert(row, col) = convert(x);
+    result.insert(row, col) = val;
     index++;
   }
 
