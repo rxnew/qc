@@ -272,7 +272,7 @@ auto Swap::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
   auto size = static_cast<size_t>(std::pow(2, bits.size()));
   auto result = util::eigen::identity(size);
   for(const auto& gate : gates) {
-    result = result * gate->getMatrix(bits);
+    result = gate->getMatrix(bits) * result;
   }
   return std::move(result);
 }
