@@ -14,7 +14,6 @@ class Circuit;
 
 using CircuitPtr = std::shared_ptr<Circuit>;
 
-using GateList = std::list<GatePtr>;
 using IterGateList = GateList::iterator;
 using CIterGateList = GateList::const_iterator;
 
@@ -50,6 +49,7 @@ class Circuit {
   auto getUsedBits() const -> BitList;
   auto findGate(const GatePtr& gate) const -> CIterGateList;
   auto isExistGate(const GatePtr& gate) const -> bool;
+  auto getMatrix() const -> Matrix;
   auto print(std::ostream& os) const -> void;
 };
 

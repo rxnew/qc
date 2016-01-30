@@ -6,21 +6,21 @@
 #include "gate.hpp"
 
 namespace qc {
-#define DEF_GATE_MEMBER(type) \
+#define DEF_GATE_MEMBER_VAR(type) \
   const std::string type::TYPE_NAME = #type; \
-  const Unitary type::TARGET_UNITARY = \
-    util::eigen::createUnitary(type::_createTargetUnitaryList());
+  const Matrix type::TARGET_MATRIX = \
+    util::eigen::create(type::_createTargetMatrixList());
 
-DEF_GATE_MEMBER(Gate);
-DEF_GATE_MEMBER(V);
-DEF_GATE_MEMBER(VPlus);
-DEF_GATE_MEMBER(Hadamard);
-DEF_GATE_MEMBER(Not);
-DEF_GATE_MEMBER(Z);
-DEF_GATE_MEMBER(Swap);
-DEF_GATE_MEMBER(T);
+DEF_GATE_MEMBER_VAR(Gate);
+DEF_GATE_MEMBER_VAR(V);
+DEF_GATE_MEMBER_VAR(VPlus);
+DEF_GATE_MEMBER_VAR(Hadamard);
+DEF_GATE_MEMBER_VAR(Not);
+DEF_GATE_MEMBER_VAR(Z);
+DEF_GATE_MEMBER_VAR(Swap);
+DEF_GATE_MEMBER_VAR(T);
 
-#undef DEF_GATE_MEMBER
+#undef DEF_GATE_MEMBER_VAR
 
 /**
  * @fn Gate(const Tbit& tbit)
@@ -145,6 +145,58 @@ Gate::Gate(const std::initializer_list<Cbit>& cbits, \
 Gate::Gate(const Gate& other): cbits_(other.cbits_), tbits_(other.tbits_) {
 }
 
+auto Gate::_getPositivePolarityMask() const -> ui {
+  auto ordered_cbits = util::container::convert<std::set>(this->cbits_);
+  ui result = 0;
+  for(const auto& cbit : ordered_cbits) {
+    result <<= 1;
+    if(cbit.polarity_) result++;
+  }
+  return result;
+}
+
+auto Gate::_updatePositiveMatrixies(MatrixMap<Bitno>& matrixies, \
+                                    bool is_cbit, bool is_positive, \
+                                    Bitno bit) const -> void {
+  using util::eigen::ketbra;
+
+  auto c_matrix = is_positive ? ketbra<1>() : ketbra<0>();
+  for(auto& matrix : matrixies) {
+    Matrix tmp;
+    if(bit == matrix.first) tmp = this->getTargetMatrix();
+    else if(is_cbit)        tmp = c_matrix;
+    else                    tmp = util::eigen::identity();
+    matrix.second = util::eigen::tensor(matrix.second, tmp);
+  }
+}
+
+auto Gate::_updateNegativeMatrixies(MatrixMap<ui>& matrixies, \
+                                    bool is_cbit, ui mask) const -> void {
+  using util::eigen::ketbra;
+
+  for(auto& matrix : matrixies) {
+    Matrix tmp;
+    if(is_cbit) tmp = matrix.first & mask ? ketbra<1>() : ketbra<0>();
+    else        tmp = util::eigen::identity();
+    matrix.second = util::eigen::tensor(matrix.second, tmp);
+  }
+}
+
+auto Gate::_getMatrix(const MatrixMap<Bitno>& p_matrixies, \
+                      const MatrixMap<ui>& n_matrixies) const
+  -> Matrix {
+  auto size = p_matrixies.begin()->second.rows();
+  auto result = util::eigen::identity(size);
+  for(const auto& p_matrix : p_matrixies) {
+    auto matrix = p_matrix.second;
+    for(const auto& n_matrix : n_matrixies) {
+      matrix += n_matrix.second;
+    }
+    result = result * matrix;
+  }
+  return std::move(result);
+}
+
 /**
  * @fn virtual ~Gate()
  * @brief virtual destructor
@@ -187,6 +239,30 @@ auto Gate::operator==(const Gate& other) const -> bool {
  */
 auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
+}
+
+auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  ui matrix_count = std::pow(2, this->cbits_.size());
+  ui mask = 1 << (this->cbits_.size() - 1);
+  auto positive = this->_getPositivePolarityMask();
+
+  MatrixMap<Bitno> p_matrixies;
+  for(const auto& tbit : this->tbits_) {
+    p_matrixies[tbit.bitno_] = util::eigen::identity(1);
+  }
+  MatrixMap<ui> n_matrixies;
+  for(ui i = 0; i < matrix_count; i++) {
+    if(i != positive) n_matrixies[i] = util::eigen::identity(1);
+  }
+
+  for(const auto& bit : bits) {
+    auto is_cbit = this->isIncludedInCbitList(bit);
+    this->_updatePositiveMatrixies(p_matrixies, is_cbit, mask & positive, bit);
+    this->_updateNegativeMatrixies(n_matrixies, is_cbit, mask);
+    if(is_cbit) mask >>= 1;
+  }
+
+  return std::move(this->_getMatrix(p_matrixies, n_matrixies));
 }
 
 /**
@@ -239,5 +315,31 @@ auto Gate::print(std::ostream& os) const -> void {
   os << R"(\ )";
   //os << this->getFunction();
   os << std::endl;
+}
+
+auto Swap::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  auto gates = this->decompose();
+  auto size = static_cast<size_t>(std::pow(2, bits.size()));
+  auto result = util::eigen::identity(size);
+  for(const auto& gate : gates) {
+    result = gate->getMatrix(bits) * result;
+  }
+  return std::move(result);
+}
+
+auto Swap::decompose() const -> GateList {
+  assert(static_cast<int>(this->tbits_.size()) == 2);
+
+  auto tbits = util::container::convert<std::vector>(this->tbits_);
+  std::vector<CbitList> cbit_lists(2, this->cbits_);
+  cbit_lists[0].insert(Cbit(tbits[0].bitno_));
+  cbit_lists[1].insert(Cbit(tbits[1].bitno_));
+
+  GateList gates;
+  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
+  gates.emplace_back(new Not(cbit_lists[1], tbits[0]));
+  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
+
+  return std::move(gates);
 }
 }

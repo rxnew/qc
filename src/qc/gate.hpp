@@ -7,6 +7,7 @@
 
 #include <set>
 #include <unordered_set>
+#include <unordered_map>
 #include <memory>
 #include <algorithm>
 
@@ -23,9 +24,10 @@ using GatePtr = std::shared_ptr<Gate>;
 using BitList = std::unordered_set<Bitno>;
 using CbitList = std::unordered_set<Cbit>;
 using TbitList = std::unordered_set<Tbit>;
+using GateList = std::list<GatePtr>;
 
 using util::eigen::Complex;
-using util::eigen::Unitary;
+using util::eigen::Matrix;
 using util::eigen::operator"" _i;
 
 /**
@@ -34,7 +36,11 @@ using util::eigen::operator"" _i;
  */
 class Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  using ui = unsigned int;
+  template <class T>
+  using MatrixMap = std::unordered_map<T, Matrix>;
+
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  protected:
   CbitList cbits_;
@@ -52,10 +58,17 @@ class Gate {
   Gate(const std::initializer_list<Cbit>& cbits, \
        const std::initializer_list<Tbit>& tbits);
   Gate(const Gate& other);
+  auto _getPositivePolarityMask() const -> ui;
+  auto _updatePositiveMatrixies(MatrixMap<Bitno>& matrixies, bool is_cbit, \
+                                bool is_positive, Bitno bit) const -> void;
+  auto _updateNegativeMatrixies(MatrixMap<ui>& matrixies, bool is_cbit, \
+                                ui mask) const -> void;
+  auto _getMatrix(const MatrixMap<Bitno>& p_matrixies, \
+                  const MatrixMap<ui>& n_matrixies) const -> Matrix;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   virtual ~Gate();
   auto operator=(const Gate& other) -> Gate&;
@@ -67,13 +80,18 @@ class Gate {
   auto getTbitList() const -> const TbitList&;
   auto setCbits(const CbitList& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
-  virtual auto getTargetUnitary() const -> const Unitary& = 0;
+  auto isIncludedInCbitList(Bitno bit) const -> bool;
+  auto isIncludedInTbitList(Bitno bit) const -> bool;
+  virtual auto getTargetMatrix() const -> const Matrix& = 0;
+  virtual auto getMatrix(const std::set<Bitno>& bits) const -> Matrix;
+  auto getMatrix(const BitList& bits) const -> Matrix;
+  auto getMatrix() const -> Matrix;
   auto getUsedBits() const -> BitList;
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os) const -> void;
 };
 
-inline auto Gate::_createTargetUnitaryList()
+inline auto Gate::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   return {};
 }
@@ -94,26 +112,44 @@ inline auto Gate::setTbits(const TbitList& tbits) -> void {
   this->tbits_ = tbits;
 }
 
+inline auto Gate::isIncludedInCbitList(Bitno bit) const -> bool {
+  return \
+    this->cbits_.count(Cbit(bit, true)) || \
+    this->cbits_.count(Cbit(bit, false));
+}
+
+inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
+  return this->tbits_.count(Tbit(bit));
+}
+
+inline auto Gate::getMatrix(const BitList& bits) const -> Matrix {
+  return this->getMatrix(util::container::convert<std::set>(bits));
+}
+
+inline auto Gate::getMatrix() const -> Matrix {
+  return this->getMatrix(this->getUsedBits());
+}
+
 /**
  * @brief V gate class
  * @note gate type is 16
  */
 class V : public Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   template <class... Args>
   V(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
-  auto getTargetUnitary() const -> const Unitary&;
+  auto getTargetMatrix() const -> const Matrix&;
 };
 
-inline auto V::_createTargetUnitaryList()
+inline auto V::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   constexpr auto a = 0.5 + 0.5_i;
   constexpr auto b = 0.5 - 0.5_i;
@@ -131,8 +167,8 @@ inline auto V::getTypeName() const -> const std::string& {
   return V::TYPE_NAME;
 }
 
-inline auto V::getTargetUnitary() const -> const Unitary& {
-  return V::TARGET_UNITARY;
+inline auto V::getTargetMatrix() const -> const Matrix& {
+  return V::TARGET_MATRIX;
 }
 
 /**
@@ -141,20 +177,20 @@ inline auto V::getTargetUnitary() const -> const Unitary& {
  */
 class VPlus : public Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   template <class... Args>
   VPlus(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
-  auto getTargetUnitary() const -> const Unitary&;
+  auto getTargetMatrix() const -> const Matrix&;
 };
 
-inline auto VPlus::_createTargetUnitaryList()
+inline auto VPlus::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   constexpr auto a = 0.5 + 0.5_i;
   constexpr auto b = 0.5 - 0.5_i;
@@ -172,8 +208,8 @@ inline auto VPlus::getTypeName() const -> const std::string& {
   return VPlus::TYPE_NAME;
 }
 
-inline auto VPlus::getTargetUnitary() const -> const Unitary& {
-  return VPlus::TARGET_UNITARY;
+inline auto VPlus::getTargetMatrix() const -> const Matrix& {
+  return VPlus::TARGET_MATRIX;
 }
 
 /**
@@ -182,20 +218,20 @@ inline auto VPlus::getTargetUnitary() const -> const Unitary& {
  */
 class Hadamard : public Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   template <class... Args>
   Hadamard(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
-  auto getTargetUnitary() const -> const Unitary&;
+  auto getTargetMatrix() const -> const Matrix&;
 };
 
-inline auto Hadamard::_createTargetUnitaryList()
+inline auto Hadamard::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   constexpr auto a = 1.0 / std::sqrt(2) + 0.0_i;
   return {a, a, a, -a};
@@ -215,8 +251,8 @@ inline auto Hadamard::getTypeName() const -> const std::string& {
   return Hadamard::TYPE_NAME;
 }
 
-inline auto Hadamard::getTargetUnitary() const -> const Unitary& {
-  return Hadamard::TARGET_UNITARY;
+inline auto Hadamard::getTargetMatrix() const -> const Matrix& {
+  return Hadamard::TARGET_MATRIX;
 }
 
 /**
@@ -225,20 +261,20 @@ inline auto Hadamard::getTargetUnitary() const -> const Unitary& {
  */
 class Not : public Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   template <class... Args>
   Not(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
-  auto getTargetUnitary() const -> const Unitary&;
+  auto getTargetMatrix() const -> const Matrix&;
 };
 
-inline auto Not::_createTargetUnitaryList()
+inline auto Not::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   return {0, 1, 1, 0};
 }
@@ -254,8 +290,8 @@ inline auto Not::getTypeName() const -> const std::string& {
   return Not::TYPE_NAME;
 }
 
-inline auto Not::getTargetUnitary() const -> const Unitary& {
-  return Not::TARGET_UNITARY;
+inline auto Not::getTargetMatrix() const -> const Matrix& {
+  return Not::TARGET_MATRIX;
 }
 
 /**
@@ -264,20 +300,20 @@ inline auto Not::getTargetUnitary() const -> const Unitary& {
  */
 class Z : public Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   template <class... Args>
   Z(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
-  auto getTargetUnitary() const -> const Unitary&;
+  auto getTargetMatrix() const -> const Matrix&;
 };
 
-inline auto Z::_createTargetUnitaryList()
+inline auto Z::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   return {1, 0, 0, -1};
 }
@@ -293,8 +329,8 @@ inline auto Z::getTypeName() const -> const std::string& {
   return Z::TYPE_NAME;
 }
 
-inline auto Z::getTargetUnitary() const -> const Unitary& {
-  return Z::TARGET_UNITARY;
+inline auto Z::getTargetMatrix() const -> const Matrix& {
+  return Z::TARGET_MATRIX;
 }
 
 /**
@@ -303,20 +339,22 @@ inline auto Z::getTargetUnitary() const -> const Unitary& {
  */
 class Swap : public Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   template <class... Args>
   Swap(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
-  auto getTargetUnitary() const -> const Unitary&;
+  auto getTargetMatrix() const -> const Matrix&;
+  auto getMatrix(const std::set<Bitno>& bits) const -> Matrix;
+  auto decompose() const -> GateList;
 };
 
-inline auto Swap::_createTargetUnitaryList()
+inline auto Swap::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   return {1, 0, 0, 0, \
           0, 0, 1, 0, \
@@ -337,26 +375,26 @@ inline auto Swap::getTypeName() const -> const std::string& {
   return Swap::TYPE_NAME;
 }
 
-inline auto Swap::getTargetUnitary() const -> const Unitary& {
-  return Swap::TARGET_UNITARY;
+inline auto Swap::getTargetMatrix() const -> const Matrix& {
+  return Swap::TARGET_MATRIX;
 }
 
 class T : public Gate {
  private:
-  static auto _createTargetUnitaryList() -> std::initializer_list<Complex>;
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  public:
   static const std::string TYPE_NAME;
-  static const Unitary TARGET_UNITARY;
+  static const Matrix TARGET_MATRIX;
 
   template <class... Args>
   T(Args&&... args);
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
-  auto getTargetUnitary() const -> const Unitary&;
+  auto getTargetMatrix() const -> const Matrix&;
 };
 
-inline auto T::_createTargetUnitaryList()
+inline auto T::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   return {1.0 + 0.0_i, 0.0_i, 0.0_i, 1.0_i};
 }
@@ -372,8 +410,8 @@ inline auto T::getTypeName() const -> const std::string& {
   return T::TYPE_NAME;
 }
 
-inline auto T::getTargetUnitary() const -> const Unitary& {
-  return T::TARGET_UNITARY;
+inline auto T::getTargetMatrix() const -> const Matrix& {
+  return T::TARGET_MATRIX;
 }
 
 struct GateBuilder {

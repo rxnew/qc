@@ -112,6 +112,16 @@ auto Circuit::getUsedBits() const -> BitList {
   return std::move(used_bits);
 }
 
+auto Circuit::getMatrix() const -> Matrix {
+  auto bits = util::container::convert<std::set>(this->getUsedBits());
+  auto size = static_cast<size_t>(std::pow(2, bits.size()));
+  auto result = util::eigen::identity(size);
+  for(const auto& gate : this->gates_) {
+    result = gate->getMatrix(bits) * result;
+  }
+  return std::move(result);
+}
+
 auto Circuit::print(std::ostream& os) const -> void {
   for(const auto& gate : this->gates_) {
     gate->print(os);
