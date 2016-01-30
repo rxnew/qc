@@ -36,6 +36,10 @@ using util::eigen::operator"" _i;
  */
 class Gate {
  private:
+  using ui = unsigned int;
+  template <class T>
+  using MatrixMap = std::unordered_map<T, Matrix>;
+
   static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
  protected:
@@ -54,11 +58,13 @@ class Gate {
   Gate(const std::initializer_list<Cbit>& cbits, \
        const std::initializer_list<Tbit>& tbits);
   Gate(const Gate& other);
-  auto _getCbitMatrixies(const std::set<Bitno>& bits) const
-    -> std::unordered_map<Bitno, Matrix>;
-  auto _getTbitMatrixies(const std::set<Bitno>& bits) const
-    -> std::unordered_map<Bitno, Matrix>;
-  auto _getPositivePolarityMask() const -> int;
+  auto _getPositivePolarityMask() const -> ui;
+  auto _updatePositiveMatrixies(MatrixMap<Bitno>& matrixies, bool is_cbit, \
+                                bool is_positive, Bitno bit) const -> void;
+  auto _updateNegativeMatrixies(MatrixMap<ui>& matrixies, bool is_cbit, \
+                                ui mask) const -> void;
+  auto _getMatrix(const MatrixMap<Bitno>& p_matrixies, \
+                  const MatrixMap<ui>& n_matrixies) const -> Matrix;
 
  public:
   static const std::string TYPE_NAME;

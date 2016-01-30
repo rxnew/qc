@@ -145,47 +145,56 @@ Gate::Gate(const std::initializer_list<Cbit>& cbits, \
 Gate::Gate(const Gate& other): cbits_(other.cbits_), tbits_(other.tbits_) {
 }
 
-auto Gate::_getCbitMatrixies(const std::set<Bitno>& bits) const
-  -> std::unordered_map<Bitno, Matrix> {
-  using util::eigen::ketbra;
-  using util::eigen::identity;
-
-  std::unordered_map<Bitno, Matrix> matrixies;
-
-  for(const auto& cbit : this->cbits_) {
-    matrixies[cbit.bitno_] = identity(1);
+auto Gate::_getPositivePolarityMask() const -> ui {
+  auto ordered_cbits = util::container::convert<std::set>(this->cbits_);
+  ui result = 0;
+  for(const auto& cbit : ordered_cbits) {
+    result <<= 1;
+    if(cbit.polarity_) result++;
   }
-
-  for(const auto& bit : bits) {
-    for(auto& matrix : matrixies) {
-      auto tmp = bit == matrix.first ? ketbra<0>() : identity();
-      matrix.second = util::eigen::tensor(matrix.second, tmp);
-    }
-  }
-
-  return std::move(matrixies);
+  return result;
 }
 
-auto Gate::_getTbitMatrixies(const std::set<Bitno>& bits) const
-  -> std::unordered_map<Bitno, Matrix> {
+auto Gate::_updatePositiveMatrixies(MatrixMap<Bitno>& matrixies, \
+                                    bool is_cbit, bool is_positive, \
+                                    Bitno bit) const -> void {
   using util::eigen::ketbra;
-  using util::eigen::identity;
 
-  std::unordered_map<Bitno, Matrix> matrixies;
-
-  for(const auto& tbit : this->tbits_) {
-    matrixies[tbit.bitno_] = identity(1);
+  auto c_matrix = is_positive ? ketbra<1>() : ketbra<0>();
+  for(auto& matrix : matrixies) {
+    Matrix tmp;
+    if(bit == matrix.first) tmp = this->getTargetMatrix();
+    else if(is_cbit)        tmp = c_matrix;
+    else                    tmp = util::eigen::identity();
+    matrix.second = util::eigen::tensor(matrix.second, tmp);
   }
+}
 
-  for(const auto& bit : bits) {
-    auto op = this->cbits_.count(Cbit(bit)) ? ketbra<1>() : identity();
-    for(auto& matrix : matrixies) {
-      auto tmp = bit == matrix.first ? this->getTargetMatrix() : op;
-      matrix.second = util::eigen::tensor(matrix.second, tmp);
+auto Gate::_updateNegativeMatrixies(MatrixMap<ui>& matrixies, \
+                                    bool is_cbit, ui mask) const -> void {
+  using util::eigen::ketbra;
+
+  for(auto& matrix : matrixies) {
+    Matrix tmp;
+    if(is_cbit) tmp = matrix.first & mask ? ketbra<1>() : ketbra<0>();
+    else        tmp = util::eigen::identity();
+    matrix.second = util::eigen::tensor(matrix.second, tmp);
+  }
+}
+
+auto Gate::_getMatrix(const MatrixMap<Bitno>& p_matrixies, \
+                      const MatrixMap<ui>& n_matrixies) const
+  -> Matrix {
+  auto size = p_matrixies.begin()->second.rows();
+  auto result = util::eigen::identity(size);
+  for(const auto& p_matrix : p_matrixies) {
+    auto matrix = p_matrix.second;
+    for(const auto& n_matrix : n_matrixies) {
+      matrix += n_matrix.second;
     }
+    result = result * matrix;
   }
-
-  return std::move(matrixies);
+  return std::move(result);
 }
 
 /**
@@ -232,74 +241,28 @@ auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
-auto Gate::_getPositivePolarityMask() const -> int {
-  auto ordered_cbits = util::container::convert<std::set>(this->cbits_);
-  int result = 0;
-  for(const auto& cbit : ordered_cbits) {
-    result <<= 1;
-    if(cbit.polarity_) result++;
-  }
-  return result;
-}
-
 auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
-  using util::eigen::ketbra;
-  using util::eigen::identity;
-  using util::eigen::tensor;
-
-  std::vector<Matrix> negative_matrixies(std::pow(2, this->cbits_.size()), identity(1));
-  std::unordered_map<Bitno, Matrix> positive_matrixies;
-  for(const auto& tbit : this->tbits_) {
-    positive_matrixies[tbit.bitno_] = identity(1);
-  }
-
-  auto size = std::pow(2, bits.size());
+  ui matrix_count = std::pow(2, this->cbits_.size());
+  ui mask = 1 << (this->cbits_.size() - 1);
   auto positive = this->_getPositivePolarityMask();
-  int mask = 1 << (this->cbits_.size() - 1);
+
+  MatrixMap<Bitno> p_matrixies;
+  for(const auto& tbit : this->tbits_) {
+    p_matrixies[tbit.bitno_] = util::eigen::identity(1);
+  }
+  MatrixMap<ui> n_matrixies;
+  for(ui i = 0; i < matrix_count; i++) {
+    if(i != positive) n_matrixies[i] = util::eigen::identity(1);
+  }
 
   for(const auto& bit : bits) {
-    bool cbit_flg = this->isIncludedInCbit(bit);
-
-    for(auto& matrix : positive_matrixies) {
-      Matrix tmp;
-      if(bit == matrix.first) {
-        tmp = this->getTargetMatrix();
-      }
-      else if(cbit_flg) {
-        tmp = positive & mask ? ketbra<1>() : ketbra<0>();
-      }
-      else {
-        tmp = identity();
-      }
-      matrix.second = tensor(matrix.second, tmp);
-    }
-
-    for(int i = 0; i < static_cast<int>(negative_matrixies.size()); i++) {
-      if(i == positive) continue;
-      Matrix tmp;
-      if(cbit_flg) {
-        tmp = i & mask ? ketbra<1>() : ketbra<0>();
-      }
-      else {
-        tmp = identity();
-      }
-      negative_matrixies[i] = tensor(negative_matrixies[i], tmp);
-    }
-
-    if(cbit_flg) mask >>= 1;
+    bool is_cbit = this->isIncludedInCbit(bit);
+    this->_updatePositiveMatrixies(p_matrixies, is_cbit, mask & positive, bit);
+    this->_updateNegativeMatrixies(n_matrixies, is_cbit, mask);
+    if(is_cbit) mask >>= 1;
   }
 
-  auto result = identity(size);
-  for(const auto& positive_matrix : positive_matrixies) {
-    auto matrix = positive_matrix.second;
-    for(int i = 0; i < static_cast<int>(negative_matrixies.size()); i++) {
-      if(i == positive) continue;
-      matrix += negative_matrixies[i];
-    }
-    result = result * matrix;
-  }
-
-  return std::move(result);
+  return std::move(this->_getMatrix(p_matrixies, n_matrixies));
 }
 
 /**
