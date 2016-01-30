@@ -3,6 +3,7 @@
 \#*\#
 *.bak
 .svn/
+gitflow/
 GPATH
 GRTAGS
 GSYMS
