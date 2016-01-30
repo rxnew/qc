@@ -256,7 +256,7 @@ auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
   }
 
   for(const auto& bit : bits) {
-    auto is_cbit = this->isIncludedInCbit(bit);
+    auto is_cbit = this->isIncludedInCbitList(bit);
     this->_updatePositiveMatrixies(p_matrixies, is_cbit, mask & positive, bit);
     this->_updateNegativeMatrixies(n_matrixies, is_cbit, mask);
     if(is_cbit) mask >>= 1;

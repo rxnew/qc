@@ -80,8 +80,8 @@ class Gate {
   auto getTbitList() const -> const TbitList&;
   auto setCbits(const CbitList& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
-  auto isIncludedInCbit(Bitno bit) const -> bool;
-  auto isIncludedInTbit(Bitno bit) const -> bool;
+  auto isIncludedInCbitList(Bitno bit) const -> bool;
+  auto isIncludedInTbitList(Bitno bit) const -> bool;
   virtual auto getTargetMatrix() const -> const Matrix& = 0;
   virtual auto getMatrix(const std::set<Bitno>& bits) const -> Matrix;
   auto getMatrix(const BitList& bits) const -> Matrix;
@@ -112,13 +112,13 @@ inline auto Gate::setTbits(const TbitList& tbits) -> void {
   this->tbits_ = tbits;
 }
 
-inline auto Gate::isIncludedInCbit(Bitno bit) const -> bool {
+inline auto Gate::isIncludedInCbitList(Bitno bit) const -> bool {
   return \
     this->cbits_.count(Cbit(bit, true)) || \
     this->cbits_.count(Cbit(bit, false));
 }
 
-inline auto Gate::isIncludedInTbit(Bitno bit) const -> bool {
+inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
   return this->tbits_.count(Tbit(bit));
 }
 
