@@ -7,6 +7,7 @@
 
 #include <set>
 #include <unordered_set>
+#include <unordered_map>
 #include <memory>
 #include <algorithm>
 
@@ -53,6 +54,11 @@ class Gate {
   Gate(const std::initializer_list<Cbit>& cbits, \
        const std::initializer_list<Tbit>& tbits);
   Gate(const Gate& other);
+  auto _getCbitMatrixies(const std::set<Bitno>& bits) const
+    -> std::unordered_map<Bitno, Matrix>;
+  auto _getTbitMatrixies(const std::set<Bitno>& bits) const
+    -> std::unordered_map<Bitno, Matrix>;
+  auto _getPositivePolarityMask() const -> int;
 
  public:
   static const std::string TYPE_NAME;
@@ -68,6 +74,8 @@ class Gate {
   auto getTbitList() const -> const TbitList&;
   auto setCbits(const CbitList& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
+  auto isIncludedInCbit(Bitno bit) const -> bool;
+  auto isIncludedInTbit(Bitno bit) const -> bool;
   virtual auto getTargetMatrix() const -> const Matrix& = 0;
   virtual auto getMatrix(const std::set<Bitno>& bits) const -> Matrix;
   auto getMatrix(const BitList& bits) const -> Matrix;
@@ -96,6 +104,16 @@ inline auto Gate::setCbits(const CbitList& cbits) -> void {
 
 inline auto Gate::setTbits(const TbitList& tbits) -> void {
   this->tbits_ = tbits;
+}
+
+inline auto Gate::isIncludedInCbit(Bitno bit) const -> bool {
+  return \
+    this->cbits_.count(Cbit(bit, true)) || \
+    this->cbits_.count(Cbit(bit, false));
+}
+
+inline auto Gate::isIncludedInTbit(Bitno bit) const -> bool {
+  return this->tbits_.count(Tbit(bit));
 }
 
 inline auto Gate::getMatrix(const BitList& bits) const -> Matrix {

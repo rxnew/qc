@@ -20,13 +20,13 @@ auto identity(size_t size) -> Matrix;
 auto identity() -> Matrix;
 
 template <int>
-auto braket() -> Matrix;
+auto ketbra() -> Matrix;
 
 template <>
-auto braket<0>() -> Matrix;
+auto ketbra<0>() -> Matrix;
 
 template <>
-auto braket<1>() -> Matrix;
+auto ketbra<1>() -> Matrix;
 
 template <class T>
 auto tensor(const SparseMatrix<T>& lhs, const SparseMatrix<T>& rhs)
@@ -45,25 +45,17 @@ auto _create(const std::initializer_list<T>& list, const F& convert)
   -> Matrix;
 
 // Implementations
-auto identity(size_t size) -> Matrix {
-  Matrix result(size, size);
-  for(size_t i = 0; i < size; i++) {
-    result.insert(i, i) = Complex(1);
-  }
-  return std::move(result);
-}
-
 inline auto identity() -> Matrix {
   return identity(2);
 }
 
 template <>
-inline auto braket<0>() -> Matrix {
+inline auto ketbra<0>() -> Matrix {
   return create({1, 0, 0, 0});
 }
 
 template <>
-inline auto braket<1>() -> Matrix {
+inline auto ketbra<1>() -> Matrix {
   return create({0, 0, 0, 1});
 }
 
@@ -100,10 +92,11 @@ auto _create(const std::initializer_list<T>& list, const F& convert)
 
   for(const auto& x : list) {
     auto val = convert(x);
-    if(val == 0.0_i) continue;
-    int row = index % size;
-    int col = index / size;
-    result.insert(row, col) = val;
+    if(val != 0.0_i) {
+      int row = index % size;
+      int col = index / size;
+      result.insert(row, col) = val;
+    }
     index++;
   }
 

@@ -145,6 +145,49 @@ Gate::Gate(const std::initializer_list<Cbit>& cbits, \
 Gate::Gate(const Gate& other): cbits_(other.cbits_), tbits_(other.tbits_) {
 }
 
+auto Gate::_getCbitMatrixies(const std::set<Bitno>& bits) const
+  -> std::unordered_map<Bitno, Matrix> {
+  using util::eigen::ketbra;
+  using util::eigen::identity;
+
+  std::unordered_map<Bitno, Matrix> matrixies;
+
+  for(const auto& cbit : this->cbits_) {
+    matrixies[cbit.bitno_] = identity(1);
+  }
+
+  for(const auto& bit : bits) {
+    for(auto& matrix : matrixies) {
+      auto tmp = bit == matrix.first ? ketbra<0>() : identity();
+      matrix.second = util::eigen::tensor(matrix.second, tmp);
+    }
+  }
+
+  return std::move(matrixies);
+}
+
+auto Gate::_getTbitMatrixies(const std::set<Bitno>& bits) const
+  -> std::unordered_map<Bitno, Matrix> {
+  using util::eigen::ketbra;
+  using util::eigen::identity;
+
+  std::unordered_map<Bitno, Matrix> matrixies;
+
+  for(const auto& tbit : this->tbits_) {
+    matrixies[tbit.bitno_] = identity(1);
+  }
+
+  for(const auto& bit : bits) {
+    auto op = this->cbits_.count(Cbit(bit)) ? ketbra<1>() : identity();
+    for(auto& matrix : matrixies) {
+      auto tmp = bit == matrix.first ? this->getTargetMatrix() : op;
+      matrix.second = util::eigen::tensor(matrix.second, tmp);
+    }
+  }
+
+  return std::move(matrixies);
+}
+
 /**
  * @fn virtual ~Gate()
  * @brief virtual destructor
@@ -189,27 +232,71 @@ auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
-auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
-  auto size = static_cast<size_t>(std::pow(2, bits.size()));
-  auto result = util::eigen::identity(size);
+auto Gate::_getPositivePolarityMask() const -> int {
+  auto ordered_cbits = util::container::convert<std::set>(this->cbits_);
+  int result = 0;
+  for(const auto& cbit : ordered_cbits) {
+    result <<= 1;
+    if(cbit.polarity_) result++;
+  }
+  return result;
+}
 
+auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  using util::eigen::ketbra;
+  using util::eigen::identity;
+  using util::eigen::tensor;
+
+  std::vector<Matrix> negative_matrixies(std::pow(2, this->cbits_.size()), identity(1));
+  std::unordered_map<Bitno, Matrix> positive_matrixies;
   for(const auto& tbit : this->tbits_) {
-    Matrix op0, op1;
-    for(const auto& bit : bits) {
-      if(this->cbits_.find(Cbit(bit)) != this->cbits_.cend()) {
-        op0 = util::eigen::tensor(op0, util::eigen::braket<0>());
-        op1 = util::eigen::tensor(op1, util::eigen::braket<1>());
+    positive_matrixies[tbit.bitno_] = identity(1);
+  }
+
+  auto size = std::pow(2, bits.size());
+  auto positive = this->_getPositivePolarityMask();
+  int mask = 1 << (this->cbits_.size() - 1);
+
+  for(const auto& bit : bits) {
+    bool cbit_flg = this->isIncludedInCbit(bit);
+
+    for(auto& matrix : positive_matrixies) {
+      Matrix tmp;
+      if(bit == matrix.first) {
+        tmp = this->getTargetMatrix();
       }
-      else if(bit == tbit.bitno_) {
-        op0 = util::eigen::tensor(op0, util::eigen::identity());
-        op1 = util::eigen::tensor(op1, this->getTargetMatrix());
+      else if(cbit_flg) {
+        tmp = positive & mask ? ketbra<1>() : ketbra<0>();
       }
       else {
-        op0 = util::eigen::tensor(op0, util::eigen::identity());
-        op1 = util::eigen::tensor(op1, util::eigen::identity());
+        tmp = identity();
       }
+      matrix.second = tensor(matrix.second, tmp);
     }
-    result = result * (op0 + op1);
+
+    for(int i = 0; i < static_cast<int>(negative_matrixies.size()); i++) {
+      if(i == positive) continue;
+      Matrix tmp;
+      if(cbit_flg) {
+        tmp = i & mask ? ketbra<1>() : ketbra<0>();
+      }
+      else {
+        tmp = identity();
+      }
+      negative_matrixies[i] = tensor(negative_matrixies[i], tmp);
+    }
+
+    if(cbit_flg) mask >>= 1;
+  }
+
+  auto result = identity(size);
+  for(const auto& positive_matrix : positive_matrixies) {
+    auto matrix = positive_matrix.second;
+    for(int i = 0; i < static_cast<int>(negative_matrixies.size()); i++) {
+      if(i == positive) continue;
+      matrix += negative_matrixies[i];
+    }
+    result = result * matrix;
   }
 
   return std::move(result);
