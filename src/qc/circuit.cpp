@@ -81,23 +81,6 @@ inline auto Circuit::append(const Circuit& circ) -> void {
   }
 }
 
-auto Circuit::getAnyGate(int n) const -> GatePtr {
-  int cnt = 0;
-  for(const auto& gate_i : this->gates_) {
-    if(cnt++ == n) return gate_i;
-  }
-  return GatePtr(nullptr);
-}
-
-auto Circuit::getGateIndex(const GatePtr& gate) const -> int {
-  int cnt = 0;
-  for(const auto& gate_i : this->gates_) {
-    if(gate_i == gate) return cnt;
-    cnt++;
-  }
-  return -1;
-}
-
 /**
  * @fn BitList getUsedBits() const
  * @brief take used bits of all included parallel quanutm gates

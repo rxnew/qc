@@ -43,12 +43,10 @@ class Circuit {
   auto append(const Circuit& circ) -> void;
   auto getFirstGate() const -> GatePtr;
   auto getLastGate() const -> GatePtr;
-  auto getAnyGate(int n) const -> GatePtr;
-  auto getGateIndex(const GatePtr& gate) const -> int;
   auto getGateCount() const -> int;
   auto getUsedBits() const -> BitList;
   auto findGate(const GatePtr& gate) const -> CIterGateList;
-  auto isExistGate(const GatePtr& gate) const -> bool;
+  auto isIncluded(const GatePtr& gate) const -> bool;
   auto computeMatrix() const -> Matrix;
   auto print(std::ostream& os) const -> void;
 };
@@ -114,7 +112,7 @@ inline auto Circuit::findGate(const GatePtr& gate) const -> CIterGateList {
   return std::find(this->gates_.cbegin(), this->gates_.cend(), gate);
 }
 
-inline auto Circuit::isExistGate(const GatePtr& gate) const -> bool {
+inline auto Circuit::isIncluded(const GatePtr& gate) const -> bool {
   return this->gates_.cend() != this->findGate(gate);
 }
 }
