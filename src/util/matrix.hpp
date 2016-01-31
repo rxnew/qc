@@ -7,7 +7,7 @@
 #include "Eigen/Sparse"
 
 namespace util {
-namespace eigen {
+namespace matrix {
 using sprout::udl::complex::operator"" _i;
 using Eigen::SparseMatrix;
 

@@ -6,7 +6,7 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(TARGET qc)
 
-set(UTIL_FILE_LIST container string eigen)
+set(UTIL_FILE_LIST container string matrix)
 
 set(QC_FILE_LIST bit gate circuit file_manager)
 

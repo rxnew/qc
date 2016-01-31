@@ -13,7 +13,7 @@
 
 #include "container.hpp"
 #include "string.hpp"
-#include "eigen.hpp"
+#include "matrix.hpp"
 
 #include "bit.hpp"
 
@@ -26,9 +26,9 @@ using CbitList = std::unordered_set<Cbit>;
 using TbitList = std::unordered_set<Tbit>;
 using GateList = std::list<GatePtr>;
 
-using util::eigen::Complex;
-using util::eigen::Matrix;
-using util::eigen::operator"" _i;
+using util::matrix::Complex;
+using util::matrix::Matrix;
+using util::matrix::operator"" _i;
 
 /**
  * @brief quantum gate class

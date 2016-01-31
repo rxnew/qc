@@ -9,7 +9,7 @@ namespace qc {
 #define DEF_GATE_MEMBER_VAR(type) \
   const std::string type::TYPE_NAME = #type; \
   const Matrix type::TARGET_MATRIX = \
-    util::eigen::create(type::_createTargetMatrixList());
+    util::matrix::create(type::_createTargetMatrixList());
 
 DEF_GATE_MEMBER_VAR(Gate);
 DEF_GATE_MEMBER_VAR(V);
@@ -158,27 +158,27 @@ auto Gate::_getPositivePolarityMask() const -> ui {
 auto Gate::_updatePositiveMatrixies(MatrixMap<Bitno>& matrixies, \
                                     bool is_cbit, bool is_positive, \
                                     Bitno bit) const -> void {
-  using util::eigen::ketbra;
+  using util::matrix::ketbra;
 
   auto c_matrix = is_positive ? ketbra<1>() : ketbra<0>();
   for(auto& matrix : matrixies) {
     Matrix tmp;
     if(bit == matrix.first) tmp = this->getTargetMatrix();
     else if(is_cbit)        tmp = c_matrix;
-    else                    tmp = util::eigen::identity();
-    matrix.second = util::eigen::tensor(matrix.second, tmp);
+    else                    tmp = util::matrix::identity();
+    matrix.second = util::matrix::tensor(matrix.second, tmp);
   }
 }
 
 auto Gate::_updateNegativeMatrixies(MatrixMap<ui>& matrixies, \
                                     bool is_cbit, ui mask) const -> void {
-  using util::eigen::ketbra;
+  using util::matrix::ketbra;
 
   for(auto& matrix : matrixies) {
     Matrix tmp;
     if(is_cbit) tmp = matrix.first & mask ? ketbra<1>() : ketbra<0>();
-    else        tmp = util::eigen::identity();
-    matrix.second = util::eigen::tensor(matrix.second, tmp);
+    else        tmp = util::matrix::identity();
+    matrix.second = util::matrix::tensor(matrix.second, tmp);
   }
 }
 
@@ -186,7 +186,7 @@ auto Gate::_getMatrix(const MatrixMap<Bitno>& p_matrixies, \
                       const MatrixMap<ui>& n_matrixies) const
   -> Matrix {
   auto size = p_matrixies.begin()->second.rows();
-  auto result = util::eigen::identity(size);
+  auto result = util::matrix::identity(size);
   for(const auto& p_matrix : p_matrixies) {
     auto matrix = p_matrix.second;
     for(const auto& n_matrix : n_matrixies) {
@@ -248,11 +248,11 @@ auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
 
   MatrixMap<Bitno> p_matrixies;
   for(const auto& tbit : this->tbits_) {
-    p_matrixies[tbit.bitno_] = util::eigen::identity(1);
+    p_matrixies[tbit.bitno_] = util::matrix::identity(1);
   }
   MatrixMap<ui> n_matrixies;
   for(ui i = 0; i < matrix_count; i++) {
-    if(i != positive) n_matrixies[i] = util::eigen::identity(1);
+    if(i != positive) n_matrixies[i] = util::matrix::identity(1);
   }
 
   for(const auto& bit : bits) {
@@ -320,7 +320,7 @@ auto Gate::print(std::ostream& os) const -> void {
 auto Swap::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
   auto gates = this->decompose();
   auto size = static_cast<size_t>(std::pow(2, bits.size()));
-  auto result = util::eigen::identity(size);
+  auto result = util::matrix::identity(size);
   for(const auto& gate : gates) {
     result = gate->getMatrix(bits) * result;
   }
