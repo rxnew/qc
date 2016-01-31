@@ -112,12 +112,12 @@ auto Circuit::getUsedBits() const -> BitList {
   return std::move(used_bits);
 }
 
-auto Circuit::getMatrix() const -> Matrix {
+auto Circuit::computeMatrix() const -> Matrix {
   auto bits = util::container::convert<std::set>(this->getUsedBits());
   auto size = static_cast<size_t>(std::pow(2, bits.size()));
   auto result = util::matrix::identity(size);
   for(const auto& gate : this->gates_) {
-    result = gate->getMatrix(bits) * result;
+    result = gate->computeMatrix(bits) * result;
   }
   return std::move(result);
 }

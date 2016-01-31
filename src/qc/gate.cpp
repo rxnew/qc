@@ -182,8 +182,8 @@ auto Gate::_updateNegativeMatrixies(MatrixMap<ui>& matrixies, \
   }
 }
 
-auto Gate::_getMatrix(const MatrixMap<Bitno>& p_matrixies, \
-                      const MatrixMap<ui>& n_matrixies) const
+auto Gate::_computeMatrix(const MatrixMap<Bitno>& p_matrixies, \
+                          const MatrixMap<ui>& n_matrixies) const
   -> Matrix {
   auto size = p_matrixies.begin()->second.rows();
   auto result = util::matrix::identity(size);
@@ -241,7 +241,7 @@ auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
-auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
+auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
   ui matrix_count = std::pow(2, this->cbits_.size());
   ui mask = 1 << (this->cbits_.size() - 1);
   auto positive = this->_getPositivePolarityMask();
@@ -262,7 +262,7 @@ auto Gate::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
     if(is_cbit) mask >>= 1;
   }
 
-  return std::move(this->_getMatrix(p_matrixies, n_matrixies));
+  return std::move(this->_computeMatrix(p_matrixies, n_matrixies));
 }
 
 /**
@@ -317,12 +317,12 @@ auto Gate::print(std::ostream& os) const -> void {
   os << std::endl;
 }
 
-auto Swap::getMatrix(const std::set<Bitno>& bits) const -> Matrix {
+auto Swap::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
   auto gates = this->decompose();
   auto size = static_cast<size_t>(std::pow(2, bits.size()));
   auto result = util::matrix::identity(size);
   for(const auto& gate : gates) {
-    result = gate->getMatrix(bits) * result;
+    result = gate->computeMatrix(bits) * result;
   }
   return std::move(result);
 }

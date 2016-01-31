@@ -63,8 +63,8 @@ class Gate {
                                 bool is_positive, Bitno bit) const -> void;
   auto _updateNegativeMatrixies(MatrixMap<ui>& matrixies, bool is_cbit, \
                                 ui mask) const -> void;
-  auto _getMatrix(const MatrixMap<Bitno>& p_matrixies, \
-                  const MatrixMap<ui>& n_matrixies) const -> Matrix;
+  auto _computeMatrix(const MatrixMap<Bitno>& p_matrixies, \
+                      const MatrixMap<ui>& n_matrixies) const -> Matrix;
 
  public:
   static const std::string TYPE_NAME;
@@ -83,9 +83,9 @@ class Gate {
   auto isIncludedInCbitList(Bitno bit) const -> bool;
   auto isIncludedInTbitList(Bitno bit) const -> bool;
   virtual auto getTargetMatrix() const -> const Matrix& = 0;
-  virtual auto getMatrix(const std::set<Bitno>& bits) const -> Matrix;
-  auto getMatrix(const BitList& bits) const -> Matrix;
-  auto getMatrix() const -> Matrix;
+  virtual auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
+  auto computeMatrix(const BitList& bits) const -> Matrix;
+  auto computeMatrix() const -> Matrix;
   auto getUsedBits() const -> BitList;
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os) const -> void;
@@ -122,12 +122,12 @@ inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
   return this->tbits_.count(Tbit(bit));
 }
 
-inline auto Gate::getMatrix(const BitList& bits) const -> Matrix {
-  return this->getMatrix(util::container::convert<std::set>(bits));
+inline auto Gate::computeMatrix(const BitList& bits) const -> Matrix {
+  return this->computeMatrix(util::container::convert<std::set>(bits));
 }
 
-inline auto Gate::getMatrix() const -> Matrix {
-  return this->getMatrix(this->getUsedBits());
+inline auto Gate::computeMatrix() const -> Matrix {
+  return this->computeMatrix(this->getUsedBits());
 }
 
 /**
@@ -350,7 +350,7 @@ class Swap : public Gate {
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
-  auto getMatrix(const std::set<Bitno>& bits) const -> Matrix;
+  auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
   auto decompose() const -> GateList;
 };
 
