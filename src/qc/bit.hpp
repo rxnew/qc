@@ -21,7 +21,6 @@ class Cbit {
   Cbit(Bitno bitno);
   Cbit(Bitno bitno, bool polarity);
   Cbit(const Cbit& other);
-  Cbit(Cbit&& other) noexcept = default;
   auto operator=(const Cbit& other) -> Cbit&;
   auto operator==(const Cbit& other) const -> bool;
   auto operator!=(const Cbit& other) const -> bool;
@@ -37,7 +36,6 @@ class Tbit {
   Tbit();
   Tbit(Bitno bitno);
   Tbit(const Tbit& other);
-  Tbit(Tbit&& other) noexcept = default;
   auto operator=(const Tbit& other) -> Tbit&;
   auto operator==(const Tbit& other) const -> bool;
   auto operator!=(const Tbit& other) const -> bool;

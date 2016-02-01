@@ -142,11 +142,7 @@ Gate::Gate(const std::initializer_list<Cbit>& cbits, \
  * @brief copy constructor
  * @param [in] other another Gate class object
  */
-Gate::Gate(const Gate& other) : cbits_(other.cbits_), tbits_(other.tbits_) {
-}
-
-Gate::Gate(Gate&& other) noexcept :
-cbits_(std::move(other.cbits_)), tbits_(std::move(other.tbits_)) {
+Gate::Gate(const Gate& other): cbits_(other.cbits_), tbits_(other.tbits_) {
 }
 
 auto Gate::_getPositivePolarityMask() const -> ui {
@@ -340,9 +336,9 @@ auto Swap::decompose() const -> GateList {
   cbit_lists[1].insert(Cbit(tbits[1].bitno_));
 
   GateList gates;
-  gates.push_back(Not(cbit_lists[0], tbits[1]));
-  gates.push_back(Not(cbit_lists[1], tbits[0]));
-  gates.push_back(Not(cbit_lists[0], tbits[1]));
+  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
+  gates.emplace_back(new Not(cbit_lists[1], tbits[0]));
+  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
 
   return std::move(gates);
 }
