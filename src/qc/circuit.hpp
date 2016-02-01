@@ -12,10 +12,10 @@
 namespace qc {
 class Circuit;
 
-using CircuitPtr = std::shared_ptr<Circuit>;
-
+using GateList = std::list<GatePtr>;
 using IterGateList = GateList::iterator;
 using CIterGateList = GateList::const_iterator;
+using CircuitPtr = std::shared_ptr<Circuit>;
 
 /**
  * @brief quantum circuit class
@@ -36,13 +36,9 @@ class Circuit {
   auto addGate(Gate*&& gate) -> void;
   auto insertGate(CIterGateList pos, const GatePtr& gate) -> CIterGateList;
   auto insertGate(CIterGateList pos, Gate*&& gate) -> CIterGateList;
-  auto insertGate(const GatePtr& pos, const GatePtr& gate) -> void;
-  auto insertGate(const GatePtr& pos, Gate*&& gate) -> void;
-  auto eraseGate(const GatePtr& gate) -> void;
   auto eraseGate(CIterGateList pos) -> CIterGateList;
+  auto removeGate(const GatePtr& gate) -> void;
   auto append(const Circuit& circ) -> void;
-  auto getFirstGate() const -> GatePtr;
-  auto getLastGate() const -> GatePtr;
   auto getGateCount() const -> int;
   auto getUsedBits() const -> BitList;
   auto findGate(const GatePtr& gate) const -> CIterGateList;
@@ -79,29 +75,12 @@ inline auto Circuit::insertGate(CIterGateList pos, Gate*&& gate)
   return this->gates_.emplace(pos, gate);
 }
 
-inline auto Circuit::insertGate(const GatePtr& pos, const GatePtr& gate)
-  -> void {
-  insertGate(this->findGate(pos), gate);
-}
-
-inline auto Circuit::insertGate(const GatePtr& pos, Gate*&& gate) -> void {
-  insertGate(this->findGate(pos), std::move(gate));
-}
-
-inline auto Circuit::eraseGate(const GatePtr& gate) -> void {
-  this->gates_.remove(gate);
-}
-
 inline auto Circuit::eraseGate(CIterGateList pos) -> CIterGateList {
   return this->gates_.erase(pos);
 }
 
-inline auto Circuit::getFirstGate() const -> GatePtr {
-  return this->gates_.front();
-}
-
-inline auto Circuit::getLastGate() const -> GatePtr {
-  return this->gates_.back();
+inline auto Circuit::removeGate(const GatePtr& gate) -> void {
+  this->gates_.remove(gate);
 }
 
 inline auto Circuit::getGateCount() const -> int {

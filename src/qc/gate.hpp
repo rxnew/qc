@@ -20,11 +20,10 @@
 namespace qc {
 class Gate;
 
-using GatePtr = std::shared_ptr<Gate>;
 using BitList = std::unordered_set<Bitno>;
 using CbitList = std::unordered_set<Cbit>;
 using TbitList = std::unordered_set<Tbit>;
-using GateList = std::list<GatePtr>;
+using GatePtr = std::shared_ptr<Gate>;
 
 using util::matrix::Complex;
 using util::matrix::Matrix;
@@ -58,13 +57,14 @@ class Gate {
   Gate(const std::initializer_list<Cbit>& cbits, \
        const std::initializer_list<Tbit>& tbits);
   Gate(const Gate& other);
-  auto _getPositivePolarityMask() const -> ui;
-  auto _updatePositiveMatrixies(MatrixMap<Bitno>& matrixies, bool is_cbit, \
-                                bool is_positive, Bitno bit) const -> void;
-  auto _updateNegativeMatrixies(MatrixMap<ui>& matrixies, bool is_cbit, \
+  Gate(Gate&&) noexcept = default;
+  auto _computeActivePolarityPattern() const -> ui;
+  auto _updateActiveMatrixMap(MatrixMap<Bitno>& matrix_map, bool is_cbit, \
+                              bool is_positive, Bitno bit) const -> void;
+  auto _updateInactiveMatrixMap(MatrixMap<ui>& matrix_map, bool is_cbit, \
                                 ui mask) const -> void;
-  auto _computeMatrix(const MatrixMap<Bitno>& p_matrixies, \
-                      const MatrixMap<ui>& n_matrixies) const -> Matrix;
+  auto _computeMatrix(const MatrixMap<Bitno>& active_matrix_map, \
+                      const MatrixMap<ui>& inactive_matrix_map) const -> Matrix;
 
  public:
   static const std::string TYPE_NAME;
@@ -351,7 +351,7 @@ class Swap : public Gate {
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
   auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
-  auto decompose() const -> GateList;
+  auto decompose() const -> std::list<GatePtr>;
 };
 
 inline auto Swap::_createTargetMatrixList()
