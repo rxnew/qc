@@ -15,7 +15,6 @@ class Circuit;
 using GateList = std::list<GatePtr>;
 using IterGateList = GateList::iterator;
 using CIterGateList = GateList::const_iterator;
-using CircuitPtr = std::shared_ptr<Circuit>;
 
 /**
  * @brief quantum circuit class
@@ -32,6 +31,8 @@ class Circuit {
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
   auto getGateList() const -> const GateList&;
+  auto getGateListBegin() -> IterGateList;
+  auto getGateListEnd() -> IterGateList;
   auto addGate(GatePtr&& gate) -> void;
   auto addGate(GatePtr& gate) -> void;
   auto addGate(Gate*&& gate) -> void;
@@ -39,7 +40,11 @@ class Circuit {
   auto insertGate(CIterGateList pos, GatePtr& gate) -> IterGateList;
   auto insertGate(CIterGateList pos, Gate*&& gate) -> IterGateList;
   auto eraseGate(CIterGateList pos) -> IterGateList;
+  auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
+  auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;
+  auto swapGate(IterGateList pos1, IterGateList pos2) -> void;
   auto append(const Circuit& circ) -> void;
+  auto clear() -> void;
   auto getGateCount() const -> size_t;
   auto collectUsedBits() const -> BitList;
   auto computeMatrix() const -> Matrix;
@@ -58,6 +63,14 @@ inline auto Circuit::operator!=(const Circuit& other) const -> bool {
 
 inline auto Circuit::getGateList() const -> const GateList& {
   return this->gates_;
+}
+
+inline auto Circuit::getGateListBegin() -> IterGateList {
+  return this->gates_.begin();
+}
+
+inline auto Circuit::getGateListEnd() -> IterGateList {
+  return this->gates_.end();
 }
 
 inline auto Circuit::addGate(GatePtr&& gate) -> void {
@@ -93,6 +106,27 @@ inline auto Circuit::insertGate(CIterGateList pos, Gate*&& gate)
 
 inline auto Circuit::eraseGate(CIterGateList pos) -> IterGateList {
   return this->gates_.erase(pos);
+}
+
+inline auto Circuit::eraseGate(IterGateList pos, GatePtr& gate)
+  -> IterGateList {
+  gate = std::move(*pos);
+  return this->eraseGate(pos);
+}
+
+inline auto Circuit::eraseGate(CIterGateList first, CIterGateList last)
+  -> IterGateList {
+  return this->gates_.erase(first, last);
+}
+
+inline auto Circuit::swapGate(IterGateList pos1, IterGateList pos2) -> void {
+  assert(pos1 != this->gates_.end());
+  assert(pos2 != this->gates_.end());
+  std::swap(*pos1, *pos2);
+}
+
+inline auto Circuit::clear() -> void {
+  this->gates_.clear();
 }
 
 inline auto Circuit::getGateCount() const -> size_t {
