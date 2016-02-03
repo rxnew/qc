@@ -7,14 +7,6 @@
 
 namespace qc {
 /**
- * @fn Circuit()
- * @brief constructor
- * @detail empty Circuit class constructor
- */
-Circuit::Circuit() {
-}
-
-/**
  * @fn Circuit(const Circuit& other)
  * @brief copy constructor
  * @param [in] other another Circuit class object
@@ -23,14 +15,6 @@ Circuit::Circuit(const Circuit& other) {
   for(const auto& gate : other.gates_) {
     this->addGate(gate->clone());
   }
-}
-
-/**
- * @fn ~Circuit()
- * @brief destructor
- */
-Circuit::~Circuit() {
-  this->gates_.clear();
 }
 
 /**

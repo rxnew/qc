@@ -16,6 +16,7 @@ using Bitno = unsigned short;
 class Bit {
  public:
   Bitno bitno_;
+
   Bit();
   Bit(Bitno bitno);
   Bit(const Bit& other);
@@ -26,6 +27,18 @@ class Bit {
   auto operator!=(const Bit& other) const -> bool;
   auto operator<(const Bit& other) const -> bool;
 };
+
+inline Bit::Bit() : bitno_(0) {
+}
+
+inline Bit::Bit(Bitno bitno) : bitno_(bitno) {
+}
+
+inline Bit::Bit(const Bit& other) : bitno_(other.bitno_) {
+}
+
+inline Bit::~Bit() {
+}
 
 inline auto Bit::operator=(const Bit& other) -> Bit& {
   this->bitno_ = other.bitno_;
@@ -62,7 +75,21 @@ class Cbit : public Bit {
 };
 
 template <class... Args>
-Cbit::Cbit(Args&&... args) : Bit(args...), polarity_(true) {
+inline Cbit::Cbit(Args&&... args) : Bit(args...), polarity_(true) {
+}
+
+inline Cbit::Cbit(Bitno bitno, bool polarity)
+  : Bit(bitno), polarity_(polarity) {
+}
+
+inline Cbit::Cbit(const Cbit& other)
+  : Bit(other.bitno_), polarity_(other.polarity_) {
+}
+
+inline auto Cbit::operator=(const Cbit& other) -> Cbit& {
+  this->bitno_ = other.bitno_;
+  this->polarity_ = other.polarity_;
+  return *this;
 }
 
 inline auto Cbit::operator==(const Cbit& other) const -> bool {
@@ -71,6 +98,11 @@ inline auto Cbit::operator==(const Cbit& other) const -> bool {
 
 inline auto Cbit::operator!=(const Cbit& other) const -> bool {
   return !(*this == other);
+}
+
+inline auto Cbit::operator<(const Cbit& other) const -> bool {
+  return this->bitno_ == other.bitno_ ? \
+    !this->polarity_ : Bit::operator<(other);
 }
 
 /**
@@ -83,7 +115,7 @@ class Tbit : public Bit {
 };
 
 template <class... Args>
-Tbit::Tbit(Args&&... args) : Bit(args...) {
+inline Tbit::Tbit(Args&&... args) : Bit(args...) {
 }
 
 auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;

@@ -46,6 +46,12 @@ class Circuit {
   auto print(std::ostream& os = std::cout) const -> void;
 };
 
+inline Circuit::Circuit() {
+}
+
+inline Circuit::~Circuit() {
+}
+
 inline auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
 }

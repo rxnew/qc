@@ -49,13 +49,9 @@ class Gate {
   Gate(const Tbit& tbit1, const Tbit& tbit2);
   Gate(const Cbit& cbit, const Tbit& tbit);
   Gate(const Cbit& cbit, const TbitList& tbits);
-  Gate(const Cbit& cbit, const std::initializer_list<Tbit>& tbits);
   Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   Gate(const CbitList& cbits, const Tbit& tbit);
-  Gate(const std::initializer_list<Cbit>& cbits, const Tbit& tbit);
   Gate(const CbitList& cbits, const TbitList& tbits);
-  Gate(const std::initializer_list<Cbit>& cbits, \
-       const std::initializer_list<Tbit>& tbits);
   Gate(const Gate& other);
   Gate(Gate&&) noexcept = default;
   auto _computeActivePolarityPattern() const -> ui;
@@ -94,6 +90,36 @@ class Gate {
 inline auto Gate::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   return {};
+}
+
+inline Gate::Gate(const Tbit& tbit) : tbits_{tbit} {
+}
+
+inline Gate::Gate(const Tbit& tbit1, const Tbit& tbit2) : tbits_{tbit1, tbit2} {
+}
+
+inline Gate::Gate(const Cbit& cbit, const Tbit& tbit)
+  : cbits_{cbit}, tbits_{tbit} {
+}
+
+inline Gate::Gate(const Cbit& cbit, const TbitList& tbits)
+  : cbits_{cbit}, tbits_(tbits) {
+}
+
+inline Gate::Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit)
+  : cbits_{cbit1, cbit2}, tbits_{tbit} {
+}
+
+inline Gate::Gate(const CbitList& cbits, const Tbit& tbit) :
+  cbits_(cbits), tbits_{tbit} {
+}
+
+inline Gate::Gate(const CbitList& cbits, const TbitList& tbits) :
+  cbits_(cbits), tbits_(tbits) {
+}
+
+inline Gate::Gate(const Gate& other)
+  : cbits_(other.cbits_), tbits_(other.tbits_) {
 }
 
 inline auto Gate::operator!=(const Gate& other) const -> bool {
