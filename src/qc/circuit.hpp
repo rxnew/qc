@@ -27,7 +27,7 @@ class Circuit {
  public:
   Circuit();
   Circuit(const Circuit& other);
-  virtual ~Circuit();
+  ~Circuit();
   auto operator=(const Circuit& other) -> Circuit&;
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
