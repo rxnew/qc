@@ -27,6 +27,7 @@ using GatePtr = std::unique_ptr<Gate>;
 
 using util::matrix::Complex;
 using util::matrix::Matrix;
+using util::matrix::Vector;
 using util::matrix::operator"" _i;
 
 /**
