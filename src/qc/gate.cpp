@@ -268,11 +268,11 @@ auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
 }
 
 /**
- * @fn BitList getUsedBits() const
+ * @fn BitList collectUsedBits() const
  * @brief take used bits are control bits and target bits
  * @return used bits
  */
-auto Gate::getUsedBits() const -> BitList {
+auto Gate::collectUsedBits() const -> BitList {
   BitList used_bits;
   for(const auto& cbit : this->cbits_) {
     used_bits.insert(cbit.bitno_);

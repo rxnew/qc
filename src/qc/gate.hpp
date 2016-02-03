@@ -23,7 +23,7 @@ class Gate;
 using BitList = std::unordered_set<Bitno>;
 using CbitList = std::unordered_set<Cbit>;
 using TbitList = std::unordered_set<Tbit>;
-using GatePtr = std::shared_ptr<Gate>;
+using GatePtr = std::unique_ptr<Gate>;
 
 using util::matrix::Complex;
 using util::matrix::Matrix;
@@ -86,9 +86,9 @@ class Gate {
   virtual auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
   auto computeMatrix(const BitList& bits) const -> Matrix;
   auto computeMatrix() const -> Matrix;
-  auto getUsedBits() const -> BitList;
+  auto collectUsedBits() const -> BitList;
   auto isAllPositive() const -> bool;
-  auto print(std::ostream& os) const -> void;
+  auto print(std::ostream& os = std::cout) const -> void;
 };
 
 inline auto Gate::_createTargetMatrixList()
@@ -127,7 +127,7 @@ inline auto Gate::computeMatrix(const BitList& bits) const -> Matrix {
 }
 
 inline auto Gate::computeMatrix() const -> Matrix {
-  return this->computeMatrix(this->getUsedBits());
+  return this->computeMatrix(this->collectUsedBits());
 }
 
 /**
@@ -160,7 +160,7 @@ template <class... Args>
 V::V(Args&&... args) : Gate(args...) {}
 
 inline auto V::clone() const -> GatePtr {
-  return std::move(std::make_shared<V>(*this));
+  return GatePtr(new V(*this));
 }
 
 inline auto V::getTypeName() const -> const std::string& {
@@ -201,7 +201,7 @@ template <class... Args>
 VPlus::VPlus(Args&&... args) : Gate(args...) {}
 
 inline auto VPlus::clone() const -> GatePtr {
-  return std::move(std::make_shared<VPlus>(*this));
+  return GatePtr(new VPlus(*this));
 }
 
 inline auto VPlus::getTypeName() const -> const std::string& {
@@ -244,7 +244,7 @@ Hadamard::Hadamard(Args&&... args) : Gate(args...) {
 }
 
 inline auto Hadamard::clone() const -> GatePtr {
-  return std::move(std::make_shared<Hadamard>(*this));
+  return GatePtr(new Hadamard(*this));
 }
 
 inline auto Hadamard::getTypeName() const -> const std::string& {
@@ -283,7 +283,7 @@ template <class... Args>
 Not::Not(Args&&... args) : Gate(args...) {}
 
 inline auto Not::clone() const -> GatePtr {
-  return std::move(std::make_shared<Not>(*this));
+  return GatePtr(new Not(*this));
 }
 
 inline auto Not::getTypeName() const -> const std::string& {
@@ -322,7 +322,7 @@ template <class... Args>
 Z::Z(Args&&... args) : Gate(args...) {}
 
 inline auto Z::clone() const -> GatePtr {
-  return std::move(std::make_shared<Z>(*this));
+  return GatePtr(new Z(*this));
 }
 
 inline auto Z::getTypeName() const -> const std::string& {
@@ -368,7 +368,7 @@ Swap::Swap(Args&&... args) : Gate(args...) {
 }
 
 inline auto Swap::clone() const -> GatePtr {
-  return std::move(std::make_shared<Swap>(*this));
+  return GatePtr(new Swap(*this));
 }
 
 inline auto Swap::getTypeName() const -> const std::string& {
@@ -403,7 +403,7 @@ template <class... Args>
 T::T(Args&&... args) : Gate(args...) {}
 
 inline auto T::clone() const -> GatePtr {
-  return std::move(std::make_shared<T>(*this));
+  return GatePtr(new T(*this));
 }
 
 inline auto T::getTypeName() const -> const std::string& {
@@ -423,7 +423,7 @@ template <class... Args>
 auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
 #define IF_GEN(type) \
   if(util::string::equalCaseInsensitive(str, type::TYPE_NAME)) \
-    return std::move(std::make_shared<type>(args...)) \
+    return GatePtr(new type(args...))
 
   IF_GEN(V);
   IF_GEN(VPlus);
@@ -435,7 +435,7 @@ auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
 
 #undef IF_GEN
 
-  return std::move(GatePtr(nullptr));
+  return GatePtr(nullptr);
 }
 }
 

@@ -82,25 +82,26 @@ inline auto Circuit::append(const Circuit& circ) -> void {
 }
 
 /**
- * @fn BitList getUsedBits() const
+ * @fn BitList collectUsedBits() const
  * @brief take used bits of all included parallel quanutm gates
  * @return used bits
  */
-auto Circuit::getUsedBits() const -> BitList {
+auto Circuit::collectUsedBits() const -> BitList {
   BitList used_bits;
   for(const auto& gate : this->gates_) {
-    auto gate_used_bits = gate->getUsedBits();
+    auto gate_used_bits = gate->collectUsedBits();
     used_bits.insert(gate_used_bits.cbegin(), gate_used_bits.cend());
   }
   return std::move(used_bits);
 }
 
 auto Circuit::computeMatrix() const -> Matrix {
-  auto bits = util::container::convert<std::set>(this->getUsedBits());
-  auto size = static_cast<size_t>(std::pow(2, bits.size()));
+  auto ordered_bits = \
+    util::container::convert<std::set>(this->collectUsedBits());
+  auto size = static_cast<size_t>(std::pow(2, ordered_bits.size()));
   auto result = util::matrix::identity(size);
   for(const auto& gate : this->gates_) {
-    result = gate->computeMatrix(bits) * result;
+    result = gate->computeMatrix(ordered_bits) * result;
   }
   return std::move(result);
 }
