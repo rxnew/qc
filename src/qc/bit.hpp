@@ -28,6 +28,36 @@ class Bit {
   auto operator<(const Bit& other) const -> bool;
 };
 
+/**
+ * @brief control bit class
+ */
+class Cbit : public Bit {
+ public:
+  bool polarity_;
+  template <class... Args>
+  Cbit(Args&&... args);
+  Cbit(Bitno bitno, bool polarity);
+  Cbit(const Cbit& other);
+  Cbit(Cbit&&) noexcept = default;
+  auto operator=(const Cbit& other) -> Cbit&;
+  auto operator==(const Cbit& other) const -> bool;
+  auto operator!=(const Cbit& other) const -> bool;
+  auto operator<(const Cbit& other) const -> bool;
+};
+
+/**
+ * @brief target bit class
+ */
+class Tbit : public Bit {
+ public:
+  template <class... Args>
+  Tbit(Args&&... args);
+};
+
+auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;
+auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream&;
+
+// implementation
 inline Bit::Bit() : bitno_(0) {
 }
 
@@ -56,23 +86,6 @@ inline auto Bit::operator!=(const Bit& other) const -> bool {
 inline auto Bit::operator<(const Bit& other) const -> bool {
   return this->bitno_ < other.bitno_;
 }
-
-/**
- * @brief control bit class
- */
-class Cbit : public Bit {
- public:
-  bool polarity_;
-  template <class... Args>
-  Cbit(Args&&... args);
-  Cbit(Bitno bitno, bool polarity);
-  Cbit(const Cbit& other);
-  Cbit(Cbit&&) noexcept = default;
-  auto operator=(const Cbit& other) -> Cbit&;
-  auto operator==(const Cbit& other) const -> bool;
-  auto operator!=(const Cbit& other) const -> bool;
-  auto operator<(const Cbit& other) const -> bool;
-};
 
 template <class... Args>
 inline Cbit::Cbit(Args&&... args) : Bit(args...), polarity_(true) {
@@ -105,21 +118,9 @@ inline auto Cbit::operator<(const Cbit& other) const -> bool {
     !this->polarity_ : Bit::operator<(other);
 }
 
-/**
- * @brief target bit class
- */
-class Tbit : public Bit {
- public:
-  template <class... Args>
-  Tbit(Args&&... args);
-};
-
 template <class... Args>
 inline Tbit::Tbit(Args&&... args) : Bit(args...) {
 }
-
-auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;
-auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream&;
 
 inline auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream& {
   char sign = obj.polarity_ ? '\0' : '!';

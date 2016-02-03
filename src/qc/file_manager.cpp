@@ -45,12 +45,8 @@ auto FileManager::_getBits(const strings& bit_strs) -> BitListTuple {
   CbitList cbits;
   TbitList tbits;
   for(const auto& bit_str : bit_strs) {
-    if(bit_str[0] == 'T') {
-      tbits.insert(FileManager::_getTbit(bit_str));
-    }
-    else {
-      cbits.insert(FileManager::_getCbit(bit_str));
-    }
+    if(bit_str[0] == 'T') tbits.insert(FileManager::_getTbit(bit_str));
+    else                  cbits.insert(FileManager::_getCbit(bit_str));
   }
   return std::move(std::make_tuple(cbits, tbits));
 }
