@@ -142,7 +142,7 @@ Gate::Gate(const std::initializer_list<Cbit>& cbits, \
  * @brief copy constructor
  * @param [in] other another Gate class object
  */
-Gate::Gate(const Gate& other): cbits_(other.cbits_), tbits_(other.tbits_) {
+Gate::Gate(const Gate& other) : cbits_(other.cbits_), tbits_(other.tbits_) {
 }
 
 auto Gate::_computeActivePolarityPattern() const -> ui {
@@ -229,16 +229,6 @@ auto Gate::operator==(const Gate& other) const -> bool {
   if(this->cbits_ != other.cbits_) return false;
   if(this->tbits_ != other.tbits_) return false;
   return true;
-}
-
-/**
- * @fn bool operator!=(const Gate& other) const
- * @brief nonequivalence operator
- * @param [in] other another Gate class object
- * @return true or false
- */
-auto Gate::operator!=(const Gate& other) const -> bool {
-  return !(*this == other);
 }
 
 auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {

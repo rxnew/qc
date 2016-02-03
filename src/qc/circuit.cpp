@@ -65,17 +65,7 @@ auto Circuit::operator==(const Circuit& other) const -> bool {
   return true;
 }
 
-/**
- * @fn bool operator!=(const Circuit& other) const
- * @brief nonequivalence operator
- * @param [in] other another Circuit class object
- * @return true or false
- */
-auto Circuit::operator!=(const Circuit& other) const -> bool {
-  return !(*this == other);
-}
-
-inline auto Circuit::append(const Circuit& circ) -> void {
+auto Circuit::append(const Circuit& circ) -> void {
   for(const auto& gate : circ.gates_) {
     this->addGate(gate->clone());
   }

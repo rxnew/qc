@@ -96,6 +96,10 @@ inline auto Gate::_createTargetMatrixList()
   return {};
 }
 
+inline auto Gate::operator!=(const Gate& other) const -> bool {
+  return !(*this == other);
+}
+
 inline auto Gate::getCbitList() const -> const CbitList& {
   return this->cbits_;
 }
