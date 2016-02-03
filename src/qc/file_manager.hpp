@@ -12,6 +12,7 @@ class FileManager {
  private:
   using strings = std::vector<std::string>;
 
+  FileManager() = delete;
   static auto _divideIntoGroups(const std::string& line) -> strings;
   static auto _getGateString(const std::string& str) -> std::string;
   static auto _getBitStrings(const std::string& str) -> strings;
