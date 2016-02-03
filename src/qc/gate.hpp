@@ -469,25 +469,3 @@ auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
   return GatePtr(nullptr);
 }
 }
-
-namespace std {
-template <class T>
-struct hash<unordered_set<T>> {
-  auto operator()(const unordered_set<T>& obj) const -> size_t {
-    size_t hash_value;
-    for(const auto& elem : obj) {
-      hash_value ^= hash<T>()(elem) + 0x9e3779b9 + (hash_value << 6);
-    }
-    return hash_value;
-  }
-};
-
-template <>
-struct hash<qc::Gate> {
-  auto operator()(const qc::Gate& obj) const -> size_t {
-    auto cbit_hash = hash<unordered_set<qc::Cbit>>()(obj.getCbitList());
-    auto tbit_hash = hash<unordered_set<qc::Tbit>>()(obj.getTbitList());
-    return cbit_hash ^ tbit_hash;
-  }
-};
-}
