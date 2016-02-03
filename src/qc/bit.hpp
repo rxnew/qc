@@ -11,14 +11,47 @@
 namespace qc {
 using Bitno = unsigned short;
 /**
- * @brief control bit class
+ * @brief target bit class
  */
-class Cbit {
+class Bit {
  public:
   Bitno bitno_;
+  Bit();
+  Bit(Bitno bitno);
+  Bit(const Bit& other);
+  Bit(Bit&&) noexcept = default;
+  virtual ~Bit();
+  auto operator=(const Bit& other) -> Bit&;
+  auto operator==(const Bit& other) const -> bool;
+  auto operator!=(const Bit& other) const -> bool;
+  auto operator<(const Bit& other) const -> bool;
+};
+
+inline auto Bit::operator=(const Bit& other) -> Bit& {
+  this->bitno_ = other.bitno_;
+  return *this;
+}
+
+inline auto Bit::operator==(const Bit& other) const -> bool{
+  return this->bitno_ == other.bitno_;
+}
+
+inline auto Bit::operator!=(const Bit& other) const -> bool {
+  return !(*this == other);
+}
+
+inline auto Bit::operator<(const Bit& other) const -> bool {
+  return this->bitno_ < other.bitno_;
+}
+
+/**
+ * @brief control bit class
+ */
+class Cbit : public Bit {
+ public:
   bool polarity_;
-  Cbit();
-  Cbit(Bitno bitno);
+  template <class... Args>
+  Cbit(Args&&... args);
   Cbit(Bitno bitno, bool polarity);
   Cbit(const Cbit& other);
   Cbit(Cbit&&) noexcept = default;
@@ -28,8 +61,12 @@ class Cbit {
   auto operator<(const Cbit& other) const -> bool;
 };
 
+template <class... Args>
+Cbit::Cbit(Args&&... args) : Bit(args...), polarity_(true) {
+}
+
 inline auto Cbit::operator==(const Cbit& other) const -> bool {
-  return this->bitno_ == other.bitno_ && this->polarity_ == other.polarity_;
+  return Bit::operator==(other) && this->polarity_ == other.polarity_;
 }
 
 inline auto Cbit::operator!=(const Cbit& other) const -> bool {
@@ -39,34 +76,14 @@ inline auto Cbit::operator!=(const Cbit& other) const -> bool {
 /**
  * @brief target bit class
  */
-class Tbit {
+class Tbit : public Bit {
  public:
-  Bitno bitno_;
-  Tbit();
-  Tbit(Bitno bitno);
-  Tbit(const Tbit& other);
-  Tbit(Tbit&&) noexcept = default;
-  auto operator=(const Tbit& other) -> Tbit&;
-  auto operator==(const Tbit& other) const -> bool;
-  auto operator!=(const Tbit& other) const -> bool;
-  auto operator<(const Tbit& other) const -> bool;
+  template <class... Args>
+  Tbit(Args&&... args);
 };
 
-inline auto Tbit::operator=(const Tbit& other) -> Tbit& {
-  this->bitno_ = other.bitno_;
-  return *this;
-}
-
-inline auto Tbit::operator==(const Tbit& other) const -> bool{
-  return this->bitno_ == other.bitno_;
-}
-
-inline auto Tbit::operator!=(const Tbit& other) const -> bool {
-  return !(*this == other);
-}
-
-inline auto Tbit::operator<(const Tbit& other) const -> bool {
-  return this->bitno_ < other.bitno_;
+template <class... Args>
+Tbit::Tbit(Args&&... args) : Bit(args...) {
 }
 
 auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;

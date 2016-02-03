@@ -6,16 +6,26 @@
 #include "bit.hpp"
 
 namespace qc {
-Cbit::Cbit() : bitno_(0) {
+Bit::Bit() : bitno_(0) {
 }
 
 /**
- * @fn Cbit(Bitno bitno)
+ * @fn Bit(Bitno bitno)
  * @brief constructor
  * @param [in] bitno bit number
- * @detail polarity is positive
  */
-Cbit::Cbit(Bitno bitno) : bitno_(bitno), polarity_(true) {
+Bit::Bit(Bitno bitno) : bitno_(bitno) {
+}
+
+/**
+ * @fn Bit(const Bit& other)
+ * @brief copy constructor
+ * @param [in] other another Bit class object
+ */
+Bit::Bit(const Bit& other) : bitno_(other.bitno_) {
+}
+
+Bit::~Bit() {
 }
 
 /**
@@ -25,7 +35,7 @@ Cbit::Cbit(Bitno bitno) : bitno_(bitno), polarity_(true) {
  * @param [in] polarity polarity
  * @detail polarity is true for positive control, false for negative control
  */
-Cbit::Cbit(Bitno bitno, bool polarity) : bitno_(bitno), polarity_(polarity) {
+Cbit::Cbit(Bitno bitno, bool polarity) : Bit(bitno), polarity_(polarity) {
 }
 
 /**
@@ -34,7 +44,7 @@ Cbit::Cbit(Bitno bitno, bool polarity) : bitno_(bitno), polarity_(polarity) {
  * @param [in] other another Cbit class object
  */
 Cbit::Cbit(const Cbit& other)
-  : bitno_(other.bitno_), polarity_(other.polarity_) {
+  : Bit(other.bitno_), polarity_(other.polarity_) {
 }
 
 /**
@@ -57,27 +67,8 @@ auto Cbit::operator=(const Cbit& other) -> Cbit& {
  */
 auto Cbit::operator<(const Cbit& other) const -> bool {
   if(this->bitno_ != other.bitno_) {
-    return this->bitno_ < other.bitno_;
+    return Bit::operator<(other);
   }
   return !this->polarity_;
-}
-
-Tbit::Tbit() : bitno_(0) {
-}
-
-/**
- * @fn Tbit(Bitno bitno)
- * @brief constructor
- * @param [in] bitno bit number
- */
-Tbit::Tbit(Bitno bitno) : bitno_(bitno) {
-}
-
-/**
- * @fn Tbit(const Tbit& other)
- * @brief copy constructor
- * @param [in] other another Tbit class object
- */
-Tbit::Tbit(const Tbit& other) : bitno_(other.bitno_) {
 }
 }
