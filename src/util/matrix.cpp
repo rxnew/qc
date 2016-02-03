@@ -1,7 +1,7 @@
-#include "eigen.hpp"
+#include "matrix.hpp"
 
 namespace util {
-namespace eigen {
+namespace matrix {
 auto identity(size_t size) -> Matrix {
   Matrix result(size, size);
   for(size_t i = 0; i < size; i++) {

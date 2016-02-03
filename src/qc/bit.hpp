@@ -11,16 +11,34 @@
 namespace qc {
 using Bitno = unsigned short;
 /**
- * @brief control bit class
+ * @brief target bit class
  */
-class Cbit {
+class Bit {
  public:
   Bitno bitno_;
+
+  Bit();
+  Bit(Bitno bitno);
+  Bit(const Bit& other);
+  Bit(Bit&&) noexcept = default;
+  virtual ~Bit();
+  auto operator=(const Bit& other) -> Bit&;
+  auto operator==(const Bit& other) const -> bool;
+  auto operator!=(const Bit& other) const -> bool;
+  auto operator<(const Bit& other) const -> bool;
+};
+
+/**
+ * @brief control bit class
+ */
+class Cbit : public Bit {
+ public:
   bool polarity_;
-  Cbit();
-  Cbit(Bitno bitno);
+  template <class... Args>
+  Cbit(Args&&... args);
   Cbit(Bitno bitno, bool polarity);
   Cbit(const Cbit& other);
+  Cbit(Cbit&&) noexcept = default;
   auto operator=(const Cbit& other) -> Cbit&;
   auto operator==(const Cbit& other) const -> bool;
   auto operator!=(const Cbit& other) const -> bool;
@@ -30,20 +48,88 @@ class Cbit {
 /**
  * @brief target bit class
  */
-class Tbit {
+class Tbit : public Bit {
  public:
-  Bitno bitno_;
-  Tbit();
-  Tbit(Bitno bitno);
-  Tbit(const Tbit& other);
-  auto operator=(const Tbit& other) -> Tbit&;
-  auto operator==(const Tbit& other) const -> bool;
-  auto operator!=(const Tbit& other) const -> bool;
-  auto operator<(const Tbit& other) const -> bool;
+  template <class... Args>
+  Tbit(Args&&... args);
 };
 
 auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;
 auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream&;
+
+// implementation
+inline Bit::Bit() : bitno_(0) {
+}
+
+inline Bit::Bit(Bitno bitno) : bitno_(bitno) {
+}
+
+inline Bit::Bit(const Bit& other) : bitno_(other.bitno_) {
+}
+
+inline Bit::~Bit() {
+}
+
+inline auto Bit::operator=(const Bit& other) -> Bit& {
+  this->bitno_ = other.bitno_;
+  return *this;
+}
+
+inline auto Bit::operator==(const Bit& other) const -> bool{
+  return this->bitno_ == other.bitno_;
+}
+
+inline auto Bit::operator!=(const Bit& other) const -> bool {
+  return !(*this == other);
+}
+
+inline auto Bit::operator<(const Bit& other) const -> bool {
+  return this->bitno_ < other.bitno_;
+}
+
+template <class... Args>
+inline Cbit::Cbit(Args&&... args) : Bit(args...), polarity_(true) {
+}
+
+inline Cbit::Cbit(Bitno bitno, bool polarity)
+  : Bit(bitno), polarity_(polarity) {
+}
+
+inline Cbit::Cbit(const Cbit& other)
+  : Bit(other.bitno_), polarity_(other.polarity_) {
+}
+
+inline auto Cbit::operator=(const Cbit& other) -> Cbit& {
+  this->bitno_ = other.bitno_;
+  this->polarity_ = other.polarity_;
+  return *this;
+}
+
+inline auto Cbit::operator==(const Cbit& other) const -> bool {
+  return Bit::operator==(other) && this->polarity_ == other.polarity_;
+}
+
+inline auto Cbit::operator!=(const Cbit& other) const -> bool {
+  return !(*this == other);
+}
+
+inline auto Cbit::operator<(const Cbit& other) const -> bool {
+  return this->bitno_ == other.bitno_ ? \
+    !this->polarity_ : Bit::operator<(other);
+}
+
+template <class... Args>
+inline Tbit::Tbit(Args&&... args) : Bit(args...) {
+}
+
+inline auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream& {
+  char sign = obj.polarity_ ? '\0' : '!';
+  return os << sign << obj.bitno_;
+}
+
+inline auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream& {
+  return os << 'T' << obj.bitno_;
+}
 }
 
 namespace std {

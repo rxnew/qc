@@ -12,8 +12,7 @@
 namespace qc {
 class Circuit;
 
-using CircuitPtr = std::shared_ptr<Circuit>;
-
+using GateList = std::list<GatePtr>;
 using IterGateList = GateList::iterator;
 using CIterGateList = GateList::const_iterator;
 
@@ -27,39 +26,65 @@ class Circuit {
  public:
   Circuit();
   Circuit(const Circuit& other);
-  virtual ~Circuit();
+  ~Circuit();
   auto operator=(const Circuit& other) -> Circuit&;
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
   auto getGateList() const -> const GateList&;
-  auto addGate(const GatePtr& gate) -> void;
+  auto getGateListBegin() -> IterGateList;
+  auto getGateListEnd() -> IterGateList;
+  auto addGate(GatePtr&& gate) -> void;
+  auto addGate(GatePtr& gate) -> void;
   auto addGate(Gate*&& gate) -> void;
-  auto insertGate(CIterGateList pos, const GatePtr& gate) -> CIterGateList;
-  auto insertGate(CIterGateList pos, Gate*&& gate) -> CIterGateList;
-  auto insertGate(const GatePtr& pos, const GatePtr& gate) -> void;
-  auto insertGate(const GatePtr& pos, Gate*&& gate) -> void;
-  auto eraseGate(const GatePtr& gate) -> void;
-  auto eraseGate(CIterGateList pos) -> CIterGateList;
+  auto insertGate(CIterGateList pos, GatePtr&& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, GatePtr& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, Gate*&& gate) -> IterGateList;
+  auto eraseGate(CIterGateList pos) -> IterGateList;
+  auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
+  auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;
+  auto swapGate(IterGateList pos1, IterGateList pos2) -> void;
   auto append(const Circuit& circ) -> void;
-  auto getFirstGate() const -> GatePtr;
-  auto getLastGate() const -> GatePtr;
-  auto getAnyGate(int n) const -> GatePtr;
-  auto getGateIndex(const GatePtr& gate) const -> int;
-  auto getGateCount() const -> int;
-  auto getUsedBits() const -> BitList;
-  auto findGate(const GatePtr& gate) const -> CIterGateList;
-  auto isExistGate(const GatePtr& gate) const -> bool;
-  auto getMatrix() const -> Matrix;
-  auto print(std::ostream& os) const -> void;
+  auto clear() -> void;
+  auto getGateCount() const -> size_t;
+  auto collectUsedBits() const -> BitList;
+  auto computeMatrix() const -> Matrix;
+  auto computeZeroVectorMap() const -> std::map<Bitno, Vector>;
+  auto simulate() const -> Vector;
+  auto simulate(const Vector& input) const -> Vector;
+  auto simulate(std::vector<Complex>&& input) const -> Vector;
+  auto simulate(const std::map<Bitno, Vector>& input) const -> Vector;
+  auto print(std::ostream& os = std::cout) const -> void;
 };
+
+inline Circuit::Circuit() {
+}
+
+inline Circuit::~Circuit() {
+}
+
+inline auto Circuit::operator!=(const Circuit& other) const -> bool {
+  return !(*this == other);
+}
 
 inline auto Circuit::getGateList() const -> const GateList& {
   return this->gates_;
 }
 
-inline auto Circuit::addGate(const GatePtr& gate) -> void {
+inline auto Circuit::getGateListBegin() -> IterGateList {
+  return this->gates_.begin();
+}
+
+inline auto Circuit::getGateListEnd() -> IterGateList {
+  return this->gates_.end();
+}
+
+inline auto Circuit::addGate(GatePtr&& gate) -> void {
   assert(gate);
-  this->gates_.push_back(gate);
+  this->gates_.push_back(std::move(gate));
+}
+
+inline auto Circuit::addGate(GatePtr& gate) -> void {
+  this->addGate(std::move(gate));
 }
 
 inline auto Circuit::addGate(Gate*&& gate) -> void {
@@ -67,54 +92,69 @@ inline auto Circuit::addGate(Gate*&& gate) -> void {
   this->gates_.emplace_back(gate);
 }
 
-inline auto Circuit::insertGate(CIterGateList pos, const GatePtr& gate)
-  -> CIterGateList {
-  assert(pos != this->gates_.cend());
+inline auto Circuit::insertGate(CIterGateList pos, GatePtr&& gate)
+  -> IterGateList {
   assert(gate);
-  return this->gates_.insert(pos, gate);
+  return this->gates_.insert(pos, std::move(gate));
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, GatePtr& gate)
+  -> IterGateList {
+  return this->insertGate(pos, std::move(gate));
 }
 
 inline auto Circuit::insertGate(CIterGateList pos, Gate*&& gate)
-  -> CIterGateList {
-  assert(pos != this->gates_.cend());
+  -> IterGateList {
   assert(gate != nullptr);
   return this->gates_.emplace(pos, gate);
 }
 
-inline auto Circuit::insertGate(const GatePtr& pos, const GatePtr& gate)
-  -> void {
-  insertGate(this->findGate(pos), gate);
-}
-
-inline auto Circuit::insertGate(const GatePtr& pos, Gate*&& gate) -> void {
-  insertGate(this->findGate(pos), std::move(gate));
-}
-
-inline auto Circuit::eraseGate(const GatePtr& gate) -> void {
-  this->gates_.remove(gate);
-}
-
-inline auto Circuit::eraseGate(CIterGateList pos) -> CIterGateList {
+inline auto Circuit::eraseGate(CIterGateList pos) -> IterGateList {
   return this->gates_.erase(pos);
 }
 
-inline auto Circuit::getFirstGate() const -> GatePtr {
-  return this->gates_.front();
+inline auto Circuit::eraseGate(IterGateList pos, GatePtr& gate)
+  -> IterGateList {
+  gate = std::move(*pos);
+  return this->eraseGate(pos);
 }
 
-inline auto Circuit::getLastGate() const -> GatePtr {
-  return this->gates_.back();
+inline auto Circuit::eraseGate(CIterGateList first, CIterGateList last)
+  -> IterGateList {
+  return this->gates_.erase(first, last);
 }
 
-inline auto Circuit::getGateCount() const -> int {
-  return static_cast<int>(this->gates_.size());
+inline auto Circuit::swapGate(IterGateList pos1, IterGateList pos2) -> void {
+  assert(pos1 != this->gates_.end());
+  assert(pos2 != this->gates_.end());
+  std::swap(*pos1, *pos2);
 }
 
-inline auto Circuit::findGate(const GatePtr& gate) const -> CIterGateList {
-  return std::find(this->gates_.cbegin(), this->gates_.cend(), gate);
+inline auto Circuit::clear() -> void {
+  this->gates_.clear();
 }
 
-inline auto Circuit::isExistGate(const GatePtr& gate) const -> bool {
-  return this->gates_.cend() != this->findGate(gate);
+inline auto Circuit::getGateCount() const -> size_t {
+  return this->gates_.size();
+}
+
+inline auto Circuit::computeZeroVectorMap() const -> std::map<Bitno, Vector> {
+  using util::container::toMap;
+  using util::matrix::ket;
+  return std::move(toMap<Vector>(this->collectUsedBits(), ket<0>()));
+}
+
+inline auto Circuit::simulate() const -> Vector {
+  return this->simulate(this->computeZeroVectorMap());
+}
+
+inline auto Circuit::simulate(const Vector& input) const -> Vector {
+  auto matrix = this->computeMatrix();
+  assert(input.rows() == matrix.cols());
+  return std::move(matrix * input);
+}
+
+inline auto Circuit::simulate(std::vector<Complex>&& input) const -> Vector {
+  return this->simulate(util::matrix::createVector(std::move(input)));
 }
 }

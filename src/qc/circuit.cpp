@@ -7,14 +7,6 @@
 
 namespace qc {
 /**
- * @fn Circuit()
- * @brief constructor
- * @detail empty Circuit class constructor
- */
-Circuit::Circuit() {
-}
-
-/**
  * @fn Circuit(const Circuit& other)
  * @brief copy constructor
  * @param [in] other another Circuit class object
@@ -23,14 +15,6 @@ Circuit::Circuit(const Circuit& other) {
   for(const auto& gate : other.gates_) {
     this->addGate(gate->clone());
   }
-}
-
-/**
- * @fn ~Circuit()
- * @brief destructor
- */
-Circuit::~Circuit() {
-  this->gates_.clear();
 }
 
 /**
@@ -65,61 +49,49 @@ auto Circuit::operator==(const Circuit& other) const -> bool {
   return true;
 }
 
-/**
- * @fn bool operator!=(const Circuit& other) const
- * @brief nonequivalence operator
- * @param [in] other another Circuit class object
- * @return true or false
- */
-auto Circuit::operator!=(const Circuit& other) const -> bool {
-  return !(*this == other);
-}
-
-inline auto Circuit::append(const Circuit& circ) -> void {
+auto Circuit::append(const Circuit& circ) -> void {
   for(const auto& gate : circ.gates_) {
     this->addGate(gate->clone());
   }
 }
 
-auto Circuit::getAnyGate(int n) const -> GatePtr {
-  int cnt = 0;
-  for(const auto& gate_i : this->gates_) {
-    if(cnt++ == n) return gate_i;
-  }
-  return GatePtr(nullptr);
-}
-
-auto Circuit::getGateIndex(const GatePtr& gate) const -> int {
-  int cnt = 0;
-  for(const auto& gate_i : this->gates_) {
-    if(gate_i == gate) return cnt;
-    cnt++;
-  }
-  return -1;
-}
-
 /**
- * @fn BitList getUsedBits() const
+ * @fn BitList collectUsedBits() const
  * @brief take used bits of all included parallel quanutm gates
  * @return used bits
  */
-auto Circuit::getUsedBits() const -> BitList {
+auto Circuit::collectUsedBits() const -> BitList {
   BitList used_bits;
   for(const auto& gate : this->gates_) {
-    auto gate_used_bits = gate->getUsedBits();
+    auto gate_used_bits = gate->collectUsedBits();
     used_bits.insert(gate_used_bits.cbegin(), gate_used_bits.cend());
   }
   return std::move(used_bits);
 }
 
-auto Circuit::getMatrix() const -> Matrix {
-  auto bits = util::container::convert<std::set>(this->getUsedBits());
-  auto size = static_cast<size_t>(std::pow(2, bits.size()));
-  auto result = util::eigen::identity(size);
+auto Circuit::computeMatrix() const -> Matrix {
+  auto ordered_bits = \
+    util::container::convert<std::set>(this->collectUsedBits());
+  auto size = static_cast<size_t>(std::pow(2, ordered_bits.size()));
+  auto result = util::matrix::identity(size);
   for(const auto& gate : this->gates_) {
-    result = gate->getMatrix(bits) * result;
+    result = gate->computeMatrix(ordered_bits) * result;
   }
   return std::move(result);
+}
+
+auto Circuit::simulate(const std::map<Bitno, Vector>& input) const -> Vector {
+  auto bits = this->collectUsedBits();
+
+  assert(input.size() == bits.size());
+
+  Vector input_vector = util::matrix::createVector({1});
+  for(const auto& vector : input) {
+    assert(bits.count(vector.first));
+    input_vector = util::matrix::tensor(input_vector, vector.second);
+  }
+
+  return std::move(this->simulate(input_vector));
 }
 
 auto Circuit::print(std::ostream& os) const -> void {
