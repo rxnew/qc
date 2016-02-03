@@ -48,10 +48,11 @@ class Circuit {
   auto getGateCount() const -> size_t;
   auto collectUsedBits() const -> BitList;
   auto computeMatrix() const -> Matrix;
+  auto computeZeroVectorMap() const -> std::map<Bitno, Vector>;
+  auto simulate() const -> Vector;
   auto simulate(const Vector& input) const -> Vector;
   auto simulate(std::vector<Complex>&& input) const -> Vector;
   auto simulate(const std::map<Bitno, Vector>& input) const -> Vector;
-  auto computeZeroVectorMap() const -> std::map<Bitno, Vector>;
   auto print(std::ostream& os = std::cout) const -> void;
 };
 
@@ -137,6 +138,16 @@ inline auto Circuit::getGateCount() const -> size_t {
   return this->gates_.size();
 }
 
+inline auto Circuit::computeZeroVectorMap() const -> std::map<Bitno, Vector> {
+  using util::container::toMap;
+  using util::matrix::ket;
+  return std::move(toMap<Vector>(this->collectUsedBits(), ket<0>()));
+}
+
+inline auto Circuit::simulate() const -> Vector {
+  return this->simulate(this->computeZeroVectorMap());
+}
+
 inline auto Circuit::simulate(const Vector& input) const -> Vector {
   auto matrix = this->computeMatrix();
   assert(input.rows() == matrix.cols());
@@ -145,11 +156,5 @@ inline auto Circuit::simulate(const Vector& input) const -> Vector {
 
 inline auto Circuit::simulate(std::vector<Complex>&& input) const -> Vector {
   return this->simulate(util::matrix::createVector(std::move(input)));
-}
-
-inline auto Circuit::computeZeroVectorMap() const -> std::map<Bitno, Vector> {
-  using util::container::toMap;
-  using util::matrix::ket;
-  return std::move(toMap<Vector>(this->collectUsedBits(), ket<0>()));
 }
 }
