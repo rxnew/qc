@@ -51,6 +51,7 @@ class Circuit {
   auto computeZeroVectorMap() const -> std::map<Bitno, Vector>;
   auto simulate() const -> Vector;
   auto simulate(const Vector& input) const -> Vector;
+  auto simulate(const Vector& input, const Matrix& matrix) const -> Vector;
   auto simulate(std::vector<Complex>&& input) const -> Vector;
   auto simulate(const std::map<Bitno, Vector>& input) const -> Vector;
   auto print(std::ostream& os = std::cout) const -> void;
@@ -148,8 +149,8 @@ inline auto Circuit::simulate() const -> Vector {
   return this->simulate(this->computeZeroVectorMap());
 }
 
-inline auto Circuit::simulate(const Vector& input) const -> Vector {
-  auto matrix = this->computeMatrix();
+inline auto Circuit::simulate(const Vector& input, const Matrix& matrix) const
+  -> Vector {
   assert(input.rows() == matrix.cols());
   return std::move(matrix * input);
 }
