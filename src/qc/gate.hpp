@@ -8,7 +8,6 @@
 #include <set>
 #include <unordered_set>
 #include <unordered_map>
-#include <tuple>
 #include <memory>
 #include <algorithm>
 
@@ -37,9 +36,9 @@ using util::matrix::operator"" _i;
  */
 class Gate {
  private:
+  class MatrixMap;
+
   using ui = unsigned int;
-  template <class T>
-  using MatrixMap = std::unordered_map<T, Matrix>;
 
   static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
@@ -56,18 +55,10 @@ class Gate {
   Gate(const CbitList& cbits, const TbitList& tbits);
   Gate(const Gate& other);
   Gate(Gate&&) noexcept = default;
-  auto _computeActivePolarityPattern() const -> ui;
-  auto _updateActiveMatrixMap(MatrixMap<Bitno>& matrix_map, bool is_cbit, \
-                              bool is_positive, Bitno bit) const -> void;
-  auto _updateInactiveMatrixMap(MatrixMap<ui>& matrix_map, bool is_cbit, \
-                                ui mask) const -> void;
-  auto _computeMatrixMap(const std::set<Bitno>& bits) const
-    -> std::tuple<MatrixMap<Bitno>, MatrixMap<ui>>;
-  auto _computeMatrix(const MatrixMap<Bitno>& active_matrix_map, \
-                      const MatrixMap<ui>& inactive_matrix_map) const -> Matrix;
-  auto _simulate(const Vector& input, \
-                 const MatrixMap<Bitno>& active_matrix_map, \
-                 const MatrixMap<ui>& inactive_matrix_map) const -> Vector;
+
+  auto _computeMatrix(const MatrixMap& matrix_map) const -> Matrix;
+  auto _simulate(const Vector& input, const MatrixMap& matrix_map) const
+    -> Vector;
 
  public:
   static const std::string TYPE_NAME;
@@ -96,6 +87,29 @@ class Gate {
   auto simulate(const Vector& input) const -> Vector;
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os = std::cout) const -> void;
+
+ private:
+  class MatrixMap {
+   private:
+    const Gate& gate_;
+    ui active_polarity_pattern_;
+    ui polarity_pattern_mask_;
+
+    auto _init() -> void;
+    auto _setActivePolarityPattern() -> void;
+    auto _updateActive(bool is_cbit, Bitno bit) -> void;
+    auto _updateInactive(bool is_cbit) -> void;
+    auto _mask(ui polarity_pattern) const -> bool;
+    auto _isActive() const -> bool;
+
+   public:
+    // matrix of active input pattern of each target
+    std::unordered_map<Bitno, Matrix> active_;
+    // matrix of inactive each input pattern
+    std::unordered_map<ui, Matrix> inactive_;
+
+    MatrixMap(const Gate& gate, const std::set<Bitno>& bits);
+  };
 };
 
 /**
@@ -300,12 +314,22 @@ inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
   return this->tbits_.count(Tbit(bit));
 }
 
+inline auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  return std::move(this->_computeMatrix(MatrixMap(*this, bits)));
+}
+
 inline auto Gate::computeMatrix(const BitList& bits) const -> Matrix {
   return this->computeMatrix(util::container::convert<std::set>(bits));
 }
 
 inline auto Gate::computeMatrix() const -> Matrix {
   return this->computeMatrix(this->collectUsedBits());
+}
+
+inline auto Gate::simulate(const Vector& input, const std::set<Bitno>& bits) \
+  const -> Vector {
+  assert(input.rows() == std::pow(2, bits.size()));
+  return std::move(this->_simulate(input, MatrixMap(*this, bits)));
 }
 
 inline auto Gate::simulate(const Vector& input, const BitList& bits) const
@@ -316,6 +340,14 @@ inline auto Gate::simulate(const Vector& input, const BitList& bits) const
 
 inline auto Gate::simulate(const Vector& input) const -> Vector {
   return this->simulate(input, this->collectUsedBits());
+}
+
+inline auto Gate::MatrixMap::_mask(ui polarity_pattern) const -> bool {
+  return polarity_pattern & polarity_pattern_mask_;
+}
+
+inline auto Gate::MatrixMap::_isActive() const -> bool {
+  return this->_mask(this->active_polarity_pattern_);
 }
 
 inline auto V::_createTargetMatrixList()
