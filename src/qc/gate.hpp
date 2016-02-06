@@ -8,6 +8,7 @@
 #include <set>
 #include <unordered_set>
 #include <unordered_map>
+#include <tuple>
 #include <memory>
 #include <algorithm>
 
@@ -60,8 +61,13 @@ class Gate {
                               bool is_positive, Bitno bit) const -> void;
   auto _updateInactiveMatrixMap(MatrixMap<ui>& matrix_map, bool is_cbit, \
                                 ui mask) const -> void;
+  auto _computeMatrixMap(const std::set<Bitno>& bits) const
+    -> std::tuple<MatrixMap<Bitno>, MatrixMap<ui>>;
   auto _computeMatrix(const MatrixMap<Bitno>& active_matrix_map, \
                       const MatrixMap<ui>& inactive_matrix_map) const -> Matrix;
+  auto _simulate(const Vector& input, \
+                 const MatrixMap<Bitno>& active_matrix_map, \
+                 const MatrixMap<ui>& inactive_matrix_map) const -> Vector;
 
  public:
   static const std::string TYPE_NAME;
@@ -79,11 +85,15 @@ class Gate {
   auto setTbits(const TbitList& tbits) -> void;
   auto isIncludedInCbitList(Bitno bit) const -> bool;
   auto isIncludedInTbitList(Bitno bit) const -> bool;
+  auto collectUsedBits() const -> BitList;
   virtual auto getTargetMatrix() const -> const Matrix& = 0;
   virtual auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
   auto computeMatrix(const BitList& bits) const -> Matrix;
   auto computeMatrix() const -> Matrix;
-  auto collectUsedBits() const -> BitList;
+  auto simulate(const Vector& input, const std::set<Bitno>& bits) const
+    -> Vector;
+  auto simulate(const Vector& input, const BitList& bits) const -> Vector;
+  auto simulate(const Vector& input) const -> Vector;
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os = std::cout) const -> void;
 };
@@ -296,6 +306,16 @@ inline auto Gate::computeMatrix(const BitList& bits) const -> Matrix {
 
 inline auto Gate::computeMatrix() const -> Matrix {
   return this->computeMatrix(this->collectUsedBits());
+}
+
+inline auto Gate::simulate(const Vector& input, const BitList& bits) const
+  -> Vector {
+  auto ordered_bits = util::container::convert<std::set>(bits);
+  return this->simulate(input, ordered_bits);
+}
+
+inline auto Gate::simulate(const Vector& input) const -> Vector {
+  return this->simulate(input, this->collectUsedBits());
 }
 
 inline auto V::_createTargetMatrixList()

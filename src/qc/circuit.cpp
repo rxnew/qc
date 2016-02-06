@@ -83,10 +83,12 @@ auto Circuit::computeMatrix() const -> Matrix {
 auto Circuit::simulate(const Vector& input) const -> Vector {
   auto ordered_bits = \
     util::container::convert<std::set>(this->collectUsedBits());
+
   assert(input.rows() == std::pow(2, ordered_bits.size()));
+
   auto result = input;
   for(const auto& gate : this->gates_) {
-    result = gate->computeMatrix(ordered_bits) * result;
+    result = gate->simulate(result, ordered_bits);
   }
   return std::move(result);
 }
@@ -96,12 +98,11 @@ auto Circuit::simulate(const std::map<Bitno, Vector>& input) const -> Vector {
 
   assert(input.size() == bits.size());
 
-  Vector input_vector = util::matrix::createVector({1});
+  auto input_vector = util::matrix::createVector({1});
   for(const auto& vector : input) {
     assert(bits.count(vector.first));
     input_vector = util::matrix::tensor(input_vector, vector.second);
   }
-
   return std::move(this->simulate(input_vector));
 }
 

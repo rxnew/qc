@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <tuple>
 
 #include "circuit.hpp"
 

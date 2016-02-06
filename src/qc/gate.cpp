@@ -59,9 +59,39 @@ auto Gate::_updateInactiveMatrixMap(MatrixMap<ui>& matrix_map, \
   }
 }
 
+auto Gate::_computeMatrixMap(const std::set<Bitno>& bits) const
+  -> std::tuple<MatrixMap<Bitno>, MatrixMap<ui>> {
+  ui matrix_count = std::pow(2, this->cbits_.size());
+  ui mask = 1 << (this->cbits_.size() - 1);
+  auto active_pattern = this->_computeActivePolarityPattern();
+
+  // each target
+  MatrixMap<Bitno> active_matrix_map;
+  for(const auto& tbit : this->tbits_) {
+    active_matrix_map[tbit.bitno_] = util::matrix::identity(1);
+  }
+  // each input pattern
+  MatrixMap<ui> inactive_matrix_map;
+  for(ui i = 0; i < matrix_count; i++) {
+    if(i != active_pattern) inactive_matrix_map[i] = util::matrix::identity(1);
+  }
+
+  for(const auto& bit : bits) {
+    auto is_cbit = this->isIncludedInCbitList(bit);
+    auto is_active = mask & active_pattern;
+    this->_updateActiveMatrixMap(active_matrix_map, is_cbit, is_active, bit);
+    this->_updateInactiveMatrixMap(inactive_matrix_map, is_cbit, mask);
+    if(is_cbit) mask >>= 1;
+  }
+
+  return std::move(std::make_tuple(active_matrix_map, inactive_matrix_map));
+}
+
 auto Gate::_computeMatrix(const MatrixMap<Bitno>& active_matrix_map, \
                           const MatrixMap<ui>& inactive_matrix_map) const
   -> Matrix {
+  assert(!active_matrix_map.empty());
+
   auto size = active_matrix_map.begin()->second.rows();
   auto result = util::matrix::identity(size);
   for(const auto& active_matrix : active_matrix_map) {
@@ -69,7 +99,23 @@ auto Gate::_computeMatrix(const MatrixMap<Bitno>& active_matrix_map, \
     for(const auto& inactive_matrix : inactive_matrix_map) {
       matrix += inactive_matrix.second;
     }
-    result = result * matrix;
+    result = matrix * result;
+  }
+  return std::move(result);
+}
+
+auto Gate::_simulate(const Vector& input, \
+                     const MatrixMap<Bitno>& active_matrix_map, \
+                     const MatrixMap<ui>& inactive_matrix_map) const -> Vector {
+  assert(!active_matrix_map.empty());
+
+  auto result = input;
+  for(const auto& active_matrix : active_matrix_map) {
+    auto matrix = active_matrix.second;
+    for(const auto& inactive_matrix : inactive_matrix_map) {
+      matrix += inactive_matrix.second;
+    }
+    result = matrix * result;
   }
   return std::move(result);
 }
@@ -108,32 +154,6 @@ auto Gate::operator==(const Gate& other) const -> bool {
   return true;
 }
 
-auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
-  ui matrix_count = std::pow(2, this->cbits_.size());
-  ui mask = 1 << (this->cbits_.size() - 1);
-  auto active_pattern = this->_computeActivePolarityPattern();
-
-  MatrixMap<Bitno> active_matrix_map;
-  for(const auto& tbit : this->tbits_) {
-    active_matrix_map[tbit.bitno_] = util::matrix::identity(1);
-  }
-  MatrixMap<ui> inactive_matrix_map;
-  for(ui i = 0; i < matrix_count; i++) {
-    if(i != active_pattern) inactive_matrix_map[i] = util::matrix::identity(1);
-  }
-
-  for(const auto& bit : bits) {
-    auto is_cbit = this->isIncludedInCbitList(bit);
-    auto is_active = mask & active_pattern;
-    this->_updateActiveMatrixMap(active_matrix_map, is_cbit, is_active, bit);
-    this->_updateInactiveMatrixMap(inactive_matrix_map, is_cbit, mask);
-    if(is_cbit) mask >>= 1;
-  }
-
-  return \
-    std::move(this->_computeMatrix(active_matrix_map, inactive_matrix_map));
-}
-
 /**
  * @fn BitList collectUsedBits() const
  * @brief take used bits are control bits and target bits
@@ -148,6 +168,25 @@ auto Gate::collectUsedBits() const -> BitList {
     used_bits.insert(tbit.bitno_);
   }
   return std::move(used_bits);
+}
+
+auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  auto matrix_maps = this->_computeMatrixMap(bits);
+  auto active_matrix_map = std::get<0>(matrix_maps);
+  auto inactive_matrix_map = std::get<1>(matrix_maps);
+  return \
+    std::move(this->_computeMatrix(active_matrix_map, inactive_matrix_map));
+}
+
+auto Gate::simulate(const Vector& input, const std::set<Bitno>& bits) const
+  -> Vector {
+  assert(input.rows() == std::pow(2, bits.size()));
+
+  auto matrix_maps = this->_computeMatrixMap(bits);
+  auto active_matrix_map = std::get<0>(matrix_maps);
+  auto inactive_matrix_map = std::get<1>(matrix_maps);
+  return \
+    std::move(this->_simulate(input, active_matrix_map, inactive_matrix_map));
 }
 
 /**
