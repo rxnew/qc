@@ -6,6 +6,7 @@
 #include <cassert>
 
 namespace util {
+namespace container {
 template <class T>
 class PolymorphismList {
  private:
@@ -581,5 +582,6 @@ template <class T>
 inline auto PolymorphismList<T>::ConstIterator::operator!=
 (const ConstIterator& other) const -> bool {
   return !(*this == other);
+}
 }
 }
