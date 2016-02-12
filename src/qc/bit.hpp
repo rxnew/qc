@@ -23,6 +23,7 @@ class Bit {
   Bit(Bit&&) noexcept = default;
   virtual ~Bit();
   auto operator=(const Bit& other) -> Bit&;
+  auto operator=(Bit&& other) -> Bit&;
   auto operator==(const Bit& other) const -> bool;
   auto operator!=(const Bit& other) const -> bool;
   auto operator<(const Bit& other) const -> bool;
@@ -40,6 +41,7 @@ class Cbit : public Bit {
   Cbit(const Cbit& other);
   Cbit(Cbit&&) noexcept = default;
   auto operator=(const Cbit& other) -> Cbit&;
+  auto operator=(Cbit&& other) -> Cbit&;
   auto operator==(const Cbit& other) const -> bool;
   auto operator!=(const Cbit& other) const -> bool;
   auto operator<(const Cbit& other) const -> bool;
@@ -75,6 +77,10 @@ inline auto Bit::operator=(const Bit& other) -> Bit& {
   return *this;
 }
 
+inline auto Bit::operator=(Bit&& other) -> Bit& {
+  return this->operator=(other);
+}
+
 inline auto Bit::operator==(const Bit& other) const -> bool{
   return this->bitno_ == other.bitno_;
 }
@@ -103,6 +109,10 @@ inline auto Cbit::operator=(const Cbit& other) -> Cbit& {
   this->bitno_ = other.bitno_;
   this->polarity_ = other.polarity_;
   return *this;
+}
+
+inline auto Cbit::operator=(Cbit&& other) -> Cbit& {
+  return this->operator=(other);
 }
 
 inline auto Cbit::operator==(const Cbit& other) const -> bool {

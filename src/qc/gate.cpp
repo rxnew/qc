@@ -73,6 +73,12 @@ auto Gate::operator=(const Gate& other) -> Gate& {
   return *this;
 }
 
+auto Gate::operator=(Gate&& other) -> Gate& {
+  this->cbits_ = std::move(other.cbits_);
+  this->tbits_ = std::move(other.tbits_);
+  return *this;
+}
+
 /**
  * @fn bool operator==(const Gate& other) const
  * @brief equality operator

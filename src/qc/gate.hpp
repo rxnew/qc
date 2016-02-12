@@ -50,9 +50,12 @@ class Gate {
   Gate(const Tbit& tbit1, const Tbit& tbit2);
   Gate(const Cbit& cbit, const Tbit& tbit);
   Gate(const Cbit& cbit, const TbitList& tbits);
+  Gate(const Cbit& cbit, TbitList&& tbits);
   Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   Gate(const CbitList& cbits, const Tbit& tbit);
+  Gate(CbitList&& cbits, const Tbit& tbit);
   Gate(const CbitList& cbits, const TbitList& tbits);
+  Gate(CbitList&& cbits, TbitList&& tbits);
   Gate(const Gate& other);
   Gate(Gate&&) noexcept = default;
 
@@ -66,6 +69,7 @@ class Gate {
 
   virtual ~Gate();
   auto operator=(const Gate& other) -> Gate&;
+  auto operator=(Gate&& other) -> Gate&;
   auto operator==(const Gate& other) const -> bool;
   auto operator!=(const Gate& other) const -> bool;
   virtual auto clone() const -> GatePtr = 0;
@@ -73,7 +77,9 @@ class Gate {
   auto getCbitList() const -> const CbitList&;
   auto getTbitList() const -> const TbitList&;
   auto setCbits(const CbitList& cbits) -> void;
+  auto setCbits(CbitList&& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
+  auto setTbits(TbitList&& tbits) -> void;
   auto isIncludedInCbitList(Bitno bit) const -> bool;
   auto isIncludedInTbitList(Bitno bit) const -> bool;
   auto collectUsedBits() const -> BitList;
@@ -268,6 +274,10 @@ inline Gate::Gate(const Cbit& cbit, const TbitList& tbits)
   : cbits_{cbit}, tbits_(tbits) {
 }
 
+inline Gate::Gate(const Cbit& cbit, TbitList&& tbits)
+  : cbits_{cbit}, tbits_(std::move(tbits)) {
+}
+
 inline Gate::Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit)
   : cbits_{cbit1, cbit2}, tbits_{tbit} {
 }
@@ -276,8 +286,16 @@ inline Gate::Gate(const CbitList& cbits, const Tbit& tbit) :
   cbits_(cbits), tbits_{tbit} {
 }
 
+inline Gate::Gate(CbitList&& cbits, const Tbit& tbit) :
+  cbits_(std::move(cbits)), tbits_{tbit} {
+}
+
 inline Gate::Gate(const CbitList& cbits, const TbitList& tbits) :
   cbits_(cbits), tbits_(tbits) {
+}
+
+inline Gate::Gate(CbitList&& cbits, TbitList&& tbits) :
+  cbits_(std::move(cbits)), tbits_(std::move(tbits)) {
 }
 
 inline Gate::Gate(const Gate& other)
@@ -300,8 +318,16 @@ inline auto Gate::setCbits(const CbitList& cbits) -> void {
   this->cbits_ = cbits;
 }
 
+inline auto Gate::setCbits(CbitList&& cbits) -> void {
+  this->cbits_ = std::move(cbits);
+}
+
 inline auto Gate::setTbits(const TbitList& tbits) -> void {
   this->tbits_ = tbits;
+}
+
+inline auto Gate::setTbits(TbitList&& tbits) -> void {
+  this->tbits_ = std::move(tbits);
 }
 
 inline auto Gate::isIncludedInCbitList(Bitno bit) const -> bool {
