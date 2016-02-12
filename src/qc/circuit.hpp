@@ -26,8 +26,10 @@ class Circuit {
  public:
   Circuit();
   Circuit(const Circuit& other);
+  Circuit(Circuit&& other);
   ~Circuit();
   auto operator=(const Circuit& other) -> Circuit&;
+  auto operator=(Circuit&& other) -> Circuit&;
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
   auto getGateList() const -> const GateList&;
@@ -60,7 +62,15 @@ class Circuit {
 inline Circuit::Circuit() {
 }
 
+inline Circuit::Circuit(Circuit&& other) : gates_(std::move(other.gates_)) {
+}
+
 inline Circuit::~Circuit() {
+}
+
+inline auto Circuit::operator=(Circuit&& other) -> Circuit& {
+  this->gates_ = std::move(other.gates_);
+  return *this;
 }
 
 inline auto Circuit::operator!=(const Circuit& other) const -> bool {
