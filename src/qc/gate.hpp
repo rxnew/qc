@@ -46,7 +46,7 @@ class Gate {
   CbitList cbits_;
   TbitList tbits_;
 
-  Gate(const Tbit& tbit);
+  explicit Gate(const Tbit& tbit);
   Gate(const Tbit& tbit1, const Tbit& tbit2);
   Gate(const Cbit& cbit, const Tbit& tbit);
   Gate(const Cbit& cbit, const TbitList& tbits);
@@ -384,7 +384,7 @@ inline auto V::_createTargetMatrixList()
 }
 
 template <class... Args>
-V::V(Args&&... args) : Gate(args...) {}
+V::V(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto V::clone() const -> GatePtr {
   return GatePtr(new V(*this));
@@ -406,7 +406,7 @@ inline auto VPlus::_createTargetMatrixList()
 }
 
 template <class... Args>
-VPlus::VPlus(Args&&... args) : Gate(args...) {}
+VPlus::VPlus(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto VPlus::clone() const -> GatePtr {
   return GatePtr(new VPlus(*this));
@@ -427,7 +427,7 @@ inline auto Hadamard::_createTargetMatrixList()
 }
 
 template <class... Args>
-Hadamard::Hadamard(Args&&... args) : Gate(args...) {
+Hadamard::Hadamard(Args&&... args) : Gate(std::forward<Args>(args)...) {
   assert(this->cbits_.empty());
   assert(static_cast<int>(this->tbits_.size()) == 1);
 }
@@ -450,7 +450,7 @@ inline auto Not::_createTargetMatrixList()
 }
 
 template <class... Args>
-Not::Not(Args&&... args) : Gate(args...) {}
+Not::Not(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto Not::clone() const -> GatePtr {
   return GatePtr(new Not(*this));
@@ -470,7 +470,7 @@ inline auto Z::_createTargetMatrixList()
 }
 
 template <class... Args>
-Z::Z(Args&&... args) : Gate(args...) {}
+Z::Z(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto Z::clone() const -> GatePtr {
   return GatePtr(new Z(*this));
@@ -493,7 +493,7 @@ inline auto Swap::_createTargetMatrixList()
 }
 
 template <class... Args>
-Swap::Swap(Args&&... args) : Gate(args...) {
+Swap::Swap(Args&&... args) : Gate(std::forward<Args>(args)...) {
   assert(static_cast<int>(this->tbits_.size()) == 2);
 }
 
@@ -515,7 +515,7 @@ inline auto T::_createTargetMatrixList()
 }
 
 template <class... Args>
-T::T(Args&&... args) : Gate(args...) {}
+T::T(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto T::clone() const -> GatePtr {
   return GatePtr(new T(*this));
@@ -533,7 +533,7 @@ template <class... Args>
 auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
 #define IF_GEN(type) \
   if(util::string::equalCaseInsensitive(str, type::TYPE_NAME)) \
-    return GatePtr(new type(args...))
+    return GatePtr(new type(std::forward<Args>(args)...))
 
   IF_GEN(V);
   IF_GEN(VPlus);

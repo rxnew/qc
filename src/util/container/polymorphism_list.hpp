@@ -336,13 +336,15 @@ inline auto PolymorphismList<T>::back() const -> const T& {
 template <class T>
 template <class U, class... Args>
 inline auto PolymorphismList<T>::emplace_front(Args&&... args) -> void {
-  this->push_front_(new Node(P(new U(args...)), this->rear_, nullptr));
+  auto p = new U(std::forward<Args>(args)...);
+  this->push_front_(new Node(P(p), this->rear_, nullptr));
 }
 
 template <class T>
 template <class U>
 inline auto PolymorphismList<T>::push_front(const U& value) -> void {
-  this->push_front_(new Node(P(new U(value)), nullptr, this->top_));
+  auto p = new U(value);
+  this->push_front_(new Node(P(p), nullptr, this->top_));
 }
 
 template <class T>
@@ -359,13 +361,15 @@ auto PolymorphismList<T>::pop_front() -> void {
 template <class T>
 template <class U, class... Args>
 inline auto PolymorphismList<T>::emplace_back(Args&&... args) -> void {
-  this->push_back_(new Node(P(new U(args...)), this->rear_, nullptr));
+  auto p = new U(std::forward<Args>(args)...);
+  this->push_back_(new Node(P(p), this->rear_, nullptr));
 }
 
 template <class T>
 template <class U>
 inline auto PolymorphismList<T>::push_back(const U& value) -> void {
-  this->push_back_(new Node(P(new U(value)), this->rear_, nullptr));
+  auto p = new U(value);
+  this->push_back_(new Node(P(p), this->rear_, nullptr));
 }
 
 template <class T>
@@ -383,14 +387,16 @@ template <class T>
 template <class U, class... Args>
 inline auto PolymorphismList<T>::emplace(ConstIterator pos, Args&&... args)
   -> Iterator {
-  return this->insert_(pos, new Node(P(new U(args...))));
+  auto p = new U(std::forward<Args>(args)...);
+  return this->insert_(pos, new Node(P(p)));
 }
 
 template <class T>
 template <class U>
 inline auto PolymorphismList<T>::insert(ConstIterator pos, const U& value)
   -> Iterator {
-  return this->insert_(pos, new Node(P(new U(value))));
+  auto p = new U(value);
+  return this->insert_(pos, new Node(P(p)));
 }
 
 template <class T>

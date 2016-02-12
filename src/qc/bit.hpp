@@ -6,6 +6,7 @@
 #pragma once
 
 #include <iostream>
+#include <utility>
 #include <cassert>
 
 namespace qc {
@@ -18,7 +19,7 @@ class Bit {
   Bitno bitno_;
 
   Bit();
-  Bit(Bitno bitno);
+  explicit Bit(Bitno bitno);
   Bit(const Bit& other);
   Bit(Bit&&) noexcept = default;
   virtual ~Bit();
@@ -95,7 +96,8 @@ inline auto Bit::operator<(const Bit& other) const -> bool {
 }
 
 template <class... Args>
-inline Cbit::Cbit(Args&&... args) : Bit(args...), polarity_(true) {
+inline Cbit::Cbit(Args&&... args)
+  : Bit(std::forward<Args>(args)...), polarity_(true) {
 }
 
 inline Cbit::Cbit(Bitno bitno, bool polarity)
@@ -130,7 +132,7 @@ inline auto Cbit::operator<(const Cbit& other) const -> bool {
 }
 
 template <class... Args>
-inline Tbit::Tbit(Args&&... args) : Bit(args...) {
+inline Tbit::Tbit(Args&&... args) : Bit(std::forward<Args>(args)...) {
 }
 
 inline auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream& {
