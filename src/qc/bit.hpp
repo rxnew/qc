@@ -35,6 +35,7 @@ class Bit {
 class Cbit : public Bit {
  public:
   bool polarity_;
+
   template <class... Args>
   Cbit(Args&&... args);
   Cbit(Bitno bitno, bool polarity);
