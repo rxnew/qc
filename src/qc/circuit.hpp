@@ -26,7 +26,7 @@ class Circuit {
  public:
   Circuit();
   Circuit(const Circuit& other);
-  Circuit(Circuit&& other);
+  Circuit(Circuit&& other) noexcept;
   ~Circuit();
   auto operator=(const Circuit& other) -> Circuit&;
   auto operator=(Circuit&& other) -> Circuit&;
@@ -62,7 +62,8 @@ class Circuit {
 inline Circuit::Circuit() {
 }
 
-inline Circuit::Circuit(Circuit&& other) : gates_(std::move(other.gates_)) {
+inline Circuit::Circuit(Circuit&& other) noexcept
+  : gates_(std::move(other.gates_)) {
 }
 
 inline Circuit::~Circuit() {
