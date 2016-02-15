@@ -63,17 +63,17 @@ class PolymorphismList {
   template <class U = T, class... Args>
   auto emplace_front(Args&&... args) -> void;
   template <class U>
-  auto push_front(const U& value) -> void;
+  auto push_front(U&& value) -> void;
   auto pop_front() -> void;
   template <class U = T, class... Args>
   auto emplace_back(Args&&... args) -> void;
   template <class U>
-  auto push_back(const U& value) -> void;
+  auto push_back(U&& value) -> void;
   auto pop_back() -> void;
   template <class U = T, class... Args>
   auto emplace(ConstIterator pos, Args&&... args) -> Iterator;
   template <class U>
-  auto insert(ConstIterator pos, const U& value) -> Iterator;
+  auto insert(ConstIterator pos, U&& value) -> Iterator;
   template <class InputIterator>
   auto insert(ConstIterator pos, InputIterator first, InputIterator last)
     -> Iterator;
@@ -342,8 +342,8 @@ inline auto PolymorphismList<T>::emplace_front(Args&&... args) -> void {
 
 template <class T>
 template <class U>
-inline auto PolymorphismList<T>::push_front(const U& value) -> void {
-  auto p = new U(value);
+inline auto PolymorphismList<T>::push_front(U&& value) -> void {
+  auto p = new U(std::forward<U>(value));
   this->push_front_(new Node(P(p), nullptr, this->top_));
 }
 
@@ -367,8 +367,8 @@ inline auto PolymorphismList<T>::emplace_back(Args&&... args) -> void {
 
 template <class T>
 template <class U>
-inline auto PolymorphismList<T>::push_back(const U& value) -> void {
-  auto p = new U(value);
+inline auto PolymorphismList<T>::push_back(U&& value) -> void {
+  auto p = new U(std::forward<U>(value));
   this->push_back_(new Node(P(p), this->rear_, nullptr));
 }
 
@@ -393,9 +393,9 @@ inline auto PolymorphismList<T>::emplace(ConstIterator pos, Args&&... args)
 
 template <class T>
 template <class U>
-inline auto PolymorphismList<T>::insert(ConstIterator pos, const U& value)
+inline auto PolymorphismList<T>::insert(ConstIterator pos, U&& value)
   -> Iterator {
-  auto p = new U(value);
+  auto p = new U(std::forward<U>(value));
   return this->insert_(pos, new Node(P(p)));
 }
 

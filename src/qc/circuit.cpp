@@ -13,7 +13,7 @@ namespace qc {
  */
 Circuit::Circuit(const Circuit& other) {
   for(const auto& gate : other.gates_) {
-    this->addGate(gate->clone());
+    this->addGate(gate.clone());
   }
 }
 
@@ -25,7 +25,7 @@ Circuit::Circuit(const Circuit& other) {
  */
 auto Circuit::operator=(const Circuit& other) -> Circuit& {
   for(const auto& gate : other.gates_) {
-    this->addGate(gate->clone());
+    this->addGate(gate.clone());
   }
   return *this;
 }
@@ -42,16 +42,22 @@ auto Circuit::operator==(const Circuit& other) const -> bool {
   auto it = this->gates_.cbegin();
   auto jt = other.gates_.cbegin();
   while(it != this->gates_.cend() || jt != other.gates_.cend()) {
-    if(**it != **jt) return false;
+    if(*it != *jt) return false;
     it++, jt++;
   }
 
   return true;
 }
 
-auto Circuit::append(const Circuit& circ) -> void {
-  for(const auto& gate : circ.gates_) {
-    this->addGate(gate->clone());
+auto Circuit::append(const Circuit& other) -> void {
+  for(const auto& gate : other.gates_) {
+    this->addGate(gate.clone());
+  }
+}
+
+auto Circuit::append(Circuit&& other) -> void {
+  for(auto& gate : other.gates_) {
+    this->addGate(std::move(gate));
   }
 }
 
@@ -63,7 +69,7 @@ auto Circuit::append(const Circuit& circ) -> void {
 auto Circuit::collectUsedBits() const -> BitList {
   BitList used_bits;
   for(const auto& gate : this->gates_) {
-    auto gate_used_bits = gate->collectUsedBits();
+    auto gate_used_bits = gate.collectUsedBits();
     used_bits.insert(gate_used_bits.cbegin(), gate_used_bits.cend());
   }
   return std::move(used_bits);
@@ -75,7 +81,7 @@ auto Circuit::computeMatrix() const -> Matrix {
   auto size = static_cast<size_t>(std::pow(2, ordered_bits.size()));
   auto result = util::matrix::identity(size);
   for(const auto& gate : this->gates_) {
-    result = gate->computeMatrix(ordered_bits) * result;
+    result = gate.computeMatrix(ordered_bits) * result;
   }
   return std::move(result);
 }
@@ -88,7 +94,7 @@ auto Circuit::simulate(const Vector& input) const -> Vector {
 
   auto result = input;
   for(const auto& gate : this->gates_) {
-    result = gate->simulate(result, ordered_bits);
+    result = gate.simulate(result, ordered_bits);
   }
   return std::move(result);
 }
@@ -108,7 +114,7 @@ auto Circuit::simulate(const std::map<Bitno, Vector>& input) const -> Vector {
 
 auto Circuit::print(std::ostream& os) const -> void {
   for(const auto& gate : this->gates_) {
-    gate->print(os);
+    gate.print(os);
   }
 }
 }

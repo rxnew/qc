@@ -72,7 +72,7 @@ class Gate {
   auto operator=(Gate&& other) -> Gate&;
   auto operator==(const Gate& other) const -> bool;
   auto operator!=(const Gate& other) const -> bool;
-  virtual auto clone() const -> GatePtr = 0;
+  virtual auto clone() const -> Gate = 0;
   virtual auto getTypeName() const -> const std::string& = 0;
   auto getCbitList() const -> const CbitList&;
   auto getTbitList() const -> const TbitList&;
