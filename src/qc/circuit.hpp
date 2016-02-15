@@ -12,7 +12,7 @@
 namespace qc {
 class Circuit;
 
-using GateList = util::container::PolymorphismList<Gate>;
+using GateList = std::list<GatePtr>;
 using IterGateList = GateList::iterator;
 using CIterGateList = GateList::const_iterator;
 
@@ -35,16 +35,17 @@ class Circuit {
   auto getGateList() const -> const GateList&;
   auto getGateListBegin() -> IterGateList;
   auto getGateListEnd() -> IterGateList;
-  auto addGate(const Gate& gate) -> void;
-  auto addGate(Gate&& gate) -> void;
-  auto insertGate(CIterGateList pos, const Gate& gate) -> IterGateList;
-  auto insertGate(CIterGateList pos, Gate&& gate) -> IterGateList;
+  auto addGate(GatePtr&& gate) -> void;
+  auto addGate(GatePtr& gate) -> void;
+  auto addGate(Gate*&& gate) -> void;
+  auto insertGate(CIterGateList pos, GatePtr&& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, GatePtr& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, Gate*&& gate) -> IterGateList;
   auto eraseGate(CIterGateList pos) -> IterGateList;
-  auto eraseGate(IterGateList pos, Gate& gate) -> IterGateList;
+  auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
   auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;
   auto swapGate(IterGateList pos1, IterGateList pos2) -> void;
-  auto append(const Circuit& other) -> void;
-  auto append(Circuit&& other) -> void;
+  auto append(const Circuit& circ) -> void;
   auto clear() -> void;
   auto getGateCount() const -> size_t;
   auto collectUsedBits() const -> BitList;
@@ -89,29 +90,42 @@ inline auto Circuit::getGateListEnd() -> IterGateList {
   return this->gates_.end();
 }
 
-inline auto Circuit::addGate(const Gate& gate) -> void {
-  this->gates_.push_back(gate);
-}
-
-inline auto Circuit::addGate(Gate&& gate) -> void {
+inline auto Circuit::addGate(GatePtr&& gate) -> void {
+  assert(gate);
   this->gates_.push_back(std::move(gate));
 }
 
-inline auto Circuit::insertGate(CIterGateList pos, const Gate& gate)
-  -> IterGateList {
-  return this->gates_.insert(pos, gate);
+inline auto Circuit::addGate(GatePtr& gate) -> void {
+  this->addGate(std::move(gate));
 }
 
-inline auto Circuit::insertGate(CIterGateList pos, Gate&& gate)
+inline auto Circuit::addGate(Gate*&& gate) -> void {
+  assert(gate != nullptr);
+  this->gates_.emplace_back(gate);
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, GatePtr&& gate)
   -> IterGateList {
+  assert(gate);
   return this->gates_.insert(pos, std::move(gate));
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, GatePtr& gate)
+  -> IterGateList {
+  return this->insertGate(pos, std::move(gate));
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, Gate*&& gate)
+  -> IterGateList {
+  assert(gate != nullptr);
+  return this->gates_.emplace(pos, gate);
 }
 
 inline auto Circuit::eraseGate(CIterGateList pos) -> IterGateList {
   return this->gates_.erase(pos);
 }
 
-inline auto Circuit::eraseGate(IterGateList pos, Gate& gate)
+inline auto Circuit::eraseGate(IterGateList pos, GatePtr& gate)
   -> IterGateList {
   gate = std::move(*pos);
   return this->eraseGate(pos);
