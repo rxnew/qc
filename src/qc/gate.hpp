@@ -247,6 +247,24 @@ class T : public Gate {
 };
 
 /**
+ * @brief S gate class
+ */
+class S : public Gate {
+ private:
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
+
+ public:
+  static const std::string TYPE_NAME;
+  static const Matrix TARGET_MATRIX;
+
+  template <class... Args>
+  S(Args&&... args);
+  auto clone() const -> GatePtr;
+  auto getTypeName() const -> const std::string&;
+  auto getTargetMatrix() const -> const Matrix&;
+};
+
+/**
  * @brief GateBuilder class
  */
 struct GateBuilder {
@@ -511,7 +529,7 @@ inline auto Swap::getTargetMatrix() const -> const Matrix& {
 
 inline auto T::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
-  return {1.0 + 0.0_i, 0.0_i, 0.0_i, 1.0_i};
+  return {1.0 + 0.0_i, 0.0_i, 0.0_i, sprout::exp(std::atan(1.0) * 1.0_i)};
 }
 
 template <class... Args>
@@ -529,6 +547,26 @@ inline auto T::getTargetMatrix() const -> const Matrix& {
   return T::TARGET_MATRIX;
 }
 
+inline auto S::_createTargetMatrixList()
+  -> std::initializer_list<Complex> {
+  return {1.0 + 0.0_i, 0.0_i, 0.0_i, 1.0_i};
+}
+
+template <class... Args>
+S::S(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+
+inline auto S::clone() const -> GatePtr {
+  return GatePtr(new S(*this));
+}
+
+inline auto S::getTypeName() const -> const std::string& {
+  return S::TYPE_NAME;
+}
+
+inline auto S::getTargetMatrix() const -> const Matrix& {
+  return S::TARGET_MATRIX;
+}
+
 template <class... Args>
 auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
 #define IF_GEN(type) \
@@ -542,6 +580,7 @@ auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
   IF_GEN(Z);
   IF_GEN(Swap);
   IF_GEN(T);
+  IF_GEN(S);
 
 #undef IF_GEN
 

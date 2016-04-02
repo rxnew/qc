@@ -45,6 +45,12 @@ auto ket<0>() -> Vector;
 template <>
 auto ket<1>() -> Vector;
 
+template <>
+auto ket<'+'>() -> Vector;
+
+template <>
+auto ket<'-'>() -> Vector;
+
 auto createVector(std::vector<Complex>&& vec) -> Vector;
 
 template <class T>
@@ -119,6 +125,18 @@ inline auto ket<0>() -> Vector {
 template <>
 inline auto ket<1>() -> Vector {
   return createVector({0.0_i, 1.0 + 0.0_i});
+}
+
+template <>
+inline auto ket<'+'>() -> Vector {
+  return createVector({1.0 * std::sqrt(2.0) / 2.0 + 0.0_i, \
+        1.0 * std::sqrt(2.0) / 2.0 + 0.0_i});
+}
+
+template <>
+inline auto ket<'-'>() -> Vector {
+  return createVector({1.0 * std::sqrt(2.0) / 2.0 + 0.0_i, \
+        -1.0 * std::sqrt(2.0) / 2.0 + 0.0_i});
 }
 
 inline auto createVector(std::vector<Complex>&& vec) -> Vector {
