@@ -36,6 +36,9 @@ template <>
 auto create<Complex>(const std::initializer_list<Complex>& list)
   -> Matrix;
 
+static const Vector Y_STATE;
+static const Vector A_STATE;
+
 template <int>
 auto ket() -> Vector;
 
@@ -50,6 +53,12 @@ auto ket<'+'>() -> Vector;
 
 template <>
 auto ket<'-'>() -> Vector;
+
+template <>
+auto ket<'Y'>() -> Vector;
+
+template <>
+auto ket<'A'>() -> Vector;
 
 auto createVector(std::vector<Complex>&& vec) -> Vector;
 
@@ -129,14 +138,27 @@ inline auto ket<1>() -> Vector {
 
 template <>
 inline auto ket<'+'>() -> Vector {
-  return createVector({1.0 * std::sqrt(2.0) / 2.0 + 0.0_i, \
-        1.0 * std::sqrt(2.0) / 2.0 + 0.0_i});
+  return createVector({std::sqrt(2.0) / 2.0 + 0.0_i, \
+        std::sqrt(2.0) / 2.0 + 0.0_i});
 }
 
 template <>
 inline auto ket<'-'>() -> Vector {
-  return createVector({1.0 * std::sqrt(2.0) / 2.0 + 0.0_i, \
-        -1.0 * std::sqrt(2.0) / 2.0 + 0.0_i});
+  return createVector({std::sqrt(2.0) / 2.0 + 0.0_i, \
+        std::sqrt(2.0) / -2.0 + 0.0_i});
+}
+
+template <>
+inline auto ket<'Y'>() -> Vector {
+  return createVector\
+    ({std::sqrt(2.0) / 2.0 + 0.0_i, std::sqrt(2.0) / 2.0 * 1.0_i});
+}
+
+template <>
+inline auto ket<'A'>() -> Vector {
+  return createVector\
+    ({std::sqrt(2.0) / 2.0 + 0.0_i, \
+        std::sqrt(2.0) / 2.0 * sprout::exp(std::atan(1.0) * 1.0_i)});
 }
 
 inline auto createVector(std::vector<Complex>&& vec) -> Vector {
