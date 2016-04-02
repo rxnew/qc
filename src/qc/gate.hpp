@@ -36,9 +36,9 @@ using util::matrix::operator"" _i;
  */
 class Gate {
  private:
+  class MatrixMap;
+
   using ui = unsigned int;
-  template <class T>
-  using MatrixMap = std::unordered_map<T, Matrix>;
 
   static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
 
@@ -46,22 +46,22 @@ class Gate {
   CbitList cbits_;
   TbitList tbits_;
 
-  Gate(const Tbit& tbit);
+  explicit Gate(const Tbit& tbit);
   Gate(const Tbit& tbit1, const Tbit& tbit2);
   Gate(const Cbit& cbit, const Tbit& tbit);
   Gate(const Cbit& cbit, const TbitList& tbits);
+  Gate(const Cbit& cbit, TbitList&& tbits);
   Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
   Gate(const CbitList& cbits, const Tbit& tbit);
+  Gate(CbitList&& cbits, const Tbit& tbit);
   Gate(const CbitList& cbits, const TbitList& tbits);
+  Gate(CbitList&& cbits, TbitList&& tbits);
   Gate(const Gate& other);
   Gate(Gate&&) noexcept = default;
-  auto _computeActivePolarityPattern() const -> ui;
-  auto _updateActiveMatrixMap(MatrixMap<Bitno>& matrix_map, bool is_cbit, \
-                              bool is_positive, Bitno bit) const -> void;
-  auto _updateInactiveMatrixMap(MatrixMap<ui>& matrix_map, bool is_cbit, \
-                                ui mask) const -> void;
-  auto _computeMatrix(const MatrixMap<Bitno>& active_matrix_map, \
-                      const MatrixMap<ui>& inactive_matrix_map) const -> Matrix;
+
+  auto _computeMatrix(const MatrixMap& matrix_map) const -> Matrix;
+  auto _simulate(const Vector& input, const MatrixMap& matrix_map) const
+    -> Vector;
 
  public:
   static const std::string TYPE_NAME;
@@ -69,6 +69,7 @@ class Gate {
 
   virtual ~Gate();
   auto operator=(const Gate& other) -> Gate&;
+  auto operator=(Gate&& other) -> Gate&;
   auto operator==(const Gate& other) const -> bool;
   auto operator!=(const Gate& other) const -> bool;
   virtual auto clone() const -> GatePtr = 0;
@@ -76,16 +77,45 @@ class Gate {
   auto getCbitList() const -> const CbitList&;
   auto getTbitList() const -> const TbitList&;
   auto setCbits(const CbitList& cbits) -> void;
+  auto setCbits(CbitList&& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
+  auto setTbits(TbitList&& tbits) -> void;
   auto isIncludedInCbitList(Bitno bit) const -> bool;
   auto isIncludedInTbitList(Bitno bit) const -> bool;
+  auto collectUsedBits() const -> BitList;
   virtual auto getTargetMatrix() const -> const Matrix& = 0;
   virtual auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
   auto computeMatrix(const BitList& bits) const -> Matrix;
   auto computeMatrix() const -> Matrix;
-  auto collectUsedBits() const -> BitList;
+  auto simulate(const Vector& input, const std::set<Bitno>& bits) const
+    -> Vector;
+  auto simulate(const Vector& input, const BitList& bits) const -> Vector;
+  auto simulate(const Vector& input) const -> Vector;
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os = std::cout) const -> void;
+
+ private:
+  class MatrixMap {
+   private:
+    const Gate& gate_;
+    ui active_polarity_pattern_;
+    ui polarity_pattern_mask_;
+
+    auto _init() -> void;
+    auto _setActivePolarityPattern() -> void;
+    auto _updateActive(bool is_cbit, Bitno bit) -> void;
+    auto _updateInactive(bool is_cbit) -> void;
+    auto _mask(ui polarity_pattern) const -> bool;
+    auto _isActive() const -> bool;
+
+   public:
+    // matrix of active input pattern of each target
+    std::unordered_map<Bitno, Matrix> active_;
+    // matrix of inactive each input pattern
+    std::unordered_map<ui, Matrix> inactive_;
+
+    MatrixMap(const Gate& gate, const std::set<Bitno>& bits);
+  };
 };
 
 /**
@@ -244,6 +274,10 @@ inline Gate::Gate(const Cbit& cbit, const TbitList& tbits)
   : cbits_{cbit}, tbits_(tbits) {
 }
 
+inline Gate::Gate(const Cbit& cbit, TbitList&& tbits)
+  : cbits_{cbit}, tbits_(std::move(tbits)) {
+}
+
 inline Gate::Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit)
   : cbits_{cbit1, cbit2}, tbits_{tbit} {
 }
@@ -252,8 +286,16 @@ inline Gate::Gate(const CbitList& cbits, const Tbit& tbit) :
   cbits_(cbits), tbits_{tbit} {
 }
 
+inline Gate::Gate(CbitList&& cbits, const Tbit& tbit) :
+  cbits_(std::move(cbits)), tbits_{tbit} {
+}
+
 inline Gate::Gate(const CbitList& cbits, const TbitList& tbits) :
   cbits_(cbits), tbits_(tbits) {
+}
+
+inline Gate::Gate(CbitList&& cbits, TbitList&& tbits) :
+  cbits_(std::move(cbits)), tbits_(std::move(tbits)) {
 }
 
 inline Gate::Gate(const Gate& other)
@@ -276,8 +318,16 @@ inline auto Gate::setCbits(const CbitList& cbits) -> void {
   this->cbits_ = cbits;
 }
 
+inline auto Gate::setCbits(CbitList&& cbits) -> void {
+  this->cbits_ = std::move(cbits);
+}
+
 inline auto Gate::setTbits(const TbitList& tbits) -> void {
   this->tbits_ = tbits;
+}
+
+inline auto Gate::setTbits(TbitList&& tbits) -> void {
+  this->tbits_ = std::move(tbits);
 }
 
 inline auto Gate::isIncludedInCbitList(Bitno bit) const -> bool {
@@ -290,12 +340,40 @@ inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
   return this->tbits_.count(Tbit(bit));
 }
 
+inline auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  return std::move(this->_computeMatrix(MatrixMap(*this, bits)));
+}
+
 inline auto Gate::computeMatrix(const BitList& bits) const -> Matrix {
   return this->computeMatrix(util::container::convert<std::set>(bits));
 }
 
 inline auto Gate::computeMatrix() const -> Matrix {
   return this->computeMatrix(this->collectUsedBits());
+}
+
+inline auto Gate::simulate(const Vector& input, const std::set<Bitno>& bits) \
+  const -> Vector {
+  assert(input.rows() == std::pow(2, bits.size()));
+  return std::move(this->_simulate(input, MatrixMap(*this, bits)));
+}
+
+inline auto Gate::simulate(const Vector& input, const BitList& bits) const
+  -> Vector {
+  auto ordered_bits = util::container::convert<std::set>(bits);
+  return this->simulate(input, ordered_bits);
+}
+
+inline auto Gate::simulate(const Vector& input) const -> Vector {
+  return this->simulate(input, this->collectUsedBits());
+}
+
+inline auto Gate::MatrixMap::_mask(ui polarity_pattern) const -> bool {
+  return polarity_pattern & polarity_pattern_mask_;
+}
+
+inline auto Gate::MatrixMap::_isActive() const -> bool {
+  return this->_mask(this->active_polarity_pattern_);
 }
 
 inline auto V::_createTargetMatrixList()
@@ -306,7 +384,7 @@ inline auto V::_createTargetMatrixList()
 }
 
 template <class... Args>
-V::V(Args&&... args) : Gate(args...) {}
+V::V(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto V::clone() const -> GatePtr {
   return GatePtr(new V(*this));
@@ -328,7 +406,7 @@ inline auto VPlus::_createTargetMatrixList()
 }
 
 template <class... Args>
-VPlus::VPlus(Args&&... args) : Gate(args...) {}
+VPlus::VPlus(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto VPlus::clone() const -> GatePtr {
   return GatePtr(new VPlus(*this));
@@ -349,7 +427,7 @@ inline auto Hadamard::_createTargetMatrixList()
 }
 
 template <class... Args>
-Hadamard::Hadamard(Args&&... args) : Gate(args...) {
+Hadamard::Hadamard(Args&&... args) : Gate(std::forward<Args>(args)...) {
   assert(this->cbits_.empty());
   assert(static_cast<int>(this->tbits_.size()) == 1);
 }
@@ -372,7 +450,7 @@ inline auto Not::_createTargetMatrixList()
 }
 
 template <class... Args>
-Not::Not(Args&&... args) : Gate(args...) {}
+Not::Not(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto Not::clone() const -> GatePtr {
   return GatePtr(new Not(*this));
@@ -392,7 +470,7 @@ inline auto Z::_createTargetMatrixList()
 }
 
 template <class... Args>
-Z::Z(Args&&... args) : Gate(args...) {}
+Z::Z(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto Z::clone() const -> GatePtr {
   return GatePtr(new Z(*this));
@@ -415,7 +493,7 @@ inline auto Swap::_createTargetMatrixList()
 }
 
 template <class... Args>
-Swap::Swap(Args&&... args) : Gate(args...) {
+Swap::Swap(Args&&... args) : Gate(std::forward<Args>(args)...) {
   assert(static_cast<int>(this->tbits_.size()) == 2);
 }
 
@@ -437,7 +515,7 @@ inline auto T::_createTargetMatrixList()
 }
 
 template <class... Args>
-T::T(Args&&... args) : Gate(args...) {}
+T::T(Args&&... args) : Gate(std::forward<Args>(args)...) {}
 
 inline auto T::clone() const -> GatePtr {
   return GatePtr(new T(*this));
@@ -455,7 +533,7 @@ template <class... Args>
 auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
 #define IF_GEN(type) \
   if(util::string::equalCaseInsensitive(str, type::TYPE_NAME)) \
-    return GatePtr(new type(args...))
+    return GatePtr(new type(std::forward<Args>(args)...))
 
   IF_GEN(V);
   IF_GEN(VPlus);

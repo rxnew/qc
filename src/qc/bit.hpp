@@ -6,6 +6,7 @@
 #pragma once
 
 #include <iostream>
+#include <utility>
 #include <cassert>
 
 namespace qc {
@@ -18,11 +19,12 @@ class Bit {
   Bitno bitno_;
 
   Bit();
-  Bit(Bitno bitno);
+  explicit Bit(Bitno bitno);
   Bit(const Bit& other);
   Bit(Bit&&) noexcept = default;
   virtual ~Bit();
   auto operator=(const Bit& other) -> Bit&;
+  auto operator=(Bit&& other) -> Bit&;
   auto operator==(const Bit& other) const -> bool;
   auto operator!=(const Bit& other) const -> bool;
   auto operator<(const Bit& other) const -> bool;
@@ -34,12 +36,14 @@ class Bit {
 class Cbit : public Bit {
  public:
   bool polarity_;
+
   template <class... Args>
   Cbit(Args&&... args);
   Cbit(Bitno bitno, bool polarity);
   Cbit(const Cbit& other);
   Cbit(Cbit&&) noexcept = default;
   auto operator=(const Cbit& other) -> Cbit&;
+  auto operator=(Cbit&& other) -> Cbit&;
   auto operator==(const Cbit& other) const -> bool;
   auto operator!=(const Cbit& other) const -> bool;
   auto operator<(const Cbit& other) const -> bool;
@@ -75,6 +79,10 @@ inline auto Bit::operator=(const Bit& other) -> Bit& {
   return *this;
 }
 
+inline auto Bit::operator=(Bit&& other) -> Bit& {
+  return this->operator=(other);
+}
+
 inline auto Bit::operator==(const Bit& other) const -> bool{
   return this->bitno_ == other.bitno_;
 }
@@ -88,7 +96,8 @@ inline auto Bit::operator<(const Bit& other) const -> bool {
 }
 
 template <class... Args>
-inline Cbit::Cbit(Args&&... args) : Bit(args...), polarity_(true) {
+inline Cbit::Cbit(Args&&... args)
+  : Bit(std::forward<Args>(args)...), polarity_(true) {
 }
 
 inline Cbit::Cbit(Bitno bitno, bool polarity)
@@ -105,6 +114,10 @@ inline auto Cbit::operator=(const Cbit& other) -> Cbit& {
   return *this;
 }
 
+inline auto Cbit::operator=(Cbit&& other) -> Cbit& {
+  return this->operator=(other);
+}
+
 inline auto Cbit::operator==(const Cbit& other) const -> bool {
   return Bit::operator==(other) && this->polarity_ == other.polarity_;
 }
@@ -119,7 +132,7 @@ inline auto Cbit::operator<(const Cbit& other) const -> bool {
 }
 
 template <class... Args>
-inline Tbit::Tbit(Args&&... args) : Bit(args...) {
+inline Tbit::Tbit(Args&&... args) : Bit(std::forward<Args>(args)...) {
 }
 
 inline auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream& {

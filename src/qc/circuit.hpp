@@ -26,8 +26,10 @@ class Circuit {
  public:
   Circuit();
   Circuit(const Circuit& other);
+  Circuit(Circuit&& other) noexcept;
   ~Circuit();
   auto operator=(const Circuit& other) -> Circuit&;
+  auto operator=(Circuit&& other) -> Circuit&;
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
   auto getGateList() const -> const GateList&;
@@ -51,6 +53,7 @@ class Circuit {
   auto computeZeroVectorMap() const -> std::map<Bitno, Vector>;
   auto simulate() const -> Vector;
   auto simulate(const Vector& input) const -> Vector;
+  auto simulate(const Vector& input, const Matrix& matrix) const -> Vector;
   auto simulate(std::vector<Complex>&& input) const -> Vector;
   auto simulate(const std::map<Bitno, Vector>& input) const -> Vector;
   auto print(std::ostream& os = std::cout) const -> void;
@@ -59,7 +62,16 @@ class Circuit {
 inline Circuit::Circuit() {
 }
 
+inline Circuit::Circuit(Circuit&& other) noexcept
+  : gates_(std::move(other.gates_)) {
+}
+
 inline Circuit::~Circuit() {
+}
+
+inline auto Circuit::operator=(Circuit&& other) -> Circuit& {
+  this->gates_ = std::move(other.gates_);
+  return *this;
 }
 
 inline auto Circuit::operator!=(const Circuit& other) const -> bool {
@@ -148,8 +160,8 @@ inline auto Circuit::simulate() const -> Vector {
   return this->simulate(this->computeZeroVectorMap());
 }
 
-inline auto Circuit::simulate(const Vector& input) const -> Vector {
-  auto matrix = this->computeMatrix();
+inline auto Circuit::simulate(const Vector& input, const Matrix& matrix) const
+  -> Vector {
   assert(input.rows() == matrix.cols());
   return std::move(matrix * input);
 }

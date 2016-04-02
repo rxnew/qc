@@ -22,54 +22,32 @@ DEF_GATE_MEMBER_VAR(T);
 
 #undef DEF_GATE_MEMBER_VAR
 
-auto Gate::_computeActivePolarityPattern() const -> ui {
-  auto ordered_cbits = util::container::convert<std::set>(this->cbits_);
-  ui result = 0;
-  for(const auto& cbit : ordered_cbits) {
-    result <<= 1;
-    if(cbit.polarity_) result++;
-  }
-  return result;
-}
+auto Gate::_computeMatrix(const MatrixMap& matrix_map) const -> Matrix {
+  assert(!matrix_map.active_.empty());
 
-auto Gate::_updateActiveMatrixMap(MatrixMap<Bitno>& matrix_map, \
-                                  bool is_cbit, bool is_active, \
-                                  Bitno bit) const -> void {
-  using util::matrix::ketbra;
-
-  auto c_matrix = is_active ? ketbra<1>() : ketbra<0>();
-  for(auto& matrix : matrix_map) {
-    Matrix tmp;
-    if(bit == matrix.first) tmp = this->getTargetMatrix();
-    else if(is_cbit)        tmp = c_matrix;
-    else                    tmp = util::matrix::identity();
-    matrix.second = util::matrix::tensor(matrix.second, tmp);
-  }
-}
-
-auto Gate::_updateInactiveMatrixMap(MatrixMap<ui>& matrix_map, \
-                                    bool is_cbit, ui mask) const -> void {
-  using util::matrix::ketbra;
-
-  for(auto& matrix : matrix_map) {
-    Matrix tmp;
-    if(is_cbit) tmp = matrix.first & mask ? ketbra<1>() : ketbra<0>();
-    else        tmp = util::matrix::identity();
-    matrix.second = util::matrix::tensor(matrix.second, tmp);
-  }
-}
-
-auto Gate::_computeMatrix(const MatrixMap<Bitno>& active_matrix_map, \
-                          const MatrixMap<ui>& inactive_matrix_map) const
-  -> Matrix {
-  auto size = active_matrix_map.begin()->second.rows();
+  auto size = matrix_map.active_.begin()->second.rows();
   auto result = util::matrix::identity(size);
-  for(const auto& active_matrix : active_matrix_map) {
+  for(const auto& active_matrix : matrix_map.active_) {
     auto matrix = active_matrix.second;
-    for(const auto& inactive_matrix : inactive_matrix_map) {
+    for(const auto& inactive_matrix : matrix_map.inactive_) {
       matrix += inactive_matrix.second;
     }
-    result = result * matrix;
+    result = matrix * result;
+  }
+  return std::move(result);
+}
+
+auto Gate::_simulate(const Vector& input, const MatrixMap& matrix_map) const
+  -> Vector {
+  assert(!matrix_map.active_.empty());
+
+  auto result = input;
+  for(const auto& active_matrix : matrix_map.active_) {
+    auto matrix = active_matrix.second;
+    for(const auto& inactive_matrix : matrix_map.inactive_) {
+      matrix += inactive_matrix.second;
+    }
+    result = matrix * result;
   }
   return std::move(result);
 }
@@ -95,6 +73,12 @@ auto Gate::operator=(const Gate& other) -> Gate& {
   return *this;
 }
 
+auto Gate::operator=(Gate&& other) -> Gate& {
+  this->cbits_ = std::move(other.cbits_);
+  this->tbits_ = std::move(other.tbits_);
+  return *this;
+}
+
 /**
  * @fn bool operator==(const Gate& other) const
  * @brief equality operator
@@ -106,32 +90,6 @@ auto Gate::operator==(const Gate& other) const -> bool {
   if(this->cbits_ != other.cbits_) return false;
   if(this->tbits_ != other.tbits_) return false;
   return true;
-}
-
-auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
-  ui matrix_count = std::pow(2, this->cbits_.size());
-  ui mask = 1 << (this->cbits_.size() - 1);
-  auto active_pattern = this->_computeActivePolarityPattern();
-
-  MatrixMap<Bitno> active_matrix_map;
-  for(const auto& tbit : this->tbits_) {
-    active_matrix_map[tbit.bitno_] = util::matrix::identity(1);
-  }
-  MatrixMap<ui> inactive_matrix_map;
-  for(ui i = 0; i < matrix_count; i++) {
-    if(i != active_pattern) inactive_matrix_map[i] = util::matrix::identity(1);
-  }
-
-  for(const auto& bit : bits) {
-    auto is_cbit = this->isIncludedInCbitList(bit);
-    auto is_active = mask & active_pattern;
-    this->_updateActiveMatrixMap(active_matrix_map, is_cbit, is_active, bit);
-    this->_updateInactiveMatrixMap(inactive_matrix_map, is_cbit, mask);
-    if(is_cbit) mask >>= 1;
-  }
-
-  return \
-    std::move(this->_computeMatrix(active_matrix_map, inactive_matrix_map));
 }
 
 /**
@@ -184,6 +142,65 @@ auto Gate::print(std::ostream& os) const -> void {
   os << R"(\ )";
   //os << this->getFunction();
   os << std::endl;
+}
+
+auto Gate::MatrixMap::_init() -> void {
+  this->_setActivePolarityPattern();
+
+  ui matrix_count = std::pow(2, this->gate_.cbits_.size());
+
+  for(const auto& tbit : this->gate_.tbits_) {
+    this->active_[tbit.bitno_] = util::matrix::identity(1);
+  }
+  for(ui i = 0; i < matrix_count; i++) {
+    if(i == this->active_polarity_pattern_) continue;
+    this->inactive_[i] = util::matrix::identity(1);
+  }
+}
+
+auto Gate::MatrixMap::_setActivePolarityPattern() -> void {
+  auto ordered_cbits = util::container::convert<std::set>(this->gate_.cbits_);
+  this->active_polarity_pattern_ = 0;
+  for(const auto& cbit : ordered_cbits) {
+    this->active_polarity_pattern_ <<= 1;
+    if(cbit.polarity_) this->active_polarity_pattern_++;
+  }
+}
+
+auto Gate::MatrixMap::_updateActive(bool is_cbit, Bitno bit) -> void {
+  using util::matrix::ketbra;
+
+  auto c_matrix = this->_isActive() ? ketbra<1>() : ketbra<0>();
+  for(auto& matrix : this->active_) {
+    Matrix tmp;
+    if(bit == matrix.first) tmp = this->gate_.getTargetMatrix();
+    else if(is_cbit)        tmp = c_matrix;
+    else                    tmp = util::matrix::identity();
+    matrix.second = util::matrix::tensor(matrix.second, tmp);
+  }
+}
+
+auto Gate::MatrixMap::_updateInactive(bool is_cbit) -> void {
+  using util::matrix::ketbra;
+
+  for(auto& matrix : this->inactive_) {
+    Matrix tmp;
+    if(is_cbit) tmp = this->_mask(matrix.first) ? ketbra<1>() : ketbra<0>();
+    else        tmp = util::matrix::identity();
+    matrix.second = util::matrix::tensor(matrix.second, tmp);
+  }
+}
+
+Gate::MatrixMap::MatrixMap(const Gate& gate, const std::set<Bitno>& bits)
+  : gate_(gate) {
+  this->_init();
+  this->polarity_pattern_mask_ = 1 << (this->gate_.cbits_.size() - 1);
+  for(const auto& bit : bits) {
+    auto is_cbit = gate.isIncludedInCbitList(bit);
+    this->_updateActive(is_cbit, bit);
+    this->_updateInactive(is_cbit);
+    if(is_cbit) this->polarity_pattern_mask_ >>= 1;
+  }
 }
 
 auto Swap::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
