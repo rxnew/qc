@@ -5,14 +5,12 @@
 
 #pragma once
 
-#include <fstream>
+#include <list>
 
 #include "gate.hpp"
 
 namespace qc {
 class Circuit;
-
-using CircuitPtr = std::shared_ptr<Circuit>;
 
 using GateList = std::list<GatePtr>;
 using IterGateList = GateList::iterator;
@@ -22,107 +20,153 @@ using CIterGateList = GateList::const_iterator;
  * @brief quantum circuit class
  */
 class Circuit {
- protected:
+ private:
   GateList gates_;
-  DDMFMgr ddmf_mgr_;
-  std::map<Bitno, DDMF> initial_ddmf_;
 
  public:
   Circuit();
   Circuit(const Circuit& other);
-  virtual ~Circuit();
-  Circuit& operator=(const Circuit& other);
-  bool operator==(const Circuit& other) const;
-  bool operator!=(const Circuit& other) const;
-  inline const GateList& getGateList() const {
-    return this->gates_;
-  }
-  inline void addGate(const GatePtr& gate) {
-    assert(gate.get() != nullptr);
-    this->gates_.push_back(gate);
-  }
-  inline void addGate(Gate*&& gate) {
-    assert(gate != nullptr);
-    this->gates_.emplace_back(gate);
-  }
-  inline CIterGateList insertGate(CIterGateList pos, const GatePtr& gate) {
-    assert(pos != this->gates_.cend());
-    assert(gate.get() != nullptr);
-    return this->gates_.insert(pos, gate);
-  }
-  inline CIterGateList insertGate(CIterGateList pos, Gate*&& gate) {
-    assert(pos != this->gates_.cend());
-    assert(gate != nullptr);
-    return this->gates_.emplace(pos, gate);
-  }
-  inline void insertGate(const GatePtr& pos, const GatePtr& gate) {
-    insertGate(this->findGate(pos), gate);
-  }
-  inline void insertGate(const GatePtr& pos, Gate*&& gate) {
-    insertGate(this->findGate(pos), std::move(gate));
-  }
-  inline void eraseGate(const GatePtr& gate) {
-    this->gates_.remove(gate);
-  }
-  inline CIterGateList eraseGate(CIterGateList pos) {
-    return this->gates_.erase(pos);
-  }
-  inline void append(const Circuit& circ) {
-    for(const auto& gate : circ.gates_)
-      this->addGate(new Gate(*gate));
-  }
-  inline GatePtr getFirstGate() const {
-    return this->gates_.front();
-  }
-  inline GatePtr getLastGate() const {
-    return this->gates_.back();
-  }
-  GatePtr getAnyGate(int n) const;
-  int getGateIndex(const GatePtr& gate) const;
-  int countGates() const;
-  BitList getUsedBits() const;
-  inline CIterGateList findGate(const GatePtr& gate) const {
-    return std::find(this->gates_.cbegin(), this->gates_.cend(), gate);
-  }
-  inline bool isExistGate(const GatePtr& gate) const {
-    return this->gates_.cend() != this->findGate(gate);
-  }
-  void calcDDMF();
-  DDMF getDDMF(Bitno bitno, const StepPtr& step) const;
-  inline DDMF getDDMF(Bitno bitno) const {
-    return this->getDDMF(bitno, this->getLastStep());
-  }
-  std::map<Bitno, DDMF> getDDMF(const StepPtr& step) const;
-  inline std::map<Bitno, DDMF> getDDMF() const {
-    return this->getDDMF(this->getLastStep());
-  }
-  inline void print(std::ostream& os) const {
-    for(const auto& gate : this->gates_)
-      gate->print(os);
-  }
-  void open(const std::string& filename);
-  void open(const char* filename);
+  Circuit(Circuit&& other) noexcept;
+  ~Circuit();
+  auto operator=(const Circuit& other) -> Circuit&;
+  auto operator=(Circuit&& other) -> Circuit&;
+  auto operator==(const Circuit& other) const -> bool;
+  auto operator!=(const Circuit& other) const -> bool;
+  auto getGateList() const -> const GateList&;
+  auto getGateListBegin() -> IterGateList;
+  auto getGateListEnd() -> IterGateList;
+  auto addGate(GatePtr&& gate) -> void;
+  auto addGate(GatePtr& gate) -> void;
+  auto addGate(Gate*&& gate) -> void;
+  auto insertGate(CIterGateList pos, GatePtr&& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, GatePtr& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, Gate*&& gate) -> IterGateList;
+  auto eraseGate(CIterGateList pos) -> IterGateList;
+  auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
+  auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;
+  auto swapGate(IterGateList pos1, IterGateList pos2) -> void;
+  auto append(const Circuit& circ) -> void;
+  auto clear() -> void;
+  auto getGateCount() const -> size_t;
+  auto collectUsedBits() const -> BitList;
+  auto computeMatrix() const -> Matrix;
+  auto computeZeroVectorMap() const -> std::map<Bitno, Vector>;
+  auto simulate() const -> Vector;
+  auto simulate(const Vector& input) const -> Vector;
+  auto simulate(const Vector& input, const Matrix& matrix) const -> Vector;
+  auto simulate(std::vector<Complex>&& input) const -> Vector;
+  auto simulate(const std::map<Bitno, Vector>& input) const -> Vector;
+  auto print(std::ostream& os = std::cout) const -> void;
 };
 
-/**
- * @brief management quantum circuit file class
- */
-class OpenFile {
- private:
-  CircuitPtr circ_;
-  void add(const std::string& type, const CbitList& cbits,
-           const TbitList& tbits);
-  void add(const std::string& type, const CbitList& cbits,
-           const TbitList& tbits, const StepPtr& step);
-  bool checkLine(std::string& line, int& pstate, int& judge) const;
-  std::string getWord(std::string& line) const;
-  std::string getBitUntilSpace(std::string& line) const;
-  std::string getExtension(const std::string& filename) const;
-  void processOneLine(std::string line, const StepPtr& step,
-                      int& pstate, int& judge);
-  void openQuantumObjectFile(const std::string& filename);
+inline Circuit::Circuit() {
+}
 
- public:
-  void operator()(const CircuitPtr& circ, const std::string& filename);
-};
+inline Circuit::Circuit(Circuit&& other) noexcept
+  : gates_(std::move(other.gates_)) {
+}
+
+inline Circuit::~Circuit() {
+}
+
+inline auto Circuit::operator=(Circuit&& other) -> Circuit& {
+  this->gates_ = std::move(other.gates_);
+  return *this;
+}
+
+inline auto Circuit::operator!=(const Circuit& other) const -> bool {
+  return !(*this == other);
+}
+
+inline auto Circuit::getGateList() const -> const GateList& {
+  return this->gates_;
+}
+
+inline auto Circuit::getGateListBegin() -> IterGateList {
+  return this->gates_.begin();
+}
+
+inline auto Circuit::getGateListEnd() -> IterGateList {
+  return this->gates_.end();
+}
+
+inline auto Circuit::addGate(GatePtr&& gate) -> void {
+  assert(gate);
+  this->gates_.push_back(std::move(gate));
+}
+
+inline auto Circuit::addGate(GatePtr& gate) -> void {
+  this->addGate(std::move(gate));
+}
+
+inline auto Circuit::addGate(Gate*&& gate) -> void {
+  assert(gate != nullptr);
+  this->gates_.emplace_back(gate);
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, GatePtr&& gate)
+  -> IterGateList {
+  assert(gate);
+  return this->gates_.insert(pos, std::move(gate));
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, GatePtr& gate)
+  -> IterGateList {
+  return this->insertGate(pos, std::move(gate));
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, Gate*&& gate)
+  -> IterGateList {
+  assert(gate != nullptr);
+  return this->gates_.emplace(pos, gate);
+}
+
+inline auto Circuit::eraseGate(CIterGateList pos) -> IterGateList {
+  return this->gates_.erase(pos);
+}
+
+inline auto Circuit::eraseGate(IterGateList pos, GatePtr& gate)
+  -> IterGateList {
+  gate = std::move(*pos);
+  return this->eraseGate(pos);
+}
+
+inline auto Circuit::eraseGate(CIterGateList first, CIterGateList last)
+  -> IterGateList {
+  return this->gates_.erase(first, last);
+}
+
+inline auto Circuit::swapGate(IterGateList pos1, IterGateList pos2) -> void {
+  assert(pos1 != this->gates_.end());
+  assert(pos2 != this->gates_.end());
+  std::swap(*pos1, *pos2);
+}
+
+inline auto Circuit::clear() -> void {
+  this->gates_.clear();
+}
+
+inline auto Circuit::getGateCount() const -> size_t {
+  return this->gates_.size();
+}
+
+inline auto Circuit::computeZeroVectorMap() const -> std::map<Bitno, Vector> {
+  using util::container::toMap;
+  using util::matrix::ket;
+  return std::move(toMap<Vector>(this->collectUsedBits(), ket<0>()));
+}
+
+inline auto Circuit::simulate() const -> Vector {
+  return this->simulate(this->computeZeroVectorMap());
+}
+
+inline auto Circuit::simulate(const Vector& input, const Matrix& matrix) const
+  -> Vector {
+  assert(input.rows() == matrix.cols());
+  return std::move(matrix * input);
+}
+
+inline auto Circuit::simulate(std::vector<Complex>&& input) const -> Vector {
+  return this->simulate(util::matrix::createVector(std::move(input)));
+}
 }
