@@ -64,9 +64,6 @@ class Gate {
     -> Vector;
 
  public:
-  static const std::string TYPE_NAME;
-  static const Matrix TARGET_MATRIX;
-
   virtual ~Gate();
   auto operator=(const Gate& other) -> Gate&;
   auto operator=(Gate&& other) -> Gate&;
