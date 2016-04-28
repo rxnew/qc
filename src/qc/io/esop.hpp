@@ -15,9 +15,10 @@ namespace io {
 class Esop {
  private:
   using IfExc = exc::IllegalFormatException;
+  using Messages = std::array<std::string, 7>;
   using Counts = std::map<std::string, size_t>;
 
-  static std::array<std::string, 2> _err_msgs;
+  static Messages _err_msgs;
 
   static auto _isCommentLine(const std::string& line) -> bool;
   static auto _isEndLine(const std::string& line) -> bool;
@@ -33,8 +34,10 @@ class Esop {
     throw(IfExc) -> GatePtr;
 
  public:
-  static auto open(const std::string& filename) -> Circuit;
-  static auto open(const char* const filename) -> Circuit;
+  static auto open(const std::string& filename)
+    throw(IfExc, std::ios_base::failure) -> Circuit;
+  static auto open(const char* const filename)
+    throw(IfExc, std::ios_base::failure) -> Circuit;
 };
 
 inline auto Esop::_isCommentLine(const std::string& line) -> bool {
@@ -45,7 +48,8 @@ inline auto Esop::_isEndLine(const std::string& line) -> bool {
   return line == ".e";
 }
 
-inline auto Esop::open(const char* const filename) -> Circuit {
+inline auto Esop::open(const char* const filename)
+  throw(IfExc, std::ios_base::failure) -> Circuit {
   return Esop::open(std::string(filename));
 }
 }

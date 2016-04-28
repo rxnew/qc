@@ -4,7 +4,7 @@ set(TARGET qc)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-include_directories(${INCLUDE_DIR} ${SOURCE_DIR}/util)
+include_directories(${INCLUDE_DIR} ${SOURCE_DIR})
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 file(GLOB_RECURSE SOURCE_LIST ${SOURCE_DIR}/*.cpp)
