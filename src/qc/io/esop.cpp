@@ -6,9 +6,9 @@ Esop::Messages Esop::_err_msgs = {
   "Illegal format of headers. Too many or few columns.",
   "Illegal format of headers. Too many or few rows.",
   "Illegal format of headers. Unknown parameter.",
-  "Illegal format of terms. Too many or few columns."
-  "Illegal format of terms. Too many or few rows."
-  "Illegal format of terms. Too many or few inputs or outputs."
+  "Illegal format of terms. Too many or few columns.",
+  "Illegal format of terms. Too many or few rows.",
+  "Illegal format of terms. Too many or few inputs or outputs.",
   "Illegal format of terms. Unknown parameter."
 };
 
@@ -69,9 +69,8 @@ auto Esop::_getGate(const std::string& line, const Counts& counts)
   return std::move(GatePtr(new Not(cbits, tbits)));
 }
 
-auto Esop::open(const std::string& filename)
-  throw(IfExc, std::ios_base::failure) -> Circuit {
-  Circuit circuit;
+auto Esop::input(Circuit& circuit, const std::string& filename)
+  throw(IfExc, std::ios_base::failure) -> void {
   std::ifstream ifs(filename);
 
   if(ifs.fail()) throw std::ios_base::failure("Cannot open file.");
@@ -89,8 +88,6 @@ auto Esop::open(const std::string& filename)
   if(counts["term"] != circuit.getGateCount()) {
     throw IfExc(Esop::_err_msgs[5]);
   }
-
-  return std::move(circuit);
 }
 }
 }

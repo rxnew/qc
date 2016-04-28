@@ -1,6 +1,6 @@
 /**
  * @file esop.hpp
- * @brief header of Esop class
+ * @brief header of qc::io::Esop class
  */
 
 #pragma once
@@ -34,6 +34,8 @@ class Esop {
     throw(IfExc) -> GatePtr;
 
  public:
+  static auto input(Circuit& circuit, const std::string& filename)
+    throw(IfExc, std::ios_base::failure) -> void;
   static auto open(const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> Circuit;
   static auto open(const char* const filename)
@@ -46,6 +48,13 @@ inline auto Esop::_isCommentLine(const std::string& line) -> bool {
 
 inline auto Esop::_isEndLine(const std::string& line) -> bool {
   return line == ".e";
+}
+
+inline auto Esop::open(const std::string& filename)
+  throw(IfExc, std::ios_base::failure) -> Circuit {
+  Circuit circuit;
+  Esop::input(circuit, filename);
+  return std::move(circuit);
 }
 
 inline auto Esop::open(const char* const filename)
