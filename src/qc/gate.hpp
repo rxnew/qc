@@ -119,6 +119,24 @@ class Gate {
 };
 
 /**
+ * @brief I gate class
+ */
+class I : public Gate {
+ private:
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
+
+ public:
+  static const std::string TYPE_NAME;
+  static const Matrix TARGET_MATRIX;
+
+  template <class... Args>
+  I(Args&&... args);
+  auto clone() const -> GatePtr;
+  auto getTypeName() const -> const std::string&;
+  auto getTargetMatrix() const -> const Matrix&;
+};
+
+/**
  * @brief V gate class
  */
 class V : public Gate {
@@ -394,6 +412,26 @@ inline auto Gate::MatrixMap::_isActive() const -> bool {
   return this->_mask(this->active_polarity_pattern_);
 }
 
+inline auto I::_createTargetMatrixList()
+  -> std::initializer_list<Complex> {
+  return {1.0 + 0.0_i, 0.0_i, 0.0_i, 1.0 + 0.0_i};
+}
+
+template <class... Args>
+I::I(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+
+inline auto I::clone() const -> GatePtr {
+  return GatePtr(new I(*this));
+}
+
+inline auto I::getTypeName() const -> const std::string& {
+  return I::TYPE_NAME;
+}
+
+inline auto I::getTargetMatrix() const -> const Matrix& {
+  return I::TARGET_MATRIX;
+}
+
 inline auto V::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   constexpr auto a = 0.5 + 0.5_i;
@@ -573,6 +611,7 @@ auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
   if(util::string::equalCaseInsensitive(str, type::TYPE_NAME)) \
     return GatePtr(new type(std::forward<Args>(args)...))
 
+  IF_GEN(I);
   IF_GEN(V);
   IF_GEN(VPlus);
   IF_GEN(Hadamard);
