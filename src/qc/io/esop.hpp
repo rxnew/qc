@@ -20,6 +20,8 @@ class Esop {
 
   static Messages _err_msgs;
 
+  Esop() = delete;
+
   static auto _isCommentLine(const std::string& line) -> bool;
   static auto _isEndLine(const std::string& line) -> bool;
   static auto _setCount(Counts& counts, const std::string& line)
