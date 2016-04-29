@@ -11,9 +11,9 @@
 #include <memory>
 #include <algorithm>
 
-#include "util/container.hpp"
-#include "util/string.hpp"
-#include "util/matrix.hpp"
+#include "../util/container.hpp"
+#include "../util/string.hpp"
+#include "../util/matrix.hpp"
 
 #include "bit.hpp"
 
