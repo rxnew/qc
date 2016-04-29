@@ -10,11 +10,6 @@ auto input(Circuit& circuit, const std::string& filename)
   throw std::ios_base::failure("Unknown extension: '" + extension + "'.");
 }
 
-auto input(Circuit& circuit, const char* const filename)
-  throw(exc::IllegalFormatException, std::ios_base::failure) -> void {
-  return io::input(circuit, filename);
-}
-
 auto getExtension(const std::string& filename) -> std::string {
   auto strs = util::string::split(filename, '.', false);
   if(strs.size() < 2) return std::string();
