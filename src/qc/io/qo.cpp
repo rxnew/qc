@@ -103,7 +103,7 @@ auto Qo::input(Circuit& circuit, const std::string& filename)
   }
 }
 
-auto Qo::output(Circuit& circuit, const std::string& filename)
+auto Qo::output(const Circuit& circuit, const std::string& filename)
   throw(std::ios_base::failure) -> void {
   std::ofstream ofs(util::string::addExtension(filename, Qo::extension));
   if(ofs.fail()) throw std::ios_base::failure("Cannot open file.");
