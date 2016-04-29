@@ -3,8 +3,6 @@
 #include <utility>
 #include <map>
 
-#include "container/polymorphism_list.hpp"
-
 namespace util {
 namespace container {
 // public

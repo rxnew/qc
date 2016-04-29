@@ -12,6 +12,7 @@ namespace qc {
     util::matrix::create(type::_createTargetMatrixList());
 
 DEF_GATE_MEMBER_VAR(Gate);
+DEF_GATE_MEMBER_VAR(I);
 DEF_GATE_MEMBER_VAR(V);
 DEF_GATE_MEMBER_VAR(VPlus);
 DEF_GATE_MEMBER_VAR(Hadamard);
@@ -19,6 +20,7 @@ DEF_GATE_MEMBER_VAR(Not);
 DEF_GATE_MEMBER_VAR(Z);
 DEF_GATE_MEMBER_VAR(Swap);
 DEF_GATE_MEMBER_VAR(T);
+DEF_GATE_MEMBER_VAR(S);
 
 #undef DEF_GATE_MEMBER_VAR
 
