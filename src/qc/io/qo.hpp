@@ -42,8 +42,12 @@ class Qo {
     -> GatePtr;
 
  public:
+  static std::string extension;
+
   static auto input(Circuit& circuit, const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> void;
+  static auto output(Circuit& circuit, const std::string& filename)
+    throw(std::ios_base::failure) -> void;
   static auto open(const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> Circuit;
 };

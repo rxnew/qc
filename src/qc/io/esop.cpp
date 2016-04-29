@@ -2,6 +2,8 @@
 
 namespace qc {
 namespace io {
+std::string Esop::extension = "esop";
+
 Esop::Messages Esop::_err_msgs = {
   "Illegal format of headers. Too many or few columns.",
   "Illegal format of headers. Too many or few rows.",

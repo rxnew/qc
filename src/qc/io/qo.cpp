@@ -2,6 +2,8 @@
 
 namespace qc {
 namespace io {
+std::string Qo::extension = "qo";
+
 Qo::Messages Qo::_err_msgs = {
   "Illegal format of gates. Too many or few parameters.",
   "Illegal format of gates. Gate name contains spaces.",
@@ -99,6 +101,13 @@ auto Qo::input(Circuit& circuit, const std::string& filename)
     if(!gate) throw IfExc(Qo::_err_msgs[4]);
     circuit.addGate(gate);
   }
+}
+
+auto Qo::output(Circuit& circuit, const std::string& filename)
+  throw(std::ios_base::failure) -> void {
+  std::ofstream ofs(util::string::addExtension(filename, Qo::extension));
+  if(ofs.fail()) throw std::ios_base::failure("Cannot open file.");
+  circuit.print(ofs);
 }
 }
 }

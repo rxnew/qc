@@ -1,19 +1,23 @@
 #include "io.hpp"
+#include "io_private.hpp"
 
 namespace qc {
 namespace io {
 auto input(Circuit& circuit, const std::string& filename)
   throw(exc::IllegalFormatException, std::ios_base::failure) -> void {
-  auto extension = io::getExtension(filename);
-  if(extension == "qo")   return Qo::input(circuit, filename);
-  if(extension == "esop") return Esop::input(circuit, filename);
-  throw std::ios_base::failure("Unknown extension: '" + extension + "'.");
+  auto extension = util::string::getExtension(filename);
+  if(extension == Qo::extension)   return Qo::input(circuit, filename);
+  if(extension == Esop::extension) return Esop::input(circuit, filename);
+  throw _getUnknownFormatException(extension);
 }
 
-auto getExtension(const std::string& filename) -> std::string {
-  auto strs = util::string::split(filename, '.', false);
-  if(strs.size() < 2) return std::string();
-  return std::move(strs.back());
+auto output(Circuit& circuit, const std::string& filename)
+  throw(exc::IllegalFormatException, std::ios_base::failure) -> void {
+  auto extension = util::string::getExtension(filename);
+  auto if_exc = _getNotSupportFormatException(extension, "qc::io::output");
+  if(extension == Qo::extension)   return Qo::output(circuit, filename);
+  if(extension == Esop::extension) throw if_exc;
+  throw _getUnknownFormatException(extension);
 }
 }
 }

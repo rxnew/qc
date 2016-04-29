@@ -80,7 +80,7 @@ inline Tbit::Tbit(Args&&... args) : Bit(std::forward<Args>(args)...) {
 }
 
 inline auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream& {
-  char sign = obj.polarity_ ? '\0' : '!';
+  const char* const sign = obj.polarity_ ? "" : "!";
   return os << sign << obj.bitno_;
 }
 
