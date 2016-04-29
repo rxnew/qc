@@ -36,5 +36,17 @@ auto equalCaseInsensitive(const std::string& lhs, const std::string& rhs)
   };
   return std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin(), cmp);
 }
+
+auto getExtension(const std::string& filename) -> std::string {
+  auto strs = util::string::split(filename, '.', false);
+  if(strs.size() < 2) return std::string();
+  return std::move(strs.back());
+}
+
+auto addExtension(const std::string& filename, const std::string& extension)
+  -> std::string {
+  if(extension == getExtension(filename)) return filename;
+  return filename + "." + extension;
+}
 }
 }
