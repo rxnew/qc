@@ -40,28 +40,8 @@ class Esop {
     throw(IfExc, std::ios_base::failure) -> void;
   static auto open(const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> Circuit;
-  static auto open(const char* const filename)
-    throw(IfExc, std::ios_base::failure) -> Circuit;
 };
-
-inline auto Esop::_isCommentLine(const std::string& line) -> bool {
-  return line.front() == '#';
+}
 }
 
-inline auto Esop::_isEndLine(const std::string& line) -> bool {
-  return line == ".e";
-}
-
-inline auto Esop::open(const std::string& filename)
-  throw(IfExc, std::ios_base::failure) -> Circuit {
-  Circuit circuit;
-  Esop::input(circuit, filename);
-  return std::move(circuit);
-}
-
-inline auto Esop::open(const char* const filename)
-  throw(IfExc, std::ios_base::failure) -> Circuit {
-  return Esop::open(std::string(filename));
-}
-}
-}
+#include "esop_impl.hpp"

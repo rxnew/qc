@@ -46,20 +46,8 @@ class Qo {
     throw(IfExc, std::ios_base::failure) -> void;
   static auto open(const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> Circuit;
-  static auto open(const char* const filename)
-    throw(IfExc, std::ios_base::failure) -> Circuit;
 };
-
-inline auto Qo::open(const std::string& filename)
-  throw(IfExc, std::ios_base::failure) -> Circuit {
-  Circuit circuit;
-  Qo::input(circuit, filename);
-  return std::move(circuit);
+}
 }
 
-inline auto Qo::open(const char* const filename)
-  throw(IfExc, std::ios_base::failure) -> Circuit {
-  return Qo::open(std::string(filename));
-}
-}
-}
+#include "qo_impl.hpp"

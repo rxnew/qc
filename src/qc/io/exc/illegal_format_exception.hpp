@@ -15,13 +15,11 @@ class IllegalFormatException : public std::runtime_error {
   using Super = std::runtime_error;
 
  public:
-  template <class T>
-  explicit IllegalFormatException(T arg);
+  template <class... Args>
+  explicit IllegalFormatException(Args... args);
 };
+}
+}
+}
 
-template <class T>
-inline IllegalFormatException::IllegalFormatException(T arg) : Super(arg) {
-}
-}
-}
-}
+#include "illegal_format_exception_impl.hpp"
