@@ -1,6 +1,7 @@
 #pragma once
 
 // Private methods
+namespace qc {
 namespace util {
 namespace matrix {
 template <class T, class F>
@@ -8,7 +9,9 @@ auto _create(const std::initializer_list<T>& list, const F& convert)
   -> Matrix;
 }
 }
+}
 
+namespace qc {
 namespace util {
 namespace matrix {
 inline auto identity() -> Matrix {
@@ -141,6 +144,7 @@ auto _create(const std::initializer_list<T>& list, const F& convert)
   }
 
   return std::move(result);
+}
 }
 }
 }

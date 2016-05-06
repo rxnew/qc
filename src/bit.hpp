@@ -74,4 +74,4 @@ struct hash<qc::Tbit> {
 };
 }
 
-#include "bit_impl.hpp"
+#include "bit/bit_impl.hpp"

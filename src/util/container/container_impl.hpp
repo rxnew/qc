@@ -1,5 +1,6 @@
 #pragma once
 
+namespace qc {
 namespace util {
 namespace container {
 template <template <class...> class U, class T>
@@ -27,6 +28,7 @@ auto toMap(const T& c, const E& e)
 template <class E, class T>
 inline auto toMap(const T& c) -> std::map<typename T::value_type, E> {
   return toMap(c, E());
+}
 }
 }
 }

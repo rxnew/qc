@@ -6,6 +6,7 @@
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
 
+namespace qc {
 namespace util {
 namespace matrix {
 using sprout::udl::complex::operator"" _i;
@@ -68,5 +69,6 @@ auto tensor(const Eigen::Matrix<T, R, C>& lhs, \
             const Eigen::Matrix<T, R, C>& rhs) -> Eigen::Matrix<T, R, C>;
 }
 }
+}
 
-#include "matrix_impl.hpp"
+#include "matrix/matrix_impl.hpp"
