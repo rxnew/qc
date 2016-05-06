@@ -1,5 +1,6 @@
-#include "string.hpp"
+#include "../string.hpp"
 
+namespace qc {
 namespace util {
 namespace string {
 auto split(const std::string& str, const char delim, bool ignore_empty)
@@ -47,6 +48,7 @@ auto addExtension(const std::string& filename, const std::string& extension)
   -> std::string {
   if(extension == getExtension(filename)) return filename;
   return filename + "." + extension;
+}
 }
 }
 }

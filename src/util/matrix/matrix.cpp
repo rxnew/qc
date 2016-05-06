@@ -1,5 +1,6 @@
-#include "matrix.hpp"
+#include "../matrix.hpp"
 
+namespace qc {
 namespace util {
 namespace matrix {
 auto identity(size_t size) -> Matrix {
@@ -8,6 +9,7 @@ auto identity(size_t size) -> Matrix {
     result.insert(i, i) = Complex(1);
   }
   return std::move(result);
+}
 }
 }
 }

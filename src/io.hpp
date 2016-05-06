@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "qo.hpp"
-#include "esop.hpp"
+#include "io/qo.hpp"
+#include "io/esop.hpp"
 
 namespace qc {
 namespace io {
@@ -22,4 +22,4 @@ auto convert(const std::string& input_filename,
 }
 }
 
-#include "io_impl.hpp"
+#include "io/io_impl.hpp"

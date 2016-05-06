@@ -3,7 +3,7 @@
  * @brief implementation of quantum gate classes
  */
 
-#include "gate.hpp"
+#include "../gate.hpp"
 
 namespace qc {
 #define DEF_GATE_MEMBER_VAR(type) \

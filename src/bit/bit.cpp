@@ -3,7 +3,7 @@
  * @brief implementation of the control and target bit class
  */
 
-#include "bit.hpp"
+#include "../bit.hpp"
 
 namespace std {
 auto hash<qc::Cbit>::operator()(const qc::Cbit& obj) const -> size_t {

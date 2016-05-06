@@ -60,4 +60,4 @@ class Circuit {
 };
 }
 
-#include "circuit_impl.hpp"
+#include "circuit/circuit_impl.hpp"

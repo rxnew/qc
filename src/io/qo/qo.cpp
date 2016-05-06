@@ -1,4 +1,4 @@
-#include "qo.hpp"
+#include "../qo.hpp"
 
 namespace qc {
 namespace io {
