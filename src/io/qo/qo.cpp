@@ -1,5 +1,7 @@
 #include "../qo.hpp"
 
+#include "../../gate/library.hpp"
+
 namespace qc {
 namespace io {
 std::string Qo::extension = "qo";
@@ -73,7 +75,7 @@ auto Qo::_getGate(const std::string& gate_str, const BitListTuple& bits)
   -> GatePtr {
   const CbitList& cbits = std::get<0>(bits);
   const TbitList& tbits = std::get<1>(bits);
-  return std::move(GateBuilder::create(gate_str, cbits, tbits));
+  return std::move(qc::createGate(gate_str, cbits, tbits));
 }
 
 auto Qo::input(Circuit& circuit, const std::string& filename)

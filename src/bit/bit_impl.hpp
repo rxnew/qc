@@ -6,28 +6,10 @@
 #pragma once
 
 namespace qc {
-inline Bit::Bit() : bitno_(0) {
-}
-
 inline Bit::Bit(Bitno bitno) : bitno_(bitno) {
 }
 
-inline Bit::Bit(const Bit& other) : bitno_(other.bitno_) {
-}
-
-inline Bit::~Bit() {
-}
-
-inline auto Bit::operator=(const Bit& other) -> Bit& {
-  this->bitno_ = other.bitno_;
-  return *this;
-}
-
-inline auto Bit::operator=(Bit&& other) -> Bit& {
-  return this->operator=(other);
-}
-
-inline auto Bit::operator==(const Bit& other) const -> bool{
+inline auto Bit::operator==(const Bit& other) const -> bool {
   return this->bitno_ == other.bitno_;
 }
 
@@ -46,20 +28,6 @@ inline Cbit::Cbit(Args&&... args)
 
 inline Cbit::Cbit(Bitno bitno, bool polarity)
   : Bit(bitno), polarity_(polarity) {
-}
-
-inline Cbit::Cbit(const Cbit& other)
-  : Bit(other.bitno_), polarity_(other.polarity_) {
-}
-
-inline auto Cbit::operator=(const Cbit& other) -> Cbit& {
-  this->bitno_ = other.bitno_;
-  this->polarity_ = other.polarity_;
-  return *this;
-}
-
-inline auto Cbit::operator=(Cbit&& other) -> Cbit& {
-  return this->operator=(other);
 }
 
 inline auto Cbit::operator==(const Cbit& other) const -> bool {

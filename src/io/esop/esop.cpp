@@ -1,5 +1,7 @@
 #include "../esop.hpp"
 
+#include "../../gate/library/x.hpp"
+
 namespace qc {
 namespace io {
 std::string Esop::extension = "esop";
@@ -68,7 +70,7 @@ auto Esop::_getGate(const std::string& line, const Counts& counts)
   }
   auto cbits = Esop::_getCbits(data[0]);
   auto tbits = Esop::_getTbits(data[1], counts.at("input"));
-  return std::move(GatePtr(new Not(cbits, tbits)));
+  return std::move(GatePtr(new X(cbits, tbits)));
 }
 
 auto Esop::input(Circuit& circuit, const std::string& filename)

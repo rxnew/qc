@@ -6,21 +6,6 @@
 #pragma once
 
 namespace qc {
-inline Circuit::Circuit() {
-}
-
-inline Circuit::Circuit(Circuit&& other) noexcept
-  : gates_(std::move(other.gates_)) {
-}
-
-inline Circuit::~Circuit() {
-}
-
-inline auto Circuit::operator=(Circuit&& other) -> Circuit& {
-  this->gates_ = std::move(other.gates_);
-  return *this;
-}
-
 inline auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
 }

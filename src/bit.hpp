@@ -18,13 +18,13 @@ class Bit {
  public:
   Bitno bitno_;
 
-  Bit();
   explicit Bit(Bitno bitno);
-  Bit(const Bit& other);
+  Bit(const Bit&) = default;
   Bit(Bit&&) noexcept = default;
-  virtual ~Bit();
-  auto operator=(const Bit& other) -> Bit&;
-  auto operator=(Bit&& other) -> Bit&;
+  virtual ~Bit() = default;
+
+  auto operator=(const Bit&) -> Bit& = default;
+  auto operator=(Bit&&) -> Bit& = default;
   auto operator==(const Bit& other) const -> bool;
   auto operator!=(const Bit& other) const -> bool;
   auto operator<(const Bit& other) const -> bool;
@@ -40,10 +40,11 @@ class Cbit : public Bit {
   template <class... Args>
   Cbit(Args&&... args);
   Cbit(Bitno bitno, bool polarity);
-  Cbit(const Cbit& other);
+  Cbit(const Cbit& other) = default;
   Cbit(Cbit&&) noexcept = default;
-  auto operator=(const Cbit& other) -> Cbit&;
-  auto operator=(Cbit&& other) -> Cbit&;
+
+  auto operator=(const Cbit&) -> Cbit& = default;
+  auto operator=(Cbit&&) -> Cbit& = default;
   auto operator==(const Cbit& other) const -> bool;
   auto operator!=(const Cbit& other) const -> bool;
   auto operator<(const Cbit& other) const -> bool;
