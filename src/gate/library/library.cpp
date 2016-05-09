@@ -5,17 +5,11 @@
 
 #include "../library.hpp"
 
-namespace qc {
-auto getGateType(const std::string& str) -> const std::string& {
-  static const std::multimap<std::string, std::string> aliases = {
-    {"X", "Not"},
-    {"X", "Mct"},
-    {"VPlus", "VDagger"},
-    {"S", "P"},
-    {"Hadamard", "H"}
-  };
+#include "aliases.hpp"
 
-  for(const auto& alias : aliases) {
+namespace qc {
+auto getGateTypeName(const std::string& str) -> const std::string& {
+  for(const auto& alias : qc::gate_type_aliases) {
     if(util::string::equalCaseInsensitive(str, alias.second)) {
       return alias.first;
     }

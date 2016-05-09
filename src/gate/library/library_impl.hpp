@@ -8,7 +8,7 @@
 namespace qc {
 template <class... Args>
 auto createGate(const std::string& str, Args&&... args) -> GatePtr {
-  const auto& gate_type = qc::getGateType(str);
+  const auto& gate_type = qc::getGateTypeName(str);
 
 #define IF_GEN(type) \
   if(util::string::equalCaseInsensitive(gate_type, type::TYPE_NAME)) \

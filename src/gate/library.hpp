@@ -16,7 +16,7 @@
 #include "library/swap.hpp"
 
 namespace qc {
-auto getGateType(const std::string& str) -> const std::string&;
+auto getGateTypeName(const std::string& str) -> const std::string&;
 template <class... Args>
 static auto createGate(const std::string& str, Args&&... args) -> GatePtr;
 template <class... Args>
