@@ -21,6 +21,7 @@ DEF_GATE_MEMBER_VAR(Z);
 DEF_GATE_MEMBER_VAR(Swap);
 DEF_GATE_MEMBER_VAR(T);
 DEF_GATE_MEMBER_VAR(S);
+DEF_GATE_MEMBER_VAR(MacroGate);
 
 #undef DEF_GATE_MEMBER_VAR
 
@@ -61,24 +62,6 @@ auto Gate::_simulate(const Vector& input, const MatrixMap& matrix_map) const
 Gate::~Gate() {
   this->cbits_.clear();
   this->tbits_.clear();
-}
-
-/**
- * @fn Gate& operator=(const Gate& other)
- * @brief assignment operator
- * @param [in] other another Gate class object
- * @return reference to this object
- */
-auto Gate::operator=(const Gate& other) -> Gate& {
-  this->cbits_ = other.cbits_;
-  this->tbits_ = other.tbits_;
-  return *this;
-}
-
-auto Gate::operator=(Gate&& other) -> Gate& {
-  this->cbits_ = std::move(other.cbits_);
-  this->tbits_ = std::move(other.tbits_);
-  return *this;
 }
 
 /**
@@ -215,7 +198,7 @@ auto Swap::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
   return std::move(result);
 }
 
-auto Swap::decompose() const -> std::list<GatePtr> {
+auto Swap::decompose() const -> GateList {
   assert(static_cast<int>(this->tbits_.size()) == 2);
 
   auto tbits = util::container::convert<std::vector>(this->tbits_);
@@ -223,11 +206,20 @@ auto Swap::decompose() const -> std::list<GatePtr> {
   cbit_lists[0].insert(Cbit(tbits[0].bitno_));
   cbit_lists[1].insert(Cbit(tbits[1].bitno_));
 
-  std::list<GatePtr> gates;
+  GateList gates;
   gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
   gates.emplace_back(new Not(cbit_lists[1], tbits[0]));
   gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
 
   return std::move(gates);
+}
+
+auto MacroGate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
+  auto size = static_cast<size_t>(std::pow(2, bits.size()));
+  auto result = util::matrix::identity(size);
+  for(const auto& gate : this->components_) {
+    result = gate->computeMatrix(bits) * result;
+  }
+  return std::move(result);
 }
 }

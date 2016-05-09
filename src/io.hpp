@@ -18,7 +18,7 @@ auto open(const std::string& filename)
   throw(exc::IllegalFormatException, std::ios_base::failure) -> Circuit;
 auto convert(const std::string& input_filename,
              const std::string& output_filename)
-  throw(exc::IllegalFormatException, std::ios_base::failure)-> void;
+  throw(exc::IllegalFormatException, std::ios_base::failure) -> void;
 }
 }
 

@@ -12,10 +12,6 @@
 namespace qc {
 class Circuit;
 
-using GateList = std::list<GatePtr>;
-using IterGateList = GateList::iterator;
-using CIterGateList = GateList::const_iterator;
-
 /**
  * @brief quantum circuit class
  */
@@ -28,10 +24,12 @@ class Circuit {
   Circuit(const Circuit& other);
   Circuit(Circuit&& other) noexcept;
   ~Circuit();
+
   auto operator=(const Circuit& other) -> Circuit&;
   auto operator=(Circuit&& other) -> Circuit&;
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
+
   auto getGateList() const -> const GateList&;
   auto getGateListBegin() -> IterGateList;
   auto getGateListEnd() -> IterGateList;

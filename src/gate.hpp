@@ -11,11 +11,10 @@
 #include <memory>
 #include <algorithm>
 
+#include "bit.hpp"
 #include "util/container.hpp"
 #include "util/string.hpp"
 #include "util/matrix.hpp"
-
-#include "bit.hpp"
 
 namespace qc {
 class Gate;
@@ -24,6 +23,9 @@ using BitList = std::unordered_set<Bitno>;
 using CbitList = std::unordered_set<Cbit>;
 using TbitList = std::unordered_set<Tbit>;
 using GatePtr = std::unique_ptr<Gate>;
+using GateList = std::list<GatePtr>;
+using IterGateList = GateList::iterator;
+using CIterGateList = GateList::const_iterator;
 
 using util::matrix::Complex;
 using util::matrix::Matrix;
@@ -56,7 +58,7 @@ class Gate {
   Gate(CbitList&& cbits, const Tbit& tbit);
   Gate(const CbitList& cbits, const TbitList& tbits);
   Gate(CbitList&& cbits, TbitList&& tbits);
-  Gate(const Gate& other);
+  Gate(const Gate&) = default;
   Gate(Gate&&) noexcept = default;
 
   auto _computeMatrix(const MatrixMap& matrix_map) const -> Matrix;
@@ -68,10 +70,12 @@ class Gate {
   static const Matrix TARGET_MATRIX;
 
   virtual ~Gate();
-  auto operator=(const Gate& other) -> Gate&;
-  auto operator=(Gate&& other) -> Gate&;
+
+  auto operator=(const Gate&) -> Gate& = default;
+  auto operator=(Gate&&) -> Gate& = default;
   auto operator==(const Gate& other) const -> bool;
   auto operator!=(const Gate& other) const -> bool;
+
   virtual auto clone() const -> GatePtr = 0;
   virtual auto getTypeName() const -> const std::string& = 0;
   auto getCbitList() const -> const CbitList&;
@@ -92,30 +96,30 @@ class Gate {
   auto simulate(const Vector& input, const BitList& bits) const -> Vector;
   auto simulate(const Vector& input) const -> Vector;
   auto isAllPositive() const -> bool;
+  virtual auto getComponents() const -> const GateList&;
   auto print(std::ostream& os = std::cout) const -> void;
+};
 
+class Gate::MatrixMap {
  private:
-  class MatrixMap {
-   private:
-    const Gate& gate_;
-    ui active_polarity_pattern_;
-    ui polarity_pattern_mask_;
+  const Gate& gate_;
+  ui active_polarity_pattern_;
+  ui polarity_pattern_mask_;
 
-    auto _init() -> void;
-    auto _setActivePolarityPattern() -> void;
-    auto _updateActive(bool is_cbit, Bitno bit) -> void;
-    auto _updateInactive(bool is_cbit) -> void;
-    auto _mask(ui polarity_pattern) const -> bool;
-    auto _isActive() const -> bool;
+  auto _init() -> void;
+  auto _setActivePolarityPattern() -> void;
+  auto _updateActive(bool is_cbit, Bitno bit) -> void;
+  auto _updateInactive(bool is_cbit) -> void;
+  auto _mask(ui polarity_pattern) const -> bool;
+  auto _isActive() const -> bool;
 
-   public:
-    // matrix of active input pattern of each target
-    std::unordered_map<Bitno, Matrix> active_;
-    // matrix of inactive each input pattern
-    std::unordered_map<ui, Matrix> inactive_;
+ public:
+  // matrix of active input pattern of each target
+  std::unordered_map<Bitno, Matrix> active_;
+  // matrix of inactive each input pattern
+  std::unordered_map<ui, Matrix> inactive_;
 
-    MatrixMap(const Gate& gate, const std::set<Bitno>& bits);
-  };
+  MatrixMap(const Gate& gate, const std::set<Bitno>& bits);
 };
 
 /**
@@ -131,6 +135,7 @@ class I : public Gate {
 
   template <class... Args>
   I(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
@@ -149,6 +154,7 @@ class V : public Gate {
 
   template <class... Args>
   V(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
@@ -167,6 +173,7 @@ class VPlus : public Gate {
 
   template <class... Args>
   VPlus(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
@@ -185,6 +192,7 @@ class Hadamard : public Gate {
 
   template <class... Args>
   Hadamard(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
@@ -203,6 +211,7 @@ class Not : public Gate {
 
   template <class... Args>
   Not(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
@@ -221,6 +230,7 @@ class Z : public Gate {
 
   template <class... Args>
   Z(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
@@ -239,11 +249,12 @@ class Swap : public Gate {
 
   template <class... Args>
   Swap(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
   auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
-  auto decompose() const -> std::list<GatePtr>;
+  auto decompose() const -> GateList;
 };
 
 /**
@@ -259,6 +270,7 @@ class T : public Gate {
 
   template <class... Args>
   T(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
@@ -277,9 +289,35 @@ class S : public Gate {
 
   template <class... Args>
   S(Args&&... args);
+
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
+};
+
+/**
+ * @brief MacroGate class
+ */
+class MacroGate : public Gate {
+ private:
+  GateList components_;
+
+  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
+
+ public:
+  static const std::string TYPE_NAME;
+  static const Matrix TARGET_MATRIX;
+
+  template <class... Args>
+  MacroGate(Args&&... args); 
+  MacroGate(const MacroGate& other);
+  MacroGate(MacroGate&&) = default;
+
+  auto clone() const -> GatePtr;
+  auto getTypeName() const -> const std::string&;
+  auto getTargetMatrix() const -> const Matrix&;
+  auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
+  auto getComponents() const -> const GateList&;
 };
 
 /**
