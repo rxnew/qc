@@ -37,15 +37,6 @@ auto Gate::_simulate(const Vector& input, const MatrixMap& matrix_map) const
 }
 
 /**
- * @fn virtual ~Gate()
- * @brief virtual destructor
- */
-Gate::~Gate() {
-  this->cbits_.clear();
-  this->tbits_.clear();
-}
-
-/**
  * @fn bool operator==(const Gate& other) const
  * @brief equality operator
  * @param [in] other another Gate class object

@@ -20,13 +20,13 @@ class Circuit {
   GateList gates_;
 
  public:
-  Circuit();
+  Circuit() = default;
   Circuit(const Circuit& other);
-  Circuit(Circuit&& other) noexcept;
-  ~Circuit();
+  Circuit(Circuit&&) noexcept = default;
+  ~Circuit() = default;
 
   auto operator=(const Circuit& other) -> Circuit&;
-  auto operator=(Circuit&& other) -> Circuit&;
+  auto operator=(Circuit&&) -> Circuit& = default;
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
 

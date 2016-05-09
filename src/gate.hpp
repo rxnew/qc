@@ -69,7 +69,7 @@ class Gate {
   static const std::string TYPE_NAME;
   static const Matrix TARGET_MATRIX;
 
-  virtual ~Gate();
+  virtual ~Gate() = default;
 
   auto operator=(const Gate&) -> Gate& = default;
   auto operator=(Gate&&) -> Gate& = default;
