@@ -115,12 +115,6 @@ inline auto Gate::simulate(const Vector& input) const -> Vector {
   return this->simulate(input, this->collectUsedBits());
 }
 
-inline auto Gate::getComponents() const -> const GateList& {
-  static GateList components;
-  components.push_back(std::move(this->clone()));
-  return components;
-}
-
 inline auto Gate::MatrixMap::_mask(ui polarity_pattern) const -> bool {
   return polarity_pattern & polarity_pattern_mask_;
 }
@@ -320,36 +314,6 @@ inline auto S::getTypeName() const -> const std::string& {
 
 inline auto S::getTargetMatrix() const -> const Matrix& {
   return S::TARGET_MATRIX;
-}
-
-inline auto MacroGate::_createTargetMatrixList()
-  -> std::initializer_list<Complex> {
-  return {};
-}
-
-template <class... Args>
-MacroGate::MacroGate(Args&&... args) : Gate(std::forward<Args>(args)...) {}
-
-inline MacroGate::MacroGate(const MacroGate& other) : Gate(other) {
-  for(const auto& gate : other.getComponents()) {
-    this->components_.push_back(gate->clone());
-  }
-}
-
-inline auto MacroGate::clone() const -> GatePtr {
-  return GatePtr(new MacroGate(*this));
-}
-
-inline auto MacroGate::getTypeName() const -> const std::string& {
-  return MacroGate::TYPE_NAME;
-}
-
-inline auto MacroGate::getTargetMatrix() const -> const Matrix& {
-  return MacroGate::TARGET_MATRIX;
-}
-
-inline auto MacroGate::getComponents() const -> const GateList& {
-  return this->components_;
 }
 
 template <class... Args>

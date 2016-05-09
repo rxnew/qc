@@ -96,7 +96,6 @@ class Gate {
   auto simulate(const Vector& input, const BitList& bits) const -> Vector;
   auto simulate(const Vector& input) const -> Vector;
   auto isAllPositive() const -> bool;
-  virtual auto getComponents() const -> const GateList&;
   auto print(std::ostream& os = std::cout) const -> void;
 };
 
@@ -293,31 +292,6 @@ class S : public Gate {
   auto clone() const -> GatePtr;
   auto getTypeName() const -> const std::string&;
   auto getTargetMatrix() const -> const Matrix&;
-};
-
-/**
- * @brief MacroGate class
- */
-class MacroGate : public Gate {
- private:
-  GateList components_;
-
-  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
-
- public:
-  static const std::string TYPE_NAME;
-  static const Matrix TARGET_MATRIX;
-
-  template <class... Args>
-  MacroGate(Args&&... args); 
-  MacroGate(const MacroGate& other);
-  MacroGate(MacroGate&&) = default;
-
-  auto clone() const -> GatePtr;
-  auto getTypeName() const -> const std::string&;
-  auto getTargetMatrix() const -> const Matrix&;
-  auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
-  auto getComponents() const -> const GateList&;
 };
 
 /**

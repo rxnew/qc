@@ -213,13 +213,4 @@ auto Swap::decompose() const -> GateList {
 
   return std::move(gates);
 }
-
-auto MacroGate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
-  auto size = static_cast<size_t>(std::pow(2, bits.size()));
-  auto result = util::matrix::identity(size);
-  for(const auto& gate : this->components_) {
-    result = gate->computeMatrix(bits) * result;
-  }
-  return std::move(result);
-}
 }
