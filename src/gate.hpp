@@ -122,6 +122,26 @@ class Gate::MatrixMap {
 };
 
 /**
+ * @brief U gate class
+ */
+class U : public Gate {
+ private:
+  const Matrix target_matrix_;
+
+ public:
+  static const std::string TYPE_NAME;
+
+  template <class... Args>
+  U(const Matrix& target_matrix, Args&&... args);
+  U(const U&) = default;
+  U(U&&) = default;
+
+  auto clone() const -> GatePtr;
+  auto getTypeName() const -> const std::string&;
+  auto getTargetMatrix() const -> const Matrix&;
+};
+
+/**
  * @brief I gate class
  */
 class I : public Gate {
@@ -300,6 +320,8 @@ class S : public Gate {
 struct GateBuilder {
   template <class... Args>
   static auto create(const std::string& str, Args&&... args) -> GatePtr;
+  template <class... Args>
+  static auto create(const Matrix& target_matrix, Args&&... args) -> GatePtr;
 };
 }
 

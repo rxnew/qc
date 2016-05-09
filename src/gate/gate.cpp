@@ -6,6 +6,8 @@
 #include "../gate.hpp"
 
 namespace qc {
+const std::string U::TYPE_NAME = "U";
+
 #define DEF_GATE_MEMBER_VAR(type) \
   const std::string type::TYPE_NAME = #type; \
   const Matrix type::TARGET_MATRIX = \

@@ -123,13 +123,31 @@ inline auto Gate::MatrixMap::_isActive() const -> bool {
   return this->_mask(this->active_polarity_pattern_);
 }
 
+template <class... Args>
+U::U(const Matrix& target_matrix, Args&&... args)
+  : target_matrix_(target_matrix), Gate(std::forward<Args>(args)...) {
+}
+
+inline auto U::clone() const -> GatePtr {
+  return GatePtr(new U(*this));
+}
+
+inline auto U::getTypeName() const -> const std::string& {
+  return U::TYPE_NAME;
+}
+
+inline auto U::getTargetMatrix() const -> const Matrix& {
+  return this->target_matrix_;
+}
+
 inline auto I::_createTargetMatrixList()
   -> std::initializer_list<Complex> {
   return {1.0 + 0.0_i, 0.0_i, 0.0_i, 1.0 + 0.0_i};
 }
 
 template <class... Args>
-I::I(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+I::I(Args&&... args) : Gate(std::forward<Args>(args)...) {
+}
 
 inline auto I::clone() const -> GatePtr {
   return GatePtr(new I(*this));
@@ -151,7 +169,8 @@ inline auto V::_createTargetMatrixList()
 }
 
 template <class... Args>
-V::V(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+V::V(Args&&... args) : Gate(std::forward<Args>(args)...) {
+}
 
 inline auto V::clone() const -> GatePtr {
   return GatePtr(new V(*this));
@@ -173,7 +192,8 @@ inline auto VPlus::_createTargetMatrixList()
 }
 
 template <class... Args>
-VPlus::VPlus(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+VPlus::VPlus(Args&&... args) : Gate(std::forward<Args>(args)...) {
+}
 
 inline auto VPlus::clone() const -> GatePtr {
   return GatePtr(new VPlus(*this));
@@ -217,7 +237,8 @@ inline auto Not::_createTargetMatrixList()
 }
 
 template <class... Args>
-Not::Not(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+Not::Not(Args&&... args) : Gate(std::forward<Args>(args)...) {
+}
 
 inline auto Not::clone() const -> GatePtr {
   return GatePtr(new Not(*this));
@@ -237,7 +258,8 @@ inline auto Z::_createTargetMatrixList()
 }
 
 template <class... Args>
-Z::Z(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+Z::Z(Args&&... args) : Gate(std::forward<Args>(args)...) {
+}
 
 inline auto Z::clone() const -> GatePtr {
   return GatePtr(new Z(*this));
@@ -282,7 +304,8 @@ inline auto T::_createTargetMatrixList()
 }
 
 template <class... Args>
-T::T(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+T::T(Args&&... args) : Gate(std::forward<Args>(args)...) {
+}
 
 inline auto T::clone() const -> GatePtr {
   return GatePtr(new T(*this));
@@ -302,7 +325,8 @@ inline auto S::_createTargetMatrixList()
 }
 
 template <class... Args>
-S::S(Args&&... args) : Gate(std::forward<Args>(args)...) {}
+S::S(Args&&... args) : Gate(std::forward<Args>(args)...) {
+}
 
 inline auto S::clone() const -> GatePtr {
   return GatePtr(new S(*this));
@@ -335,5 +359,11 @@ auto GateBuilder::create(const std::string& str, Args&&... args) -> GatePtr {
 #undef IF_GEN
 
   return GatePtr(nullptr);
+}
+
+template <class... Args>
+inline auto GateBuilder::create(const Matrix& target_matrix, Args&&... args)
+  -> GatePtr {
+  return GatePtr(new U(std::forward<Args>(args)...));
 }
 }
