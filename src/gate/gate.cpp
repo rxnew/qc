@@ -6,26 +6,6 @@
 #include "../gate.hpp"
 
 namespace qc {
-const std::string U::TYPE_NAME = "U";
-
-#define DEF_GATE_MEMBER_VAR(type) \
-  const std::string type::TYPE_NAME = #type; \
-  const Matrix type::TARGET_MATRIX = \
-    util::matrix::create(type::_createTargetMatrixList());
-
-DEF_GATE_MEMBER_VAR(Gate);
-DEF_GATE_MEMBER_VAR(I);
-DEF_GATE_MEMBER_VAR(V);
-DEF_GATE_MEMBER_VAR(VPlus);
-DEF_GATE_MEMBER_VAR(Hadamard);
-DEF_GATE_MEMBER_VAR(Not);
-DEF_GATE_MEMBER_VAR(Z);
-DEF_GATE_MEMBER_VAR(Swap);
-DEF_GATE_MEMBER_VAR(T);
-DEF_GATE_MEMBER_VAR(S);
-
-#undef DEF_GATE_MEMBER_VAR
-
 auto Gate::_computeMatrix(const MatrixMap& matrix_map) const -> Matrix {
   assert(!matrix_map.active_.empty());
 
@@ -187,31 +167,5 @@ Gate::MatrixMap::MatrixMap(const Gate& gate, const std::set<Bitno>& bits)
     this->_updateInactive(is_cbit);
     if(is_cbit) this->polarity_pattern_mask_ >>= 1;
   }
-}
-
-auto Swap::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
-  auto gates = this->decompose();
-  auto size = static_cast<size_t>(std::pow(2, bits.size()));
-  auto result = util::matrix::identity(size);
-  for(const auto& gate : gates) {
-    result = gate->computeMatrix(bits) * result;
-  }
-  return std::move(result);
-}
-
-auto Swap::decompose() const -> GateList {
-  assert(static_cast<int>(this->tbits_.size()) == 2);
-
-  auto tbits = util::container::convert<std::vector>(this->tbits_);
-  std::vector<CbitList> cbit_lists(2, this->cbits_);
-  cbit_lists[0].insert(Cbit(tbits[0].bitno_));
-  cbit_lists[1].insert(Cbit(tbits[1].bitno_));
-
-  GateList gates;
-  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
-  gates.emplace_back(new Not(cbit_lists[1], tbits[0]));
-  gates.emplace_back(new Not(cbit_lists[0], tbits[1]));
-
-  return std::move(gates);
 }
 }
