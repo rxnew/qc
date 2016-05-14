@@ -1,6 +1,6 @@
 /**
- * @file library_impl.hpp
- * @brief implementation header about library gates
+ * @file general_impl.hpp
+ * @brief implementation header general algorithm
  */
 
 #pragma once
@@ -32,5 +32,15 @@ auto createGate(const std::string& str, Args&&... args) -> GatePtr {
 template <class... Args>
 inline auto createGate(const Matrix& target_matrix, Args&&... args) -> GatePtr {
   return GatePtr(new U(std::forward<Args>(args)...));
+}
+
+inline auto getCbit(const GatePtr& gate) -> const Cbit& {
+  assert(gate->isSingleControlled());
+  return *gate->getCbitList().cbegin();
+}
+
+inline auto getTbit(const GatePtr& gate) -> const Tbit& {
+  assert(gate->isSingleTarget());
+  return *gate->getTbitList().cbegin();
 }
 }

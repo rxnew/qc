@@ -84,6 +84,7 @@ class Gate {
   auto setCbits(CbitList&& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
   auto setTbits(TbitList&& tbits) -> void;
+  auto isIncluded(Bitno bit) const -> bool;
   auto isIncludedInCbitList(Bitno bit) const -> bool;
   auto isIncludedInTbitList(Bitno bit) const -> bool;
   auto collectUsedBits() const -> BitList;
@@ -95,6 +96,12 @@ class Gate {
     -> Vector;
   auto simulate(const Vector& input, const BitList& bits) const -> Vector;
   auto simulate(const Vector& input) const -> Vector;
+  auto isControlled() const -> bool;
+  auto isSingleControlled() const -> bool;
+  auto isMultiControlled() const -> bool;
+  auto isSingleTarget() const -> bool;
+  auto isMultiTarget() const -> bool;
+  auto isSingleQubitRotation() const -> bool;
   auto isAllPositive() const -> bool;
   auto print(std::ostream& os = std::cout) const -> void;
 };

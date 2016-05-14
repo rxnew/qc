@@ -30,6 +30,7 @@ class Circuit {
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
 
+  auto getGateList() -> GateList&;
   auto getGateList() const -> const GateList&;
   auto getGateListBegin() -> IterGateList;
   auto getGateListEnd() -> IterGateList;
@@ -39,6 +40,7 @@ class Circuit {
   auto insertGate(CIterGateList pos, GatePtr&& gate) -> IterGateList;
   auto insertGate(CIterGateList pos, GatePtr& gate) -> IterGateList;
   auto insertGate(CIterGateList pos, Gate*&& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, GateList&& gates) -> IterGateList;
   auto eraseGate(CIterGateList pos) -> IterGateList;
   auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
   auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;

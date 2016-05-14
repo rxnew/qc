@@ -1,6 +1,6 @@
 #include "../qo.hpp"
 
-#include "../../gate/library.hpp"
+#include "../../algorithm/general.hpp"
 
 namespace qc {
 namespace io {

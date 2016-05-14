@@ -10,6 +10,10 @@ inline auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
 }
 
+inline auto Circuit::getGateList() -> GateList& {
+  return this->gates_;
+}
+
 inline auto Circuit::getGateList() const -> const GateList& {
   return this->gates_;
 }
@@ -51,6 +55,13 @@ inline auto Circuit::insertGate(CIterGateList pos, Gate*&& gate)
   -> IterGateList {
   assert(gate != nullptr);
   return this->gates_.emplace(pos, gate);
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, GateList&& gates)
+  -> IterGateList {
+  return this->gates_.insert(pos,
+                             std::make_move_iterator(gates.begin()),
+                             std::make_move_iterator(gates.end()));
 }
 
 inline auto Circuit::eraseGate(CIterGateList pos) -> IterGateList {

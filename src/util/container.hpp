@@ -1,5 +1,7 @@
 #pragma once
 
+#include <set>
+#include <unordered_set>
 #include <map>
 
 namespace qc {
@@ -18,6 +20,27 @@ auto toMap(const T& c, const E& e)
 
 template <class E, class T>
 auto toMap(const T& c) -> std::map<typename T::value_type, E>;
+
+template <template <class...> class T, class E>
+auto isIntersected(const T<E>& lhs, const T<E>& rhs) -> bool;
+
+template <class E>
+auto isIntersected(const std::set<E>& lhs, const std::set<E>& rhs) -> bool;
+
+template <class E>
+auto isIntersected(const std::unordered_set<E>& lhs,
+                   const std::unordered_set<E>& rhs) -> bool;
+
+template <class T>
+inline auto isIntersectedSet(const T& lhs, const T& rhs) -> bool;
+
+struct Compare {
+  template <template <class...> class T, class E>
+  auto operator()(const T<E>& lhs, const T<E>& rhs) -> bool;
+  template <class E>
+  auto operator()(const std::unordered_set<E>& lhs,
+                  const std::unordered_set<E>& rhs) -> bool;
+};
 }
 }
 }

@@ -77,9 +77,13 @@ inline auto Gate::setTbits(TbitList&& tbits) -> void {
   this->tbits_ = std::move(tbits);
 }
 
+inline auto Gate::isIncluded(Bitno bit) const -> bool {
+  return this->isIncludedInTbitList(bit) || this->isIncludedInCbitList(bit);
+}
+
 inline auto Gate::isIncludedInCbitList(Bitno bit) const -> bool {
-  return \
-    this->cbits_.count(Cbit(bit, true)) || \
+  return
+    this->cbits_.count(Cbit(bit, true)) ||
     this->cbits_.count(Cbit(bit, false));
 }
 
@@ -113,6 +117,31 @@ inline auto Gate::simulate(const Vector& input, const BitList& bits) const
 
 inline auto Gate::simulate(const Vector& input) const -> Vector {
   return this->simulate(input, this->collectUsedBits());
+}
+
+inline auto Gate::isControlled() const -> bool {
+  return !this->cbits_.empty();
+}
+
+inline auto Gate::isSingleControlled() const -> bool {
+  return this->cbits_.size() == 1;
+}
+
+inline auto Gate::isMultiControlled() const -> bool {
+  return this->cbits_.size() > 1;
+}
+
+inline auto Gate::isSingleTarget() const -> bool {
+  return this->tbits_.size() == 1;
+}
+
+inline auto Gate::isMultiTarget() const -> bool {
+  assert(!this->tbits_.empty());
+  return !this->isSingleTarget();
+}
+
+inline auto Gate::isSingleQubitRotation() const -> bool {
+  return !this->isControlled() && this->isSingleTarget();
 }
 
 inline auto Gate::MatrixMap::_mask(ui polarity_pattern) const -> bool {
