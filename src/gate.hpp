@@ -11,7 +11,7 @@
 #include <memory>
 #include <algorithm>
 
-#include "bit.hpp"
+#include "bit/hash.hpp"
 #include "util/container.hpp"
 #include "util/string.hpp"
 #include "util/matrix.hpp"

@@ -65,16 +65,4 @@ auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;
 auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream&;
 }
 
-namespace std {
-template <>
-struct hash<qc::Cbit> {
-  auto operator()(const qc::Cbit& obj) const -> size_t;
-};
-
-template <>
-struct hash<qc::Tbit> {
-  auto operator()(const qc::Tbit& obj) const -> size_t;
-};
-}
-
 #include "bit/bit_impl.hpp"

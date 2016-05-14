@@ -65,9 +65,3 @@ inline auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream& {
   return os << 'T' << obj.bitno_;
 }
 }
-
-namespace std {
-inline auto hash<qc::Tbit>::operator()(const qc::Tbit& obj) const -> size_t {
-  return hash<unsigned short>()(static_cast<unsigned short>(obj.bitno_));
-}
-}
