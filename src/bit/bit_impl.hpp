@@ -21,6 +21,10 @@ inline auto Bit::operator<(const Bit& other) const -> bool {
   return this->bitno_ < other.bitno_;
 }
 
+inline auto Bit::operator>(const Bit& other) const -> bool {
+  return !(*this < other) && *this != other;
+}
+
 template <class... Args>
 inline Cbit::Cbit(Args&&... args)
   : Bit(std::forward<Args>(args)...), polarity_(true) {
@@ -39,8 +43,13 @@ inline auto Cbit::operator!=(const Cbit& other) const -> bool {
 }
 
 inline auto Cbit::operator<(const Cbit& other) const -> bool {
-  return this->bitno_ == other.bitno_ ? \
-    !this->polarity_ : Bit::operator<(other);
+  return this->bitno_ == other.bitno_ ?
+    (this->polarity_ && !other.polarity_ ? true : false) :
+    Bit::operator<(other);
+}
+
+inline auto Cbit::operator>(const Cbit& other) const -> bool {
+  return !(*this < other) && *this != other;
 }
 
 template <class... Args>
