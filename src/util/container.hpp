@@ -39,6 +39,7 @@ struct Compare {
             class ECompare = std::less<E>>
   auto operator()(const T<E>& lhs, const T<E>& rhs,
                   const ECompare& cmp = ECompare()) const -> bool;
+
   template <class E, class ECompare = std::less<E>>
   auto operator()(const std::unordered_set<E>& lhs,
                   const std::unordered_set<E>& rhs,

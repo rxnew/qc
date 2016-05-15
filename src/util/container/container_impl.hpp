@@ -70,10 +70,10 @@ auto Compare::operator()(const T<E>& lhs, const T<E>& rhs,
   auto it_l = lhs.cbegin(); 
   auto it_r = rhs.cbegin();
   while(true) {
-    if(it_l == lhs.cend()) return true;
     if(it_r == rhs.cend()) return false;
-    if(cmp(*it_l, *it_r)) return true;
+    if(it_l == lhs.cend()) return true;
     if(cmp(*it_r, *it_l)) return false;
+    if(cmp(*it_l, *it_r)) return true;
     it_l++, it_r++;
   }
   assert(false);
