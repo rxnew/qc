@@ -64,13 +64,6 @@ auto isIntersectedSet(const T& lhs, const T& rhs) -> bool {
   return false;
 }
 
-template <template <class...> class T, class E>
-inline auto Compare::operator()(const T<E>& lhs,
-                                const T<E>& rhs) const -> bool {
-  const auto cmp = [](const E& lhs, const E& rhs) {return lhs < rhs;};
-  return this->operator()(lhs, rhs, cmp);
-}
-
 template <template <class...> class T, class E, class ECompare>
 auto Compare::operator()(const T<E>& lhs, const T<E>& rhs,
                          const ECompare& cmp) const -> bool {
@@ -85,14 +78,6 @@ auto Compare::operator()(const T<E>& lhs, const T<E>& rhs,
   }
   assert(false);
   return false;
-}
-
-template <class E>
-auto Compare::operator()(const std::unordered_set<E>& lhs,
-                         const std::unordered_set<E>& rhs) const -> bool {
-  const auto ordered_lhs = container::convert<std::set>(lhs);
-  const auto ordered_rhs = container::convert<std::set>(rhs);
-  return this->operator()(ordered_lhs, ordered_rhs);
 }
 
 template <class E, class ECompare>

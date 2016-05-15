@@ -35,18 +35,14 @@ template <class T>
 inline auto isIntersectedSet(const T& lhs, const T& rhs) -> bool;
 
 struct Compare {
-  template <template <class...> class T, class E>
-  auto operator()(const T<E>& lhs, const T<E>& rhs) const -> bool;
-  template <template <class...> class T, class E, class ECompare>
+  template <template <class...> class T, class E,
+            class ECompare = std::less<E>>
   auto operator()(const T<E>& lhs, const T<E>& rhs,
-                  const ECompare& cmp) const -> bool;
-  template <class E>
-  auto operator()(const std::unordered_set<E>& lhs,
-                  const std::unordered_set<E>& rhs) const -> bool;
-  template <class E, class ECompare>
+                  const ECompare& cmp = ECompare()) const -> bool;
+  template <class E, class ECompare = std::less<E>>
   auto operator()(const std::unordered_set<E>& lhs,
                   const std::unordered_set<E>& rhs,
-                  const ECompare& cmp) const -> bool;
+                  const ECompare& cmp = ECompare()) const -> bool;
 };
 }
 }
