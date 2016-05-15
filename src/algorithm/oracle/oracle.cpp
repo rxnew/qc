@@ -35,16 +35,10 @@ auto isMctCircuit(const Circuit& circuit) -> bool {
 }
 
 auto sortGatesByCbits(Circuit& circuit) -> void {
-  const auto gt = [](const Cbit& lhs, const Cbit& rhs) {
-    return Bit(lhs) < Bit(rhs);
-  };
-  const auto lt = [](const Cbit& lhs, const Cbit& rhs) {
-    return Bit(lhs) > Bit(rhs);
-  };
-  const auto f = [&gt, &lt](const GatePtr& lhs, const GatePtr& rhs) {
-    return util::container::Compare()(lhs->getCbitList(),
-                                      rhs->getCbitList(),
-                                      gt, lt);
+  const auto f = [](const GatePtr& lhs, const GatePtr& rhs) {
+    return util::container::Compare()(lhs->getCbitList(), rhs->getCbitList(),
+                                      [](const Cbit& lhs, const Cbit& rhs) {
+                                        return Bit(lhs) < Bit(rhs);});
   };
   circuit.getGateList().sort(f);
 }

@@ -65,22 +65,22 @@ auto isIntersectedSet(const T& lhs, const T& rhs) -> bool {
 }
 
 template <template <class...> class T, class E>
-auto Compare::operator()(const T<E>& lhs, const T<E>& rhs) const -> bool {
-  const auto gt = [](const E& lhs, const E& rhs) {return lhs < rhs;};
-  const auto lt = [](const E& lhs, const E& rhs) {return lhs > rhs;};
-  return this->operator()(lhs, rhs, gt, lt);
+inline auto Compare::operator()(const T<E>& lhs,
+                                const T<E>& rhs) const -> bool {
+  const auto cmp = [](const E& lhs, const E& rhs) {return lhs < rhs;};
+  return this->operator()(lhs, rhs, cmp);
 }
 
-template <template <class...> class T, class E, class Greater, class Less>
+template <template <class...> class T, class E, class ECompare>
 auto Compare::operator()(const T<E>& lhs, const T<E>& rhs,
-                         const Greater& gt, const Less& lt) const -> bool {
+                         const ECompare& cmp) const -> bool {
   auto it_l = lhs.cbegin(); 
   auto it_r = rhs.cbegin();
   while(true) {
     if(it_l == lhs.cend()) return true;
     if(it_r == rhs.cend()) return false;
-    if(gt(*it_l, *it_r)) return true;
-    if(lt(*it_l, *it_r)) return false;
+    if(cmp(*it_l, *it_r)) return true;
+    if(cmp(*it_r, *it_l)) return false;
     it_l++, it_r++;
   }
   assert(false);
@@ -95,13 +95,13 @@ auto Compare::operator()(const std::unordered_set<E>& lhs,
   return this->operator()(ordered_lhs, ordered_rhs);
 }
 
-template <class E, class Greater, class Less>
+template <class E, class ECompare>
 auto Compare::operator()(const std::unordered_set<E>& lhs,
                          const std::unordered_set<E>& rhs,
-                         const Greater& gt, const Less& lt) const -> bool {
+                         const ECompare& cmp) const -> bool {
   const auto ordered_lhs = container::convert<std::set>(lhs);
   const auto ordered_rhs = container::convert<std::set>(rhs);
-  return this->operator()(ordered_lhs, ordered_rhs, gt, lt);
+  return this->operator()(ordered_lhs, ordered_rhs, cmp);
 }
 }
 }
