@@ -6,13 +6,13 @@
 #pragma once
 
 namespace qc {
-template <class... Args>
-auto createGate(const std::string& str, Args&&... args) -> GatePtr {
+template <class GatePtrT = GatePtr, class... Args>
+auto createGate(const std::string& str, Args&&... args) -> GatePtrT {
   const auto& gate_type = qc::getGateTypeName(str);
 
 #define IF_GEN(type) \
   if(util::string::equalCaseInsensitive(gate_type, type::TYPE_NAME)) \
-    return GatePtr(new type(std::forward<Args>(args)...))
+    return GatePtrT(new type(std::forward<Args>(args)...))
 
   IF_GEN(I);
   IF_GEN(X);
@@ -26,21 +26,36 @@ auto createGate(const std::string& str, Args&&... args) -> GatePtr {
 
 #undef IF_GEN
 
-  return GatePtr(nullptr);
+  return GatePtrT(nullptr);
 }
 
-template <class... Args>
-inline auto createGate(const Matrix& target_matrix, Args&&... args) -> GatePtr {
-  return GatePtr(new U(std::forward<Args>(args)...));
+template <class GatePtrT = GatePtr, class... Args>
+inline auto createGate(const Matrix& target_matrix,
+                       Args&&... args) -> GatePtrT {
+  return GatePtrT(new U(std::forward<Args>(args)...));
 }
 
-inline auto getCbit(const GatePtr& gate) -> const Cbit& {
+template <class GatePtrT>
+inline auto getCbit(const GatePtrT& gate) -> const Cbit& {
   assert(gate->isSingleControlled());
   return *gate->getCbitList().cbegin();
 }
 
-inline auto getTbit(const GatePtr& gate) -> const Tbit& {
+template <class GatePtrT>
+inline auto getTbit(const GatePtrT& gate) -> const Tbit& {
   assert(gate->isSingleTarget());
   return *gate->getTbitList().cbegin();
+}
+
+template <class GatePtrT, class GateListT = std::list<GatePtrT>>
+auto decompIntoSingleTargetGates(const GatePtrT& gate) -> GateListT {
+  const auto& gate_type_name = gate->getTypeName();
+  const auto& cbits = gate->getCbitList();
+  const auto& tbits = gate->getTbitList();
+  GateListT result;
+  for(const auto& tbit : tbits) {
+    result.push_back(qc::createGate(gate_type_name, cbits, tbit));
+  }
+  return std::move(result);
 }
 }

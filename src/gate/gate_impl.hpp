@@ -91,6 +91,25 @@ inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
   return this->tbits_.count(Tbit(bit));
 }
 
+inline auto Gate::eraseBit(Bitno bit) -> void {
+  this->cbits_.erase(this->getCbit(bit));
+  this->tbits_.erase(Tbit(bit));
+}
+
+inline auto Gate::getCbit(Bitno bit) const -> Cbit {
+  return std::move(Cbit(bit, this->getCbitPolarity(bit)));
+}
+
+inline auto Gate::getCbitPolarity(Bitno bit) const -> bool {
+  assert(this->isIncludedInCbitList(bit));
+  return this->cbits_.count(Cbit(bit, true));
+}
+
+inline auto Gate::reverseCbitPolarity(Bitno bit) -> bool {
+  const auto cbit_pos = this->cbits_.find(this->getCbit(bit));
+  return const_cast<Cbit&>(*cbit_pos).reversePolarity();
+}
+
 inline auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
   return std::move(this->_computeMatrix(MatrixMap(*this, bits)));
 }

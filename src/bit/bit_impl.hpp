@@ -52,6 +52,10 @@ inline auto Cbit::operator>(const Cbit& other) const -> bool {
   return !(*this < other) && *this != other;
 }
 
+inline auto Cbit::reversePolarity() -> bool {
+  return this->polarity_ ^= true;
+}
+
 template <class... Args>
 inline Tbit::Tbit(Args&&... args) : Bit(std::forward<Args>(args)...) {
 }
