@@ -31,7 +31,19 @@ auto collectTbits(const Circuit& circuit) -> BitList {
 auto isMctCircuit(const Circuit& circuit) -> bool {
   const auto cbits_no = qc::collectCbits(circuit);
   const auto tbits_no = qc::collectTbits(circuit);
-  return !util::container::isIntersected(cbits_no, tbits_no);
+  if(util::container::isIntersected(cbits_no, tbits_no)) return false;
+  for(const auto& gate : circuit.getGateList()) {
+    if(gate->getTypeName() != X::TYPE_NAME) return false;
+  }
+  return true;
+}
+
+auto calcMctCircuitCost(const Circuit& circuit) -> int {
+  int total_cost = 0;
+  for(const auto& gate : circuit.getGateList()) {
+    total_cost += qc::getMctCost(gate);
+  }
+  return total_cost;
 }
 
 auto sortGatesByCbits(Circuit& circuit) -> void {

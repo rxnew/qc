@@ -4,7 +4,7 @@
 
 namespace qc {
 namespace io {
-std::string Qo::extension = "qo";
+std::string Qo::extension = ".qo";
 
 Qo::Messages Qo::_err_msgs = {
   "Illegal format of gates. Too many or few parameters.",

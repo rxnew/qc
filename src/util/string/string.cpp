@@ -38,16 +38,15 @@ auto equalCaseInsensitive(const std::string& lhs, const std::string& rhs)
   return std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin(), cmp);
 }
 
-auto getExtension(const std::string& filename) -> std::string {
-  auto strs = util::string::split(filename, '.', false);
-  if(strs.size() < 2) return std::string();
-  return std::move(strs.back());
-}
-
-auto addExtension(const std::string& filename, const std::string& extension)
-  -> std::string {
-  if(extension == getExtension(filename)) return filename;
-  return filename + "." + extension;
+auto splitext(const std::string& filename)
+  -> std::tuple<std::string, std::string> {
+  auto found = filename.find_last_of("./");
+  if(found == std::string::npos || filename[found] == '/') {
+    return std::move(std::make_tuple(filename, std::string()));
+  }
+  auto path = filename.substr(0, found);
+  auto extension = filename.substr(found);
+  return std::move(std::make_tuple(path, extension));
 }
 }
 }

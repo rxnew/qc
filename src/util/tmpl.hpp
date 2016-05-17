@@ -19,7 +19,10 @@ template <template <class...> class T>
 struct is_array_template;
 
 template <template <class...> class T>
-struct is_object_template;
+struct is_set_template;
+
+template <template <class...> class T>
+struct is_map_template;
 
 template <template <class...> class T>
 struct is_container_template;
@@ -29,6 +32,12 @@ struct is_array;
 
 template <template <class...> class T, class... Args>
 struct is_array<T<Args...>>;
+
+template <class E>
+struct is_set;
+
+template <template <class...> class T, class... Args>
+struct is_set<T<Args...>>;
 
 template <class E>
 struct is_map;
