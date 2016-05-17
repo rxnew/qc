@@ -1,23 +1,32 @@
 cmake_minimum_required(VERSION 2.8)
 
+project(qc CXX)
+
 set(TARGET qc)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-include_directories(${INCLUDE_DIR} ${SOURCE_DIR})
+include_directories(${INCLUDE_DIR})
 
-file(GLOB_RECURSE SOURCE_LIST ${SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE HEADER_LIST ${SOURCE_DIR}/*.hpp)
+file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
 
-add_library(${TARGET} STATIC ${SOURCE_LIST})
+add_library(${TARGET} STATIC ${SOURCES})
 
-install(TARGETS ${TARGET} ARCHIVE
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-install(DIRECTORY ${INCLUDE_DIR}
-        DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(TARGETS ${TARGET}
+        EXPORT ${TARGET}-export
+        ARCHIVE        DESTINATION lib
+        INCLUDES       DESTINATION include)
+
 install(DIRECTORY ${SOURCE_DIR}/
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include/qcl
-        FILES_MATCHING PATTERN "*.hpp")
+        DESTINATION include/${TARGET}
+        FILES_MATCHING PATTERN *.hpp)
+
+install(DIRECTORY ${INCLUDE_DIR}/
+        DESTINATION include)
+
+install(EXPORT ${TARGET}-export
+        FILE ${TARGET}-config.cmake
+        DESTINATION share/cmake/${TARGET})
 
 set(CMAKE_CXX_FLAGS "")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")

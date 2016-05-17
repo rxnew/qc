@@ -1,4 +1,4 @@
-QCL (Quantum Circuit Library)
+QC (Quantum Circuit)
 ==============
 This program is quantum circuit simulator.
 
@@ -11,6 +11,6 @@ How to use
 ---------------
 ```
 $ cd build
-$ cmake [-DCMAKE_INSTALL_PREFIX=/path/to/dir] ..
+$ cmake [-DCMAKE_INSTALL_PREFIX=<dir>] [-DCMAKE_BUILD_TYPE=(Debug|Release)] ..
 $ make install
 ```
