@@ -21,6 +21,16 @@ inline auto convert(const std::unordered_map<K, V>& c) -> U<K, V> {
   return std::move(U<K, V>(c.cbegin(), c.cend()));
 }
 
+template <template <class...> class T, class E>
+inline auto ordered(const T<E>& c) -> std::set<E> {
+  return std::move(container::convert<std::set>(c));
+}
+
+template <class K, class V>
+inline auto ordered(const std::unordered_map<K, V>& c) -> std::map<K, V> {
+  return std::move(container::convert<std::map>(c));
+}
+
 template <class E, class T>
 auto toMap(const T& c, const E& e) -> std::map<typename T::value_type, E> {
   std::map<typename T::value_type, E> m;

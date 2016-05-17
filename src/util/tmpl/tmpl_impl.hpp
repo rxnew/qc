@@ -37,6 +37,13 @@ struct is_array_template {
 };
 
 template <template <class...> class T>
+struct is_set_template {
+  static constexpr bool value =
+    is_same_template<T, std::set>::value ||
+    is_same_template<T, std::unordered_set>::value;
+};
+
+template <template <class...> class T>
 struct is_map_template {
   static constexpr bool value =
     is_same_template<T, std::map>::value ||
@@ -56,6 +63,14 @@ struct is_array {
 
 template <template <class...> class T, class... Args>
 struct is_array<T<Args...>> : is_array_template<T> {};
+
+template <class E>
+struct is_set {
+  static constexpr bool value = false;
+};
+
+template <template <class...> class T, class... Args>
+struct is_set<T<Args...>> : is_set_template<T> {};
 
 template <class E>
 struct is_map {

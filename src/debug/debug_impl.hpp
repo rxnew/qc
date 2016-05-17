@@ -6,12 +6,16 @@ namespace qc {
 namespace debug {
 template <template <class...> class T, class... Args>
 auto print(const T<Args...>& c, std::ostream& os, bool line_break) -> void {
-  os << (util::tmpl::is_map_template<T>::value ? '{' : '[');
+  const auto is_curly_bracket = []() {
+    return util::tmpl::is_set_template<T>::value ||
+           util::tmpl::is_map_template<T>::value;
+  };
+  os << (is_curly_bracket() ? '{' : '[');
   for(const auto& e : c) {
     debug::print(e, os, false);
     os << ", ";
   }
-  os << "\b\b" << (util::tmpl::is_map_template<T>::value ? '}' : ']');
+  os << "\b\b" << (is_curly_bracket() ? '}' : ']');
   if(line_break) os << std::endl;
 }
 

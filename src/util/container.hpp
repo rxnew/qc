@@ -18,6 +18,12 @@ auto convert(const std::map<K, V>& c) -> U<K, V>;
 template <template <class...> class U, class K, class V>
 auto convert(const std::unordered_map<K, V>& c) -> U<K, V>;
 
+template <template <class...> class T, class E>
+auto ordered(const T<E>& c) -> std::set<E>;
+
+template <class K, class V>
+auto ordered(const std::unordered_map<K, V>& c) -> std::map<K, V>;
+
 template <class E, class T>
 auto toMap(const T& c, const E& e) -> std::map<typename T::value_type, E>;
 
