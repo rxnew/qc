@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "../../gate/library/x.hpp"
+
 namespace qc {
 template <class GatePtrT>
 auto getMctCost(const GatePtrT& gate) -> int {
