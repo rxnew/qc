@@ -6,11 +6,13 @@
 #include "../aliases.hpp"
 
 namespace qc {
-const std::multimap<std::string, std::string> gate_type_aliases = { 
-  {"X", "Not"},
-  {"X", "Mct"},
-  {"VPlus", "VDagger"},
-  {"S", "P"},
-  {"Hadamard", "H"}
+const std::unordered_map<util::string::istring, std::string>
+    gate_type_aliases = {
+  {"Not",     "X"},
+  {"Cnot",    "X"},
+  {"Mct",     "X"},
+  {"VDagger", "VPlus"},
+  {"P",       "S"},
+  {"H",       "Hadamard"}
 };
 }

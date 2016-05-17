@@ -14,13 +14,3 @@
 #include "library/t.hpp"
 #include "library/hadamard.hpp"
 #include "library/swap.hpp"
-
-namespace qc {
-auto getGateTypeName(const std::string& str) -> const std::string&;
-template <class... Args>
-static auto createGate(const std::string& str, Args&&... args) -> GatePtr;
-template <class... Args>
-static auto createGate(const Matrix& target_matrix, Args&&... args) -> GatePtr;
-}
-
-#include "library/library_impl.hpp"

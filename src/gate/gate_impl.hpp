@@ -77,14 +77,37 @@ inline auto Gate::setTbits(TbitList&& tbits) -> void {
   this->tbits_ = std::move(tbits);
 }
 
+inline auto Gate::isIncluded(Bitno bit) const -> bool {
+  return this->isIncludedInTbitList(bit) || this->isIncludedInCbitList(bit);
+}
+
 inline auto Gate::isIncludedInCbitList(Bitno bit) const -> bool {
-  return \
-    this->cbits_.count(Cbit(bit, true)) || \
+  return
+    this->cbits_.count(Cbit(bit, true)) ||
     this->cbits_.count(Cbit(bit, false));
 }
 
 inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
   return this->tbits_.count(Tbit(bit));
+}
+
+inline auto Gate::eraseBit(Bitno bit) -> void {
+  this->cbits_.erase(this->getCbit(bit));
+  this->tbits_.erase(Tbit(bit));
+}
+
+inline auto Gate::getCbit(Bitno bit) const -> Cbit {
+  return std::move(Cbit(bit, this->getCbitPolarity(bit)));
+}
+
+inline auto Gate::getCbitPolarity(Bitno bit) const -> bool {
+  assert(this->isIncludedInCbitList(bit));
+  return this->cbits_.count(Cbit(bit, true));
+}
+
+inline auto Gate::reverseCbitPolarity(Bitno bit) -> bool {
+  const auto cbit_pos = this->cbits_.find(this->getCbit(bit));
+  return const_cast<Cbit&>(*cbit_pos).reversePolarity();
 }
 
 inline auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
@@ -113,6 +136,31 @@ inline auto Gate::simulate(const Vector& input, const BitList& bits) const
 
 inline auto Gate::simulate(const Vector& input) const -> Vector {
   return this->simulate(input, this->collectUsedBits());
+}
+
+inline auto Gate::isControlled() const -> bool {
+  return !this->cbits_.empty();
+}
+
+inline auto Gate::isSingleControlled() const -> bool {
+  return this->cbits_.size() == 1;
+}
+
+inline auto Gate::isMultiControlled() const -> bool {
+  return this->cbits_.size() > 1;
+}
+
+inline auto Gate::isSingleTarget() const -> bool {
+  return this->tbits_.size() == 1;
+}
+
+inline auto Gate::isMultiTarget() const -> bool {
+  assert(!this->tbits_.empty());
+  return !this->isSingleTarget();
+}
+
+inline auto Gate::isSingleQubitRotation() const -> bool {
+  return !this->isControlled() && this->isSingleTarget();
 }
 
 inline auto Gate::MatrixMap::_mask(ui polarity_pattern) const -> bool {

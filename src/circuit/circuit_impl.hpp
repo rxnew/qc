@@ -6,8 +6,20 @@
 #pragma once
 
 namespace qc {
+inline Circuit::Circuit(GateList&& gates) : gates_(std::move(gates)) {
+}
+
+template <class GateListT>
+inline Circuit::Circuit(const GateListT& gates) {
+  this->addGate(gates);
+}
+
 inline auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
+}
+
+inline auto Circuit::getGateList() -> GateList& {
+  return this->gates_;
 }
 
 inline auto Circuit::getGateList() const -> const GateList& {
@@ -36,6 +48,15 @@ inline auto Circuit::addGate(Gate*&& gate) -> void {
   this->gates_.emplace_back(gate);
 }
 
+inline auto Circuit::addGate(GateList&& gates) -> void {
+  this->insertGate(this->gates_.cend(), std::move(gates));
+}
+
+template <class GateListT>
+inline auto Circuit::addGate(const GateListT& gates) -> void {
+  this->insertGate(this->gates_.cend(), gates);
+}
+
 inline auto Circuit::insertGate(CIterGateList pos, GatePtr&& gate)
   -> IterGateList {
   assert(gate);
@@ -51,6 +72,24 @@ inline auto Circuit::insertGate(CIterGateList pos, Gate*&& gate)
   -> IterGateList {
   assert(gate != nullptr);
   return this->gates_.emplace(pos, gate);
+}
+
+inline auto Circuit::insertGate(CIterGateList pos, GateList&& gates)
+  -> IterGateList {
+  return this->gates_.insert(pos,
+                             std::make_move_iterator(gates.begin()),
+                             std::make_move_iterator(gates.end()));
+}
+
+template <class GateListT>
+auto Circuit::insertGate(CIterGateList pos,
+                         const GateListT& gates) -> IterGateList {
+  auto result_pos = this->gates_.end();
+  for(const auto& gate : gates) {
+    auto tmp_pos = this->insertGate(pos, gate->clone());
+    if(result_pos == this->gates_.end()) result_pos = tmp_pos;
+  }
+  return result_pos;
 }
 
 inline auto Circuit::eraseGate(CIterGateList pos) -> IterGateList {
@@ -72,6 +111,14 @@ inline auto Circuit::swapGate(IterGateList pos1, IterGateList pos2) -> void {
   assert(pos1 != this->gates_.end());
   assert(pos2 != this->gates_.end());
   std::swap(*pos1, *pos2);
+}
+
+inline auto Circuit::append(const Circuit& circuit) -> void {
+  this->addGate(circuit.gates_);
+}
+
+inline auto Circuit::append(Circuit&& circuit) -> void {
+  this->addGate(std::move(circuit.gates_));
 }
 
 inline auto Circuit::clear() -> void {

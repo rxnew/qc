@@ -49,12 +49,6 @@ auto Circuit::operator==(const Circuit& other) const -> bool {
   return true;
 }
 
-auto Circuit::append(const Circuit& circ) -> void {
-  for(const auto& gate : circ.gates_) {
-    this->addGate(gate->clone());
-  }
-}
-
 /**
  * @fn BitList collectUsedBits() const
  * @brief take used bits of all included parallel quanutm gates

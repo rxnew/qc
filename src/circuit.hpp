@@ -21,6 +21,9 @@ class Circuit {
 
  public:
   Circuit() = default;
+  explicit Circuit(GateList&& gates);
+  template <class GateListT>
+  explicit Circuit(const GateListT& gates);
   Circuit(const Circuit& other);
   Circuit(Circuit&&) noexcept = default;
   ~Circuit() = default;
@@ -30,20 +33,28 @@ class Circuit {
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
 
+  auto getGateList() -> GateList&;
   auto getGateList() const -> const GateList&;
   auto getGateListBegin() -> IterGateList;
   auto getGateListEnd() -> IterGateList;
   auto addGate(GatePtr&& gate) -> void;
   auto addGate(GatePtr& gate) -> void;
   auto addGate(Gate*&& gate) -> void;
+  auto addGate(GateList&& gates) -> void;
+  template <class GateListT>
+  auto addGate(const GateListT& gates) -> void;
   auto insertGate(CIterGateList pos, GatePtr&& gate) -> IterGateList;
   auto insertGate(CIterGateList pos, GatePtr& gate) -> IterGateList;
   auto insertGate(CIterGateList pos, Gate*&& gate) -> IterGateList;
+  auto insertGate(CIterGateList pos, GateList&& gates) -> IterGateList;
+  template <class GateListT>
+  auto insertGate(CIterGateList pos, const GateListT& gates) -> IterGateList;
   auto eraseGate(CIterGateList pos) -> IterGateList;
   auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
   auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;
   auto swapGate(IterGateList pos1, IterGateList pos2) -> void;
-  auto append(const Circuit& circ) -> void;
+  auto append(const Circuit& circuit) -> void;
+  auto append(Circuit&& circuit) -> void;
   auto clear() -> void;
   auto getGateCount() const -> size_t;
   auto collectUsedBits() const -> BitList;
