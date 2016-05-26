@@ -4,7 +4,7 @@ This program is quantum circuit simulator.
 
 Requirements
 ---------------
-* g++ 4.7 or later
+* g++ 4.9 or later
 * [CMake][cmake] 2.8 or later
 
 How to use
