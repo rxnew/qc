@@ -29,13 +29,13 @@ namespace qc {
 namespace io {
 inline auto _getUnknownFormatMessage(const std::string& extension)
   -> std::string {
-  return "Unknown format: '." + extension + "'.";
+  return "Unknown format: '" + extension + "'.";
 }
 
 inline auto _getNotSupportFormatMessage(const std::string& extension,
                                         const std::string& method_name)
   -> std::string {
-  return "'" + method_name + "()' not supports format: '." + extension + "'.";
+  return "'" + method_name + "()' not supports format: '" + extension + "'.";
 }
 
 inline auto _getUnknownFormatException(const std::string& extension)
