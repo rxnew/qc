@@ -86,18 +86,18 @@ auto Gate::print(std::ostream& os) const -> void {
   auto ordered_cbits = util::container::convert<std::set>(this->cbits_);
   auto ordered_tbits = util::container::convert<std::set>(this->tbits_);
 
-  os << this->getTypeName() << ' ';
-  os << R"(\ )";
+  os << this->getTypeName();
+  os << R"( \)";
   for(const auto& cbit : ordered_cbits) {
-    os << cbit << ' ';
+    os << ' ' << cbit;
   }
   for(const auto& tbit : ordered_tbits) {
-    os << tbit << ' ';
+    os << ' ' << tbit;
   }
-  os << R"(\ )";
-  //os << this->getVariable() << ' ';
-  os << R"(\ )";
-  //os << this->getFunction();
+  os << R"( \)";
+  //os << ' ' << this->getVariable();
+  os << R"( \)";
+  //os << ' ' << this->getFunction();
   os << std::endl;
 }
 
