@@ -38,8 +38,8 @@ auto isMctCircuit(const Circuit& circuit) -> bool {
   return true;
 }
 
-auto calcMctCircuitCost(const Circuit& circuit) -> int {
-  int total_cost = 0;
+auto calcMctCircuitCost(const Circuit& circuit) -> unsigned long long {
+  auto total_cost = 0ull;
   for(const auto& gate : circuit.getGateList()) {
     total_cost += qc::getMctCost(gate);
   }
