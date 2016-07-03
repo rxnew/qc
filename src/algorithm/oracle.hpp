@@ -12,8 +12,8 @@ auto collectCbits(const Circuit& circuit) -> BitList;
 auto collectTbits(const Circuit& circuit) -> BitList;
 auto isMctCircuit(const Circuit& circuit) -> bool;
 template <class GatePtrT>
-auto getMctCost(const GatePtrT& gate) -> int;
-auto calcMctCircuitCost(const Circuit& circuit) -> int;
+auto getMctCost(const GatePtrT& gate) -> unsigned long long;
+auto calcMctCircuitCost(const Circuit& circuit) -> unsigned long long;
 auto sortGatesByCbits(Circuit& circuit) -> void;
 auto sortGatesByTbits(Circuit& circuit) -> void;
 auto sortGates(Circuit& circuit) -> void;
