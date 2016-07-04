@@ -29,13 +29,18 @@ auto collectTbits(const Circuit& circuit) -> BitList {
 }
 
 auto isMctCircuit(const Circuit& circuit) -> bool {
-  const auto cbits_no = qc::collectCbits(circuit);
-  const auto tbits_no = qc::collectTbits(circuit);
-  if(util::container::isIntersected(cbits_no, tbits_no)) return false;
   for(const auto& gate : circuit.getGateList()) {
     if(gate->getTypeName() != X::TYPE_NAME) return false;
   }
   return true;
+}
+
+auto isEsopCircuit(const Circuit& circuit) -> bool {
+  const auto cbits_no = qc::collectCbits(circuit);
+  const auto tbits_no = qc::collectTbits(circuit);
+  return !util::container::isIntersected(cbits_no, tbits_no)
+    && cbits_no.size() + tbits_no.size() == circuit.collectUsedBits().size()
+    && qc::isMctCircuit(circuit);
 }
 
 auto calcMctCircuitCost(const Circuit& circuit) -> unsigned long long {

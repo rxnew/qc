@@ -11,6 +11,7 @@ namespace qc {
 auto collectCbits(const Circuit& circuit) -> BitList;
 auto collectTbits(const Circuit& circuit) -> BitList;
 auto isMctCircuit(const Circuit& circuit) -> bool;
+auto isEsopCircuit(const Circuit& circuit) -> bool;
 template <class GatePtrT>
 auto getMctCost(const GatePtrT& gate) -> unsigned long long;
 auto calcMctCircuitCost(const Circuit& circuit) -> unsigned long long;

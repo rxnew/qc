@@ -18,9 +18,11 @@ class Blif {
 
   Blif() = delete;
 
-  static auto _print(const Gate& gate, std::ostream& os,
-                     BitMap& wire, Bitno& max_bit_t) -> void;
-  static auto _print(const Circuit& circuit, std::ostream& os) -> void;
+  static auto _printGeneral(const Gate& gate, std::ostream& os,
+                            BitMap& wire, Bitno& max_bit_t) -> void;
+  static auto _printGeneral(const Circuit& circuit, std::ostream& os) -> void;
+  static auto _printEsop(const Gate& gate, std::ostream& os) -> void;
+  static auto _printEsop(const Circuit& circuit, std::ostream& os) -> void;
 
  public:
   static const std::string extension;
