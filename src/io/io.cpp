@@ -22,5 +22,13 @@ auto output(const Circuit& circuit, const std::string& filename)
   if(extension == Esop::extension) return Esop::output(circuit, filename);
   throw io::_getUnknownFormatException(extension);
 }
+
+auto open(const std::string& filename)
+  throw(exc::IllegalFormatException, std::ios_base::failure) -> Circuit {
+  auto basename = qc::util::string::basename(filename);
+  Circuit circuit(qc::util::string::excludeExtension(basename));
+  io::input(circuit, filename);
+  return std::move(circuit);
+}
 }
 }

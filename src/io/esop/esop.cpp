@@ -131,5 +131,13 @@ auto Esop::output(const Circuit& circuit, const std::string& filename)
   if(ofs.fail()) throw std::ios_base::failure("Cannot open file.");
   Esop::print(circuit, ofs);
 }
+
+auto Esop::open(const std::string& filename)
+  throw(IfExc, std::ios_base::failure) -> Circuit {
+  auto basename = qc::util::string::basename(filename);
+  Circuit circuit(qc::util::string::excludeExtension(basename));
+  Esop::input(circuit, filename);
+  return std::move(circuit);
+}
 }
 }

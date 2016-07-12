@@ -16,6 +16,8 @@ auto equalCaseInsensitive(const std::string& lhs,
                           const std::string& rhs) -> bool;
 auto splitext(const std::string& filename)
   -> std::tuple<std::string, std::string>;
+auto basename(const std::string& filename) -> std::string;
+auto dirname(const std::string& filename) -> std::string;
 auto getExtension(const std::string& filename) -> std::string;
 auto addExtension(const std::string& filename,
                   const std::string& extension) -> std::string;

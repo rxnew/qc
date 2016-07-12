@@ -38,8 +38,8 @@ auto Blif::_print(const Gate& gate, std::ostream& os,
 }
 
 auto Blif::_print(const Circuit& circuit, std::ostream& os) -> void {
-  auto model_name = "circuit";
-  os << ".model " << model_name << std::endl;
+  auto model_name = circuit.getDescription();
+  os << ".model " << (model_name.empty() ? "circuit" : model_name) << std::endl;
 
   auto bits = util::container::ordered(circuit.collectUsedBits());
   auto max_bit = *max_element(bits.cbegin(), bits.cend());

@@ -18,12 +18,16 @@ class Circuit;
 class Circuit {
  private:
   GateList gates_;
+  std::string description_;
 
  public:
   Circuit() = default;
-  explicit Circuit(GateList&& gates);
-  template <class GateListT>
-  explicit Circuit(const GateListT& gates);
+  template <class stringT>
+  Circuit(stringT&& description = "");
+  template <class stringT>
+  Circuit(GateList&& gates, stringT&& description = "");
+  template <class GateListT, class stringT>
+  Circuit(const GateListT& gates, stringT&& description = "");
   Circuit(const Circuit& other);
   Circuit(Circuit&&) noexcept = default;
   ~Circuit() = default;
@@ -33,6 +37,9 @@ class Circuit {
   auto operator==(const Circuit& other) const -> bool;
   auto operator!=(const Circuit& other) const -> bool;
 
+  auto getDescription() const -> const std::string&;
+  template <class stringT>
+  auto setDescription(stringT&& description) -> void;
   auto getGateList() -> GateList&;
   auto getGateList() const -> const GateList&;
   auto getGateListBegin() -> IterGateList;
