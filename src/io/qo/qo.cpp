@@ -111,5 +111,13 @@ auto Qo::output(const Circuit& circuit, const std::string& filename)
   if(ofs.fail()) throw std::ios_base::failure("Cannot open file.");
   circuit.print(ofs);
 }
+
+auto Qo::open(const std::string& filename)
+  throw(IfExc, std::ios_base::failure) -> Circuit {
+  auto basename = qc::util::string::basename(filename);
+  Circuit circuit(qc::util::string::excludeExtension(basename));
+  Qo::input(circuit, filename);
+  return std::move(circuit);
+}
 }
 }

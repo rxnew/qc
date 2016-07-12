@@ -48,6 +48,18 @@ auto splitext(const std::string& filename)
   auto extension = filename.substr(found);
   return std::move(std::make_tuple(path, extension));
 }
+
+auto basename(const std::string& filename) -> std::string {
+  auto found = filename.find_last_of("/");
+  if(found == std::string::npos) return filename;
+  return std::move(filename.substr(found + 1));
+}
+
+auto dirname(const std::string& filename) -> std::string {
+  auto found = filename.find_last_of("/");
+  if(found == std::string::npos) return std::move(std::string());
+  return std::move(filename.substr(0, found));
+}
 }
 }
 }

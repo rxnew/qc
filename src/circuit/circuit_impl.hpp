@@ -6,16 +6,37 @@
 #pragma once
 
 namespace qc {
-inline Circuit::Circuit(GateList&& gates) : gates_(std::move(gates)) {
+template <class stringT>
+inline Circuit::Circuit(stringT&& description)
+  : description_(std::forward<stringT>(description)) {
 }
 
-template <class GateListT>
-inline Circuit::Circuit(const GateListT& gates) {
+template <class stringT>
+inline Circuit::Circuit(GateList&& gates, stringT&& description)
+  : gates_(std::move(gates)), description_(std::forward<stringT>(description)) {
+}
+
+template <class GateListT, class stringT>
+inline Circuit::Circuit(const GateListT& gates, stringT&& description)
+  : description_(std::forward<stringT>(description)) {
   this->addGate(gates);
+}
+
+inline Circuit::Circuit(const Circuit& other) {
+  *this = other;
 }
 
 inline auto Circuit::operator!=(const Circuit& other) const -> bool {
   return !(*this == other);
+}
+
+inline auto Circuit::getDescription() const -> const std::string& {
+  return this->description_;
+}
+
+template <class stringT>
+inline auto Circuit::setDescription(stringT&& description) -> void {
+  this->description_ = std::forward<stringT>(description);
 }
 
 inline auto Circuit::getGateList() -> GateList& {

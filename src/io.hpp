@@ -6,6 +6,7 @@
 #pragma once
 
 #include "io/qo.hpp"
+#include "io/blif.hpp"
 #include "io/esop.hpp"
 
 namespace qc {
