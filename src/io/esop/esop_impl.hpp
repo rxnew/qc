@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "../../algorithm/oracle.hpp"
+
 namespace qc {
 namespace io {
 inline auto Esop::_isCommentLine(const std::string& line) -> bool {
@@ -20,6 +22,11 @@ inline auto Esop::open(const std::string& filename)
   Circuit circuit;
   Esop::input(circuit, filename);
   return std::move(circuit);
+}
+
+inline auto Esop::print(const Circuit& circuit, std::ostream& os) -> void {
+  assert(qc::isEsopCircuit(circuit));
+  Esop::_print(circuit, os);
 }
 }
 }

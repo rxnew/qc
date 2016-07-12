@@ -19,7 +19,7 @@ auto output(const Circuit& circuit, const std::string& filename)
   auto if_exc = io::_getNotSupportFormatException(extension, "qc::io::output");
   if(extension == Qo::extension)   return Qo::output(circuit, filename);
   if(extension == Blif::extension) return Blif::output(circuit, filename);
-  if(extension == Esop::extension) throw if_exc;
+  if(extension == Esop::extension) return Esop::output(circuit, filename);
   throw io::_getUnknownFormatException(extension);
 }
 }

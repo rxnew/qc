@@ -73,6 +73,37 @@ auto Esop::_getGate(const std::string& line, const Counts& counts)
   return std::move(GatePtr(new X(cbits, tbits)));
 }
 
+auto Esop::_print(const Gate& gate, std::ostream& os,
+                  const std::set<Bitno>& inputs,
+                  const std::set<Bitno>& outputs) -> void {
+  assert(gate.getTypeName() == X::TYPE_NAME);
+  for(const auto& input : inputs) {
+    os << (!gate.isIncludedInCbitList(input) ? '-'
+           : gate.getCbitPolarity(input)     ? '1'
+           :                                   '0');
+  }
+  os << ' ';
+  for(const auto& output : outputs) {
+    os << (gate.isIncludedInTbitList(output) ? '1'
+           :                                   '0');
+  }
+  os << std::endl;
+}
+
+auto Esop::_print(const Circuit& circuit, std::ostream& os) -> void {
+  using util::container::ordered;
+  auto inputs = ordered(qc::collectCbits(circuit));
+  auto outputs = ordered(qc::collectTbits(circuit));
+  os << ".i " << inputs.size() << std::endl;;
+  os << ".o " << outputs.size() << std::endl;;
+  os << ".p " << circuit.getGateCount() << std::endl;
+  os << ".type esop" << std::endl;
+  for(const auto& gate : circuit.getGateList()) {
+    Esop::_print(*gate, os, inputs, outputs);
+  }
+  os << ".e" << std::endl;
+}
+
 auto Esop::input(Circuit& circuit, const std::string& filename)
   throw(IfExc, std::ios_base::failure) -> void {
   std::ifstream ifs(filename);
@@ -92,6 +123,13 @@ auto Esop::input(Circuit& circuit, const std::string& filename)
   if(counts["term"] != circuit.getGateCount()) {
     throw IfExc(Esop::_err_msgs[5]);
   }
+}
+
+auto Esop::output(const Circuit& circuit, const std::string& filename)
+  throw(std::ios_base::failure) -> void {
+  std::ofstream ofs(util::string::addExtension(filename, Esop::extension));
+  if(ofs.fail()) throw std::ios_base::failure("Cannot open file.");
+  Esop::print(circuit, ofs);
 }
 }
 }

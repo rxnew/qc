@@ -8,12 +8,28 @@
 #include "../general.hpp"
 
 namespace qc {
+auto collectCbits(const Gate& gate) -> BitList {
+  BitList bits;
+  for(const auto& cbit : gate.getCbitList()) {
+    bits.insert(cbit.bitno_);
+  }
+  return std::move(bits);
+}
+
 auto collectCbits(const Circuit& circuit) -> BitList {
   BitList bits;
   for(const auto& gate : circuit.getGateList()) {
     for(const auto& cbit : gate->getCbitList()) {
       bits.insert(cbit.bitno_);
     }
+  }
+  return std::move(bits);
+}
+
+auto collectTbits(const Gate& gate) -> BitList {
+  BitList bits;
+  for(const auto& tbit : gate.getTbitList()) {
+    bits.insert(tbit.bitno_);
   }
   return std::move(bits);
 }
@@ -43,10 +59,23 @@ auto isEsopCircuit(const Circuit& circuit) -> bool {
     && qc::isMctCircuit(circuit);
 }
 
+auto getMctCost(const Gate& gate) -> unsigned long long {
+  assert(gate.getTypeName() == X::TYPE_NAME);
+
+  // Please refer to arXiv:quant-ph/0403053
+  static constexpr std::array<unsigned long long, 11> C = {
+    1, 1, 5, 13, 29, 61, 52, 125, 253, 509, 1021
+  };
+
+  auto size = gate.getCbitList().size();
+  auto n = static_cast<unsigned long long>(gate.getTbitList().size());
+  return (size < C.size() ? C[size] : util::math::pow(2ull, size) - 3) * n;
+}
+
 auto calcMctCircuitCost(const Circuit& circuit) -> unsigned long long {
   auto total_cost = 0ull;
   for(const auto& gate : circuit.getGateList()) {
-    total_cost += qc::getMctCost(gate);
+    total_cost += qc::getMctCost(*gate);
   }
   return total_cost;
 }

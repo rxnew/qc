@@ -34,14 +34,22 @@ class Esop {
     throw(IfExc) -> TbitList;
   static auto _getGate(const std::string& line, const Counts& counts)
     throw(IfExc) -> GatePtr;
+  static auto _print(const Gate& gate, std::ostream& os,
+                     const std::set<Bitno>& inputs,
+                     const std::set<Bitno>& outputs) -> void;
+  static auto _print(const Circuit& circuit, std::ostream& os) -> void;
 
  public:
   static std::string extension;
 
   static auto input(Circuit& circuit, const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> void;
+  static auto output(const Circuit& circuit, const std::string& filename)
+    throw(std::ios_base::failure) -> void;
   static auto open(const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> Circuit;
+  static auto print(const Circuit& circuit,
+                    std::ostream& os = std::cout) -> void;
 };
 }
 }
