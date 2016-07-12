@@ -22,11 +22,11 @@ class Circuit {
 
  public:
   Circuit() = default;
-  template <class stringT>
-  Circuit(stringT&& description = "");
-  template <class stringT>
+  explicit Circuit(const std::string& description);
+  explicit Circuit(std::string&& description);
+  template <class stringT = std::string>
   Circuit(GateList&& gates, stringT&& description = "");
-  template <class GateListT, class stringT>
+  template <class GateListT, class stringT = std::string>
   Circuit(const GateListT& gates, stringT&& description = "");
   Circuit(const Circuit& other);
   Circuit(Circuit&&) noexcept = default;
