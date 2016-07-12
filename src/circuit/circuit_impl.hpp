@@ -6,9 +6,12 @@
 #pragma once
 
 namespace qc {
-template <class stringT>
-inline Circuit::Circuit(stringT&& description)
-  : description_(std::forward<stringT>(description)) {
+inline Circuit::Circuit(const std::string& description)
+  : description_(description) {
+}
+
+inline Circuit::Circuit(std::string&& description)
+  : description_(std::move(description)) {
 }
 
 template <class stringT>
