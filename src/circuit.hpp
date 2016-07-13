@@ -60,8 +60,8 @@ class Circuit {
   auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
   auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;
   auto swapGate(IterGateList pos1, IterGateList pos2) -> void;
-  auto append(const Circuit& circuit) -> void;
-  auto append(Circuit&& circuit) -> void;
+  auto append(const Circuit& circuit) -> Circuit&;
+  auto append(Circuit&& circuit) -> Circuit&;
   auto clear() -> void;
   auto getGateCount() const -> size_t;
   auto collectUsedBits() const -> BitList;

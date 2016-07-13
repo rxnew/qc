@@ -137,12 +137,14 @@ inline auto Circuit::swapGate(IterGateList pos1, IterGateList pos2) -> void {
   std::swap(*pos1, *pos2);
 }
 
-inline auto Circuit::append(const Circuit& circuit) -> void {
+inline auto Circuit::append(const Circuit& circuit) -> Circuit& {
   this->addGate(circuit.gates_);
+  return *this;
 }
 
-inline auto Circuit::append(Circuit&& circuit) -> void {
+inline auto Circuit::append(Circuit&& circuit) -> Circuit& {
   this->addGate(std::move(circuit.gates_));
+  return *this;
 }
 
 inline auto Circuit::clear() -> void {

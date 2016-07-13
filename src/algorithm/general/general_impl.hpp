@@ -35,16 +35,24 @@ inline auto createGate(const Matrix& target_matrix,
   return GatePtrT(new U(std::forward<Args>(args)...));
 }
 
+inline auto getCbit(const Gate& gate) -> const Cbit& {
+  assert(gate.isSingleControlled());
+  return *gate.getCbitList().cbegin();
+}
+
 template <class GatePtrT>
 inline auto getCbit(const GatePtrT& gate) -> const Cbit& {
-  assert(gate->isSingleControlled());
-  return *gate->getCbitList().cbegin();
+  return qc::getCbit(*gate);
+}
+
+inline auto getTbit(const Gate& gate) -> const Tbit& {
+  assert(gate.isSingleTarget());
+  return *gate.getTbitList().cbegin();
 }
 
 template <class GatePtrT>
 inline auto getTbit(const GatePtrT& gate) -> const Tbit& {
-  assert(gate->isSingleTarget());
-  return *gate->getTbitList().cbegin();
+  return qc::getTbit(*gate);
 }
 
 template <class GatePtrT, class GateListT = std::list<GatePtrT>>

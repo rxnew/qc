@@ -85,12 +85,14 @@ class Gate {
   auto setTbits(const TbitList& tbits) -> void;
   auto setTbits(TbitList&& tbits) -> void;
   auto isIncluded(Bitno bit) const -> bool;
+  auto isIncluded(const Cbit& cbit) const -> bool;
+  auto isIncluded(const Tbit& tbit) const -> bool;
   auto isIncludedInCbitList(Bitno bit) const -> bool;
   auto isIncludedInTbitList(Bitno bit) const -> bool;
   auto eraseBit(Bitno bit) -> void;
   auto getCbit(Bitno bit) const -> Cbit;
   auto getCbitPolarity(Bitno bit) const -> bool;
-  auto reverseCbitPolarity(Bitno bit) -> bool;
+  auto invertCbitPolarity(Bitno bit) -> bool;
   auto collectUsedBits() const -> BitList;
   virtual auto getTargetMatrix() const -> const Matrix& = 0;
   virtual auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
