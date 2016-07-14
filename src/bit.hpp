@@ -51,7 +51,7 @@ class Cbit : public Bit {
   auto operator<(const Cbit& other) const -> bool;
   auto operator>(const Cbit& other) const -> bool;
 
-  auto reversePolarity() -> bool;
+  auto invertPolarity() -> bool;
 };
 
 /**

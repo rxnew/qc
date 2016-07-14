@@ -52,7 +52,7 @@ inline auto Cbit::operator>(const Cbit& other) const -> bool {
   return !(*this < other) && *this != other;
 }
 
-inline auto Cbit::reversePolarity() -> bool {
+inline auto Cbit::invertPolarity() -> bool {
   return this->polarity_ ^= true;
 }
 
