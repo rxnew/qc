@@ -61,6 +61,22 @@ inline auto Gate::getTbitList() const -> const TbitList& {
   return this->tbits_;
 }
 
+inline auto Gate::addCbit(const Cbit& cbit) -> void {
+  this->cbits_.insert(cbit);
+}
+
+inline auto Gate::addCbit(Bitno bit, bool polarity) -> void {
+  this->cbits_.emplace(bit, polarity);
+}
+
+inline auto Gate::addTbit(const Tbit& tbit) -> void {
+  this->tbits_.insert(tbit);
+}
+
+inline auto Gate::addTbit(Bitno bit) -> void {
+  this->tbits_.emplace(bit);
+}
+
 inline auto Gate::setCbits(const CbitList& cbits) -> void {
   this->cbits_ = cbits;
 }
@@ -99,23 +115,15 @@ inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
   return this->isIncluded(Tbit(bit));
 }
 
-inline auto Gate::eraseBit(Bitno bit) -> void {
-  this->cbits_.erase(this->getCbit(bit));
-  this->tbits_.erase(Tbit(bit));
-}
-
-inline auto Gate::getCbit(Bitno bit) const -> Cbit {
-  return std::move(Cbit(bit, this->getCbitPolarity(bit)));
+inline auto Gate::eraseBit(Bitno bit) -> size_t {
+  return
+    this->cbits_.erase(this->getCbit(bit)) ||
+    this->tbits_.erase(Tbit(bit));
 }
 
 inline auto Gate::getCbitPolarity(Bitno bit) const -> bool {
   assert(this->isIncludedInCbitList(bit));
   return this->cbits_.count(Cbit(bit, true));
-}
-
-inline auto Gate::invertCbitPolarity(Bitno bit) -> bool {
-  const auto cbit_pos = this->cbits_.find(this->getCbit(bit));
-  return const_cast<Cbit&>(*cbit_pos).invertPolarity();
 }
 
 inline auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {

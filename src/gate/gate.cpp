@@ -49,6 +49,28 @@ auto Gate::operator==(const Gate& other) const -> bool {
   return true;
 }
 
+auto Gate::getCbit(Bitno bit) const -> const Cbit& {
+  auto cbit_pos = this->cbits_.find(Cbit(bit, true));
+  if(cbit_pos == this->cbits_.cend()) {
+    cbit_pos = this->cbits_.find(Cbit(bit, false));
+  }
+  assert(cbit_pos != this->cbits_.cend());
+  return *cbit_pos;
+}
+
+auto Gate::getTbit(Bitno bit) const -> const Tbit& {
+  const auto tbit_pos = this->tbits_.find(Tbit(bit));
+  assert(tbit_pos != this->tbits_.cend());
+  return *tbit_pos;
+}
+
+auto Gate::invertCbitPolarity(Bitno bit) -> bool {
+  auto polarity = this->getCbitPolarity(bit);
+  this->cbits_.erase(Cbit(bit, polarity));
+  this->addCbit(bit, polarity ^= true);
+  return polarity;
+}
+
 /**
  * @fn BitList collectUsedBits() const
  * @brief take used bits are control bits and target bits

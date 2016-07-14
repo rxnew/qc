@@ -105,9 +105,9 @@ inline auto Circuit::insertGate(CIterGateList pos, GateList&& gates)
                              std::make_move_iterator(gates.end()));
 }
 
-template <class GateListT>
+template <template <class...> class T, class GatePtrT>
 auto Circuit::insertGate(CIterGateList pos,
-                         const GateListT& gates) -> IterGateList {
+                         const T<GatePtrT>& gates) -> IterGateList {
   auto result_pos = this->gates_.end();
   for(const auto& gate : gates) {
     auto tmp_pos = this->insertGate(pos, gate->clone());

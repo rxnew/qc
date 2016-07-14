@@ -80,6 +80,10 @@ class Gate {
   virtual auto getTypeName() const -> const std::string& = 0;
   auto getCbitList() const -> const CbitList&;
   auto getTbitList() const -> const TbitList&;
+  auto addCbit(const Cbit& cbit) -> void;
+  auto addCbit(Bitno bit, bool polarity = true) -> void;
+  auto addTbit(const Tbit& tbit) -> void;
+  auto addTbit(Bitno bit) -> void;
   auto setCbits(const CbitList& cbits) -> void;
   auto setCbits(CbitList&& cbits) -> void;
   auto setTbits(const TbitList& tbits) -> void;
@@ -89,8 +93,9 @@ class Gate {
   auto isIncluded(const Tbit& tbit) const -> bool;
   auto isIncludedInCbitList(Bitno bit) const -> bool;
   auto isIncludedInTbitList(Bitno bit) const -> bool;
-  auto eraseBit(Bitno bit) -> void;
-  auto getCbit(Bitno bit) const -> Cbit;
+  auto eraseBit(Bitno bit) -> size_t;
+  auto getCbit(Bitno bit) const -> const Cbit&;
+  auto getTbit(Bitno bit) const -> const Tbit&;
   auto getCbitPolarity(Bitno bit) const -> bool;
   auto invertCbitPolarity(Bitno bit) -> bool;
   auto collectUsedBits() const -> BitList;

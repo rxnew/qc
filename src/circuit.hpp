@@ -54,8 +54,8 @@ class Circuit {
   auto insertGate(CIterGateList pos, GatePtr& gate) -> IterGateList;
   auto insertGate(CIterGateList pos, Gate*&& gate) -> IterGateList;
   auto insertGate(CIterGateList pos, GateList&& gates) -> IterGateList;
-  template <class GateListT>
-  auto insertGate(CIterGateList pos, const GateListT& gates) -> IterGateList;
+  template <template <class...> class T, class GatePtrT>
+  auto insertGate(CIterGateList pos, const T<GatePtrT>& gates) -> IterGateList;
   auto eraseGate(CIterGateList pos) -> IterGateList;
   auto eraseGate(IterGateList pos, GatePtr& gate) -> IterGateList;
   auto eraseGate(CIterGateList first, CIterGateList last) -> IterGateList;
