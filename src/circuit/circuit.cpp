@@ -93,6 +93,7 @@ auto Circuit::simulate(const std::map<Bitno, Vector>& input) const -> Vector {
 auto Circuit::print(std::ostream& os) const -> void {
   for(const auto& gate : this->gates_) {
     gate->print(os);
+    os << std::endl;
   }
 }
 }
