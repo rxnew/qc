@@ -59,7 +59,7 @@ auto isEsopCircuit(const Circuit& circuit) -> bool {
     && qc::isMctCircuit(circuit);
 }
 
-auto getMctCost(const Gate& gate) -> unsigned long long {
+auto getMctCost(const Gate& gate, bool decomp) -> unsigned long long {
   assert(gate.getTypeName() == X::TYPE_NAME);
 
   // Please refer to arXiv:quant-ph/0403053
@@ -69,13 +69,15 @@ auto getMctCost(const Gate& gate) -> unsigned long long {
 
   auto size = gate.getCbitList().size();
   auto n = static_cast<unsigned long long>(gate.getTbitList().size());
-  return (size < C.size() ? C[size] : util::math::pow(2ull, size) - 3) * n;
+  auto cost_s = (size < C.size() ? C[size] : util::math::pow(2ull, size) - 3);
+  return decomp ? cost_s + n * 2 : cost_s * n;
 }
 
-auto calcMctCircuitCost(const Circuit& circuit) -> unsigned long long {
+auto calcMctCircuitCost(const Circuit& circuit,
+                        bool decomp) -> unsigned long long {
   auto total_cost = 0ull;
   for(const auto& gate : circuit.getGateList()) {
-    total_cost += qc::getMctCost(*gate);
+    total_cost += qc::getMctCost(*gate, decomp);
   }
   return total_cost;
 }

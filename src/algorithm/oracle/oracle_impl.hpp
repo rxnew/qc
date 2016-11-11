@@ -20,7 +20,8 @@ inline auto collectTbits(const GatePtrT& gate) -> BitList {
 }
 
 template <class GatePtrT>
-inline auto getMctCost(const GatePtrT& gate) -> unsigned long long {
-  return std::move(qc::getMctCost(*gate));
+inline auto getMctCost(const GatePtrT& gate,
+                       bool decomp) -> unsigned long long {
+  return std::move(qc::getMctCost(*gate, decomp));
 }
 }

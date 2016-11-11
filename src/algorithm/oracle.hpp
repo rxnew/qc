@@ -18,10 +18,12 @@ auto collectTbits(const GatePtrT& gate) -> BitList;
 auto collectTbits(const Circuit& circuit) -> BitList;
 auto isMctCircuit(const Circuit& circuit) -> bool;
 auto isEsopCircuit(const Circuit& circuit) -> bool;
-auto getMctCost(const Gate& gate) -> unsigned long long;
+auto getMctCost(const Gate& gate, bool decomp = false) -> unsigned long long;
 template <class GatePtrT>
-auto getMctCost(const GatePtrT& gate) -> unsigned long long;
-auto calcMctCircuitCost(const Circuit& circuit) -> unsigned long long;
+auto getMctCost(const GatePtrT& gate,
+                bool decomp = false) -> unsigned long long;
+auto calcMctCircuitCost(const Circuit& circuit,
+                        bool decomp = false) -> unsigned long long;
 auto sortGatesByCbits(Circuit& circuit) -> void;
 auto sortGatesByTbits(Circuit& circuit) -> void;
 auto sortGates(Circuit& circuit) -> void;
