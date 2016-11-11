@@ -20,7 +20,7 @@ How to use
 ### qc::Bit クラス
 量子ビットを実装しているクラス．
   
-派生クラスとして，qc::Cbit と qc::Tbit がある．
+派生クラスとして，**qc::Cbit** と **qc::Tbit** がある．
 それぞれ，コントロールビットとターゲットビットに対応している．
 
 ```
@@ -46,5 +46,20 @@ auto gate = new X(cbit, tbit);
 auto circuit = qc::Circuit();
 circuit.addGate(gate);
 ```
+
+### 入出力
+qc::io に IO 関連の機能がまとめられている．
+
+```
+auto circuit = qc::io::open(filename);
+qc::io::input(circuit, filename);
+qc::io::output(circuit, filename);
+```
+拡張子からファイル形式を判断する．
+  
+対応しているファイル形式は以下の通り．
+* qo
+* esop
+* blif (出力のみ)
 
 [cmake]: https://cmake.org/
