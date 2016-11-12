@@ -27,26 +27,26 @@ inline auto Blif::Parser::_addBit(const std::string& wire_name) -> bool {
 
 inline auto Blif::Parser::_error(const std::string& code)
   throw(IfExc) -> void {
-  const auto& msg = Blif::_err_msgs.at(code);
+  const auto& msg = Blif::_getErrorMessage(code);
   error::issue(msg, this->line_, this->filename_, this->lines_counter_);
 }
 
 template <class... Args>
 auto Blif::Parser::_error(const std::string& code, Args&&... args)
   throw(IfExc) -> void {
-  const auto& raw_msg = Blif::_warn_msgs.at(code);
+  const auto& raw_msg = Blif::_getErrorMessage(code);
   const auto msg = util::string::format(raw_msg, std::forward<Args>(args)...);
   error::issue(msg, this->line_, this->filename_, this->lines_counter_);
 }
 
 inline auto Blif::Parser::_warn(const std::string& code) -> void {
-  const auto& msg = Blif::_warn_msgs.at(code);
+  const auto& msg = Blif::_getWarnMessage(code);
   warn::issue(msg, this->line_, this->filename_, this->lines_counter_);
 }
 
 template <class... Args>
 auto Blif::Parser::_warn(const std::string& code, Args&&... args) -> void {
-  const auto& raw_msg = Blif::_warn_msgs.at(code);
+  const auto& raw_msg = Blif::_getWarnMessage(code);
   const auto msg = util::string::format(raw_msg, std::forward<Args>(args)...);
   warn::issue(msg, this->line_, this->filename_, this->lines_counter_);
 }
