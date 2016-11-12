@@ -1,8 +1,30 @@
 #include "../blif.hpp"
+#include "parser.hpp"
 
 namespace qc {
 namespace io {
 const std::string Blif::extension = ".blif";
+
+const Blif::Messages Blif::_err_msgs = {
+  {"E000", "Illegal format. Unknown terminology."},
+  {"E100", "Illegal format. Incomplete description of a model name."},
+  {"E101", "Illegal format. Incomplete description of inputs."},
+  {"E102", "Illegal format. Incomplete description of outputs."},
+  {"E103", "Illegal format. Incomplete description of clocks."},
+  {"E104", "Illegal format. Incomplete description of the gate."},
+  {"E105", "Illegal format. Incomplete description of the mlatch."},
+  {"E106", "Illegal format. Incomplete description of the latch."},
+  {"E200", "Illegal format. The format of parameters of the gate is 'formal=actual'."},
+  {"E201", "Illegal format. Parameters of the gate is different."}
+};
+
+const Blif::Messages Blif::_warn_msgs = {
+  {"W000",  "'clock' is not supported yet."},
+  {"W001",  "'mlatch' is not supported yet."},
+  {"W002",  "'latch' is not supported yet."},
+  {"W100",  "The gate, '%s' is not supported yet."},
+  {"W200",  "The output line, '%s' is duplicated."}
+};
 
 auto Blif::_print(const Gate& gate, std::ostream& os,
                   BitMap& wire, Bitno& max_bit_t) -> void {
@@ -67,11 +89,24 @@ auto Blif::_print(const Circuit& circuit, std::ostream& os) -> void {
   os << ".end" << std::endl;
 }
 
+auto Blif::input(Circuit& circuit, const std::string& filename)
+  throw(IfExc, std::ios_base::failure) -> void {
+  circuit = std::move(Parser(filename).parse());
+}
+
 auto Blif::output(const Circuit& circuit, const std::string& filename)
   throw(std::ios_base::failure) -> void {
   std::ofstream ofs(util::string::addExtension(filename, Blif::extension));
   if(ofs.fail()) throw std::ios_base::failure("Cannot open file.");
   Blif::print(circuit, ofs);
+}
+
+auto Blif::open(const std::string& filename)
+  throw(IfExc, std::ios_base::failure) -> Circuit {
+  auto basename = qc::util::string::basename(filename);
+  Circuit circuit(qc::util::string::excludeExtension(basename));
+  Blif::input(circuit, filename);
+  return std::move(circuit);
 }
 }
 }

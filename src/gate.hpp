@@ -48,6 +48,7 @@ class Gate {
   CbitList cbits_;
   TbitList tbits_;
 
+  Gate() = default;
   explicit Gate(const Tbit& tbit);
   Gate(const Tbit& tbit1, const Tbit& tbit2);
   Gate(const Cbit& cbit, const Tbit& tbit);

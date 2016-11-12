@@ -3,8 +3,8 @@
 namespace qc {
 namespace util {
 namespace string {
-auto split(const std::string& str, const char delim, bool ignore_empty)
-  -> std::vector<std::string> {
+auto split(const std::string& str, const std::string& delim,
+           const bool ignore_empty) -> std::vector<std::string> {
   std::vector<std::string> result;
 
   size_t current = 0;
@@ -29,8 +29,8 @@ auto isNumeric(const std::string& str) -> bool {
   return true;
 }
 
-auto equalCaseInsensitive(const std::string& lhs, const std::string& rhs)
-  -> bool {
+auto equalCaseInsensitive(const std::string& lhs,
+                          const std::string& rhs) -> bool {
   auto cmp = [](const char& lhs, const char& rhs) {
     std::locale locale;
     return std::tolower(lhs, locale) == std::tolower(rhs, locale);
@@ -42,23 +42,23 @@ auto splitext(const std::string& filename)
   -> std::tuple<std::string, std::string> {
   auto found = filename.find_last_of("./");
   if(found == std::string::npos || filename[found] == '/') {
-    return std::move(std::make_tuple(filename, std::string()));
+    return std::make_tuple(filename, std::string());
   }
   auto path = filename.substr(0, found);
   auto extension = filename.substr(found);
-  return std::move(std::make_tuple(path, extension));
+  return std::make_tuple(path, extension);
 }
 
 auto basename(const std::string& filename) -> std::string {
   auto found = filename.find_last_of("/");
   if(found == std::string::npos) return filename;
-  return std::move(filename.substr(found + 1));
+  return filename.substr(found + 1);
 }
 
 auto dirname(const std::string& filename) -> std::string {
   auto found = filename.find_last_of("/");
-  if(found == std::string::npos) return std::move(std::string());
-  return std::move(filename.substr(0, found));
+  if(found == std::string::npos) return std::string();
+  return filename.substr(0, found);
 }
 }
 }

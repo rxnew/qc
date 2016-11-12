@@ -8,7 +8,7 @@ auto input(Circuit& circuit, const std::string& filename)
   auto extension = util::string::getExtension(filename);
   auto if_exc = io::_getNotSupportFormatException(extension, "qc::io::input");
   if(extension == Qo::extension)   return Qo::input(circuit, filename);
-  if(extension == Blif::extension) throw if_exc;
+  if(extension == Blif::extension) return Blif::input(circuit, filename);
   if(extension == Esop::extension) return Esop::input(circuit, filename);
   throw io::_getUnknownFormatException(extension);
 }

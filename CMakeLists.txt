@@ -32,4 +32,4 @@ set(CMAKE_CXX_FLAGS "")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O2")
 
-add_definitions(${CMAKE_CXX_FLAGS} "-std=c++11 -Wall")
+add_definitions(${CMAKE_CXX_FLAGS} "-std=c++14 -Wall")
