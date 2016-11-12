@@ -20,7 +20,7 @@ How to use
 ### qc::Bit クラス
 量子ビットを実装しているクラス．
   
-派生クラスとして，**qc::Cbit** と **qc::Tbit** がある．
+派生クラスとして，***qc::Cbit*** と ***qc::Tbit*** がある．
 それぞれ，コントロールビットとターゲットビットに対応している．
 
 ```
@@ -43,7 +43,7 @@ qc::Cbit クラスの主なメンバを以下にまとめる．
 
 ### qc::Gate クラス
 量子ゲートを実装している**抽象**クラス．
-Cbit と Tbit をリストで保持している．
+qc::Cbit と qc::Tbit をリストで保持している．
   
 派生クラスで各量子ゲート (e.g., X, T) を実装している．実装済みのゲートは以下の通り．
 
@@ -58,7 +58,7 @@ Cbit と Tbit をリストで保持している．
 * ***Hadamard*** (***H***)
 * ***Swap***
 
-ゲートの生成には，qc::createGate() を利用すると便利．
+ゲートの生成には，***qc::createGate()*** を利用すると便利．
 
 ```
 auto gate = qc::createGate("X", cbit, tbit);
@@ -112,7 +112,7 @@ qc::Circuit クラスの主なメンバ関数を以下にまとめる．
 |print|ストリームに出力する (public member function)|
 
 ### 入出力
-qc::io に IO 関連の機能がまとめられている．
+***qc::io*** に IO 関連の機能がまとめられている．
 
 ```
 auto circuit = qc::io::open(filename);
@@ -124,6 +124,7 @@ qc::io::output(circuit, filename);
 対応しているファイル形式は以下の通り．
 * qo
 * esop
-* blif (入力は nand2 のみ)
+* [blif][blif] (入力は nand2 のみ)
 
 [cmake]: https://cmake.org/
+[blif]: https://www.cse.iitb.ac.in/~supratik/courses/cs226/spr16/blif.pdf
