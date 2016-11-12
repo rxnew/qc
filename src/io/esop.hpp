@@ -40,7 +40,7 @@ class Esop {
   static auto _print(const Circuit& circuit, std::ostream& os) -> void;
 
  public:
-  static std::string extension;
+  static const std::string extension;
 
   static auto input(Circuit& circuit, const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> void;
