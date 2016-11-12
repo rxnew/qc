@@ -50,10 +50,14 @@ class Blif::Parser {
   auto _placeGates(Circuit& circuit) -> void;
   auto _isAncilla(const std::string& wire_name) -> bool;
   auto _addBit(const std::string& wire_name) -> bool;
+  auto _error(const std::string& code)
+    throw(IfExc) -> void;
+  template <class... Args>
+  auto _error(const std::string& code, Args&&... args)
+    throw(IfExc) -> void;
   auto _warn(const std::string& code) -> void;
   template <class... Args>
   auto _warn(const std::string& code, Args&&... args) -> void;
-  auto _warnMessage(const std::string& raw_msg) -> void;
 
  public:
   Parser(const std::string& filename);

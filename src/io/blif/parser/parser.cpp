@@ -31,7 +31,7 @@ auto Blif::Parser::_parseLine(std::ifstream& ifs)
   else if(tokens[0] == ".outputs") this->_parseOutputs(tokens);
   else if(tokens[0] == ".clock")   this->_parseClocks(tokens);
   else if(tokens[0] == ".gate")    this->_parseGate(tokens);
-  else throw IfExc(Blif::_err_msgs.at("E000"));
+  else this->_error("E000");
 
   return true;
 }
