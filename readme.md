@@ -64,11 +64,16 @@ qc::Gate クラスの主なメンバ関数を以下にまとめる．
 |addTbit|ターゲットビットを追加する (public member function)|
 |isIncluded|ビットを含んでいるか確認する (public member function)|
 |eraseBit|ビットを削除する (public member function)|
+|collectUsedBits|使用しているビットのリストを生成する (public member function)|
+|simulate|ユニタリ変換をシミュレートする (public member function)|
+|isControlled|制御ゲートか確認する (public member function)|
+|isSingleQubitRotation|1量子ビット回転ゲートか確認する (public member function)|
+|isAllPositive|全てのコントロールビットの極性が正か確認する (public member function)|
 |print|ストリームに出力する (public member function)|
 
 ### qc::Circuit クラス
 量子回路を実装しているクラス．
-量子ゲートの**ポインタ**をリストで保持している．
+qc::Gate の**ポインタ** (std::unique_ptr) をリストで保持している．
 
 ```
 auto circuit = qc::Circuit();
