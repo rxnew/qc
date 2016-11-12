@@ -7,5 +7,8 @@
 
 namespace qc {
 namespace io {
+inline auto Qo::print(const Circuit& circuit, std::ostream& os) -> void {
+  circuit.print(os);
+}
 }
 }

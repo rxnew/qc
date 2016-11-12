@@ -4,7 +4,7 @@ This program is quantum circuit simulator.
 
 Requirements
 ---------------
-* g++ 4.9 or later
+* g++ 5.3 or later
 * [CMake][cmake] 2.8 or later
 
 How to install
@@ -60,6 +60,6 @@ qc::io::output(circuit, filename);
 対応しているファイル形式は以下の通り．
 * qo
 * esop
-* blif (出力のみ)
+* blif (入力は nand2 のみ)
 
 [cmake]: https://cmake.org/
