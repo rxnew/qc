@@ -9,9 +9,14 @@
 
 namespace qc {
 namespace io {
-inline auto Blif::print(const Circuit& circuit, std::ostream& os) -> void {
-  assert(qc::isMctCircuit(circuit));
-  Blif::_print(circuit, os);
+inline auto Blif::_getErrorMessage(const std::string& code)
+  -> const std::string& {
+  return Blif::_err_msgs.at(code);
+}
+
+inline auto Blif::_getWarnMessage(const std::string& code)
+  -> const std::string& {
+  return Blif::_warn_msgs.at(code);
 }
 }
 }

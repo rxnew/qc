@@ -14,23 +14,39 @@ auto Blif::Parser::_init() -> void {
   this->middle_gate_map_.clear();
 }
 
-auto Blif::Parser::_parseLine(std::ifstream& ifs)
-  throw(IfExc) -> bool {
-  std::getline(ifs, this->line_);
+auto Blif::Parser::_setTokens(Tokens& tokens) -> void {
+  std::getline(this->ifs_, this->line_);
   this->lines_counter_++;
   this->line_ = util::string::trimComments(this->line_, '#');
-  const auto tokens = util::string::split(this->line_);
+  auto tokens_tmp = util::string::split(this->line_);
+  tokens.insert(std::cend(tokens),
+                std::make_move_iterator(std::begin(tokens_tmp)),
+                std::make_move_iterator(std::end(tokens_tmp)));
+}
+
+auto Blif::Parser::_parseLine()
+  throw(IfExc) -> bool {
+  Tokens tokens;
+  this->_setTokens(tokens);
 
   // 空行 or コメント行
   if(tokens.empty()) return true;
-
   if(tokens[0] == ".end") return false;
+
+  // '\' による改行に対応
+  while(tokens.back() == R"(\)") {
+    tokens.pop_back();
+    this->_setTokens(tokens);
+  }
 
   if(tokens[0] == ".model")        this->_parseModelName(tokens);
   else if(tokens[0] == ".inputs")  this->_parseInputs(tokens);
   else if(tokens[0] == ".outputs") this->_parseOutputs(tokens);
   else if(tokens[0] == ".clock")   this->_parseClocks(tokens);
   else if(tokens[0] == ".gate")    this->_parseGate(tokens);
+  else if(tokens[0] == ".mlatch")  this->_parseMlatch(tokens);
+  else if(tokens[0] == ".latch")   this->_parseLatch(tokens);
+  else if(tokens[0] == ".names")   this->_parseNames(tokens);
   else this->_error("E000");
 
   return true;
@@ -38,14 +54,18 @@ auto Blif::Parser::_parseLine(std::ifstream& ifs)
 
 auto Blif::Parser::_parseModelName(const Tokens& tokens)
   throw(IfExc) -> void {
-  if(tokens.size() < 2) throw IfExc(Blif::_err_msgs.at("E100"));
+  static constexpr const auto name = "model";
+
+  if(tokens.size() < 2) this->_error("E010", name);
 
   this->model_name_ = tokens[1];
 }
 
 auto Blif::Parser::_parseInputs(const Tokens& tokens)
   throw(IfExc) -> void {
-  if(tokens.size() < 2) throw IfExc(Blif::_err_msgs.at("E101"));
+  static constexpr const auto name = "inputs";
+
+  if(tokens.size() < 2) this->_error("E010", name);
 
   for(auto i = 1; i < static_cast<int>(tokens.size()); i++) {
     this->input_wire_names_.insert(tokens[i]);
@@ -55,7 +75,9 @@ auto Blif::Parser::_parseInputs(const Tokens& tokens)
 
 auto Blif::Parser::_parseOutputs(const Tokens& tokens)
   throw(IfExc) -> void {
-  if(tokens.size() < 2) throw IfExc(Blif::_err_msgs.at("E102"));
+  static constexpr const auto name = "outputs";
+
+  if(tokens.size() < 2) this->_error("E010", name);
 
   for(auto i = 1; i < static_cast<int>(tokens.size()); i++) {
     this->output_wire_names_.insert(tokens[i]);
@@ -65,49 +87,86 @@ auto Blif::Parser::_parseOutputs(const Tokens& tokens)
 
 auto Blif::Parser::_parseClocks(const Tokens& tokens)
   throw(IfExc) -> void {
-  if(tokens.size() < 2) throw IfExc(Blif::_err_msgs.at("E103"));
+  static constexpr const auto name = "clock";
 
-  this->_warn("W000");
+  if(tokens.size() < 2) this->_error("E010", name);
+
+  this->_warn("W000", name);
 }
 
 auto Blif::Parser::_parseGate(const Tokens& tokens)
   throw(IfExc) -> void {
-  if(tokens.size() < 4) throw IfExc(Blif::_err_msgs.at("E104"));
+  static constexpr const auto name = "gate";
+
+  if(tokens.size() < 4) this->_error("E010", name);
 
   const auto gate_name = tokens[1];
   if(gate_name == "nand2") this->_createGateNand2(tokens);
-  else this->_warn("W100", gate_name);
+  else this->_warn("W010", gate_name);
 }
 
 auto Blif::Parser::_parseMlatch(const Tokens& tokens)
   throw(IfExc) -> void {
-  if(tokens.size() < 2) throw IfExc(Blif::_err_msgs.at("E105"));
+  static constexpr const auto name = "mlatch";
 
-  this->_warn("W002");
+  if(tokens.size() < 2) this->_error("E010", name);
+
+  this->_warn("W000", name);
 }
 
 auto Blif::Parser::_parseLatch(const Tokens& tokens)
   throw(IfExc) -> void {
-  if(tokens.size() < 2) throw IfExc(Blif::_err_msgs.at("E106"));
+  static constexpr const auto name = "latch";
 
-  this->_warn("W003");
+  if(tokens.size() < 2) this->_error("E010", name);
+
+  this->_warn("W000", name);
+}
+
+auto Blif::Parser::_parseNames(const Tokens& tokens)
+  throw(IfExc) -> void {
+  static constexpr const auto name = "names";
+
+  if(tokens.size() < 2) this->_error("E010", name);
+
+  this->_warn("W000", name);
+
+  auto pos = this->ifs_.tellg();
+  while(std::getline(this->ifs_, this->line_)) {
+    this->lines_counter_++;
+    this->line_ = util::string::trimWhiteSpaces(this->line_);
+    if(!this->line_.empty() && this->line_.front() == '.') {
+      this->ifs_.seekg(pos);
+      break;
+    }
+    pos = this->ifs_.tellg();
+  }
+}
+
+auto Blif::Parser::_parseSubckt(const Tokens& tokens)
+  throw(IfExc) -> void {
+  static constexpr const auto name = "subckt";
+
+  if(tokens.size() < 2) this->_error("E010", name);
+
+  this->_warn("W000", name);
 }
 
 auto Blif::Parser::_parseGateParams(const std::string& token)
   throw(IfExc) ->  std::pair<std::string, std::string> {
   const auto terms = util::string::split(token, '=');
 
-  if(terms.size() != 2) throw IfExc(Blif::_err_msgs.at("E200"));
+  if(terms.size() != 2) this->_error("E020");
 
   return std::make_pair(terms[0], terms[1]);
 }
 
 auto Blif::Parser::_createGateNand2(const Tokens& tokens)
   throw(IfExc) -> void {
-  static const std::array<std::string, 2> inputs = {"A", "B"};
-  static const std::string output = "O";
+  static constexpr const std::array<const char*, 2> inputs = {"A", "B"};
+  static constexpr const char* output = "O";
 
-  if(tokens.size() != 5) throw IfExc(Blif::_err_msgs.at("E201"));
+  if(tokens.size() != 5) this->_error("E021");
 
   std::unordered_map<std::string, std::string> io_map;
   for(auto i = 2; i < 5; i++) {
@@ -116,14 +175,14 @@ auto Blif::Parser::_createGateNand2(const Tokens& tokens)
 
   auto gate = std::make_unique<X>();
   for(const auto& input : inputs) {
-    if(!io_map.count(input)) throw IfExc(Blif::_err_msgs.at("E201"));
+    if(!io_map.count(input)) throw IfExc(Blif::_err_msgs.at("E021"));
 
     const auto& wire_name = io_map.at(input);
     this->_addBit(wire_name);
     gate->addCbit(Cbit(bit_map_.at(wire_name)));
   }
   {
-    if(!io_map.count(output)) throw IfExc(Blif::_err_msgs.at("E201"));
+    if(!io_map.count(output)) throw IfExc(Blif::_err_msgs.at("E021"));
 
     const auto& wire_name = io_map.at(output);
     this->_addBit(wire_name);
@@ -136,7 +195,7 @@ auto Blif::Parser::_createGateNand2(const Tokens& tokens)
   if(this->_isAncilla(target_wire_name))  {
     // 使用する補助ビットが重複していないか
     if(this->middle_gate_map_.count(tbit_no)) {
-      this->_warn("W200", target_wire_name);
+      this->_warn("W020", target_wire_name);
     }
     this->middle_gate_map_[tbit_no] = std::move(gate);
   }
@@ -181,13 +240,15 @@ auto Blif::Parser::_placeGates(Circuit& circuit) -> void {
 
 auto Blif::Parser::parse()
   throw(IfExc, std::ios_base::failure) -> Circuit {
-  std::ifstream ifs(this->filename_);
+  this->ifs_.open(this->filename_);
 
-  if(ifs.fail()) throw std::ios_base::failure("Cannot open file.");
+  if(this->ifs_.fail()) throw std::ios_base::failure("Cannot open file.");
 
   this->_init();
 
-  while(this->_parseLine(ifs));
+  while(this->_parseLine());
+
+  this->ifs_.close();
 
   return this->_createCircuit();
 }

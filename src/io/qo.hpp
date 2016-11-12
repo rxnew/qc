@@ -42,7 +42,7 @@ class Qo {
     -> GatePtr;
 
  public:
-  static std::string extension;
+  static const std::string extension;
 
   static auto input(Circuit& circuit, const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> void;
@@ -50,6 +50,8 @@ class Qo {
     throw(std::ios_base::failure) -> void;
   static auto open(const std::string& filename)
     throw(IfExc, std::ios_base::failure) -> Circuit;
+  static auto print(const Circuit& circuit,
+                    std::ostream& os = std::cout) -> void;
 };
 }
 }

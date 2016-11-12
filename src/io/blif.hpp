@@ -15,6 +15,7 @@ namespace io {
 class Blif {
  private:
   class Parser;
+  class Dumper;
 
   using IfExc = exc::IllegalFormatException;
   using BitMap = std::unordered_map<Bitno, Bitno>;
@@ -25,9 +26,8 @@ class Blif {
 
   Blif() = delete;
 
-  static auto _print(const Gate& gate, std::ostream& os,
-                     BitMap& wire, Bitno& max_bit_t) -> void;
-  static auto _print(const Circuit& circuit, std::ostream& os) -> void;
+  static auto _getErrorMessage(const std::string& code) -> const std::string&;
+  static auto _getWarnMessage(const std::string& code) -> const std::string&;
 
  public:
   static const std::string extension;

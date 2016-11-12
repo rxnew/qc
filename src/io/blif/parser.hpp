@@ -1,6 +1,6 @@
 /**
  * @file parser.hpp
- * @brief header of qc::io::Blif::parser class
+ * @brief header of qc::io::Blif::Parser class
  */
 
 #pragma once
@@ -15,6 +15,7 @@ class Blif::Parser {
 
   std::string filename_;
 
+  mutable std::ifstream ifs_;
   mutable std::string model_name_;
   mutable std::unordered_set<std::string> input_wire_names_;
   mutable std::unordered_set<std::string> output_wire_names_;
@@ -26,7 +27,8 @@ class Blif::Parser {
   mutable GateList output_gates_;
 
   auto _init() -> void;
-  auto _parseLine(std::ifstream& ifs)
+  auto _setTokens(Tokens& tokens) -> void;
+    auto _parseLine()
     throw(IfExc) -> bool;
   auto _parseModelName(const Tokens& tokens)
     throw(IfExc) -> void;
@@ -41,6 +43,10 @@ class Blif::Parser {
   auto _parseMlatch(const Tokens& tokens)
     throw(IfExc) -> void;
   auto _parseLatch(const Tokens& tokens)
+    throw(IfExc) -> void;
+  auto _parseNames(const Tokens& tokens)
+    throw(IfExc) -> void;
+  auto _parseSubckt(const Tokens& tokens)
     throw(IfExc) -> void;
   auto _parseGateParams(const std::string& token)
     throw(IfExc) ->  std::pair<std::string, std::string>;
