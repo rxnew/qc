@@ -6,66 +6,69 @@
 #pragma once
 
 namespace qc {
-inline Bit::Bit(Bitno bitno) : bitno_(bitno) {
+inline Bit::Bit(No no) : no_(no) {}
+
+inline auto Bit::operator==(Bit const& other) const -> bool {
+  return no_ == other.no_;
 }
 
-inline auto Bit::operator==(const Bit& other) const -> bool {
-  return this->bitno_ == other.bitno_;
-}
-
-inline auto Bit::operator!=(const Bit& other) const -> bool {
+inline auto Bit::operator!=(Bit const& other) const -> bool {
   return !(*this == other);
 }
 
-inline auto Bit::operator<(const Bit& other) const -> bool {
-  return this->bitno_ < other.bitno_;
+inline auto Bit::operator<(Bit const& other) const -> bool {
+  return no_ < other.no_;
 }
 
-inline auto Bit::operator>(const Bit& other) const -> bool {
+inline auto Bit::operator>(Bit const& other) const -> bool {
   return !(*this < other) && *this != other;
 }
 
-template <class... Args>
-inline Cbit::Cbit(Args&&... args)
-  : Bit(std::forward<Args>(args)...), polarity_(true) {
+inline auto Bit::get_no() const -> No {
+  return no_;
 }
 
-inline Cbit::Cbit(Bitno bitno, bool polarity)
-  : Bit(bitno), polarity_(polarity) {
+inline CBit::CBit(No no, bool polarity) : Bit(no), polarity_(polarity) {}
+
+inline auto CBit::operator==(CBit const& other) const -> bool {
+  return Bit::operator==(other) && polarity_ == other.polarity_;
 }
 
-inline auto Cbit::operator==(const Cbit& other) const -> bool {
-  return Bit::operator==(other) && this->polarity_ == other.polarity_;
-}
-
-inline auto Cbit::operator!=(const Cbit& other) const -> bool {
+inline auto CBit::operator!=(CBit const& other) const -> bool {
   return !(*this == other);
 }
 
-inline auto Cbit::operator<(const Cbit& other) const -> bool {
-  return this->bitno_ == other.bitno_ ?
-    (this->polarity_ && !other.polarity_ ? true : false) :
-    Bit::operator<(other);
+inline auto CBit::operator<(CBit const& other) const -> bool {
+  return
+    Bit::operator==(other) ?
+    polarity_ && !other.polarity_ : Bit::operator<(other);
 }
 
-inline auto Cbit::operator>(const Cbit& other) const -> bool {
+inline auto CBit::operator>(CBit const& other) const -> bool {
   return !(*this < other) && *this != other;
 }
 
-inline auto Cbit::invertPolarity() -> bool {
-  return this->polarity_ ^= true;
+inline auto CBit::invert_polarity() -> bool {
+  return polarity_ ^= true;
 }
 
 template <class... Args>
-inline Tbit::Tbit(Args&&... args) : Bit(std::forward<Args>(args)...) {
+inline TBit::TBit(Args&&... args) : Bit(std::forward<Args>(args)...) {}
+
+inline auto operator<<(std::ostream& os, Bit const& obj) -> std::ostream& {
+  return os << obj.get_no();
 }
 
-inline auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream& {
-  const char* const sign = obj.polarity_ ? "" : "!";
-  return os << sign << obj.bitno_;
+inline auto operator<<(std::ostream& os, CBit const& obj) -> std::ostream& {
+  if(!obj.get_polarity()) os << '!';
+  return os << obj.get_no();
 }
 
-inline auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream& {
-  return os << 'T' << obj.bitno_;
+inline auto operator<<(std::ostream& os, TBit const& obj) -> std::ostream& {
+  return os << 'T' << obj.get_no();
+}
+
+inline auto operator"" _bit(unsigned long long bit_no_i) -> Bit::No {
+  return static_cast<Bit::No>(bit_no_i);
 }
 }

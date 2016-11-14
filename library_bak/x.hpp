@@ -16,3 +16,5 @@ class X : private GateType {
   friend class Gate;
 };
 }
+
+#include "x/x_impl.hpp"
