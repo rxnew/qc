@@ -6,6 +6,14 @@
 
 namespace qc {
 namespace io {
+constexpr Qo::Messages const Qo::_err_msgs = {
+  "Illegal format of gates. Too many or few parameters.",
+  "Illegal format of gates. Gate name contains spaces.",
+  "Illegal format of gates. Contorol and target bits is empty.",
+  "Illegal format of gates. Bit is not numberic.",
+  "Illegal format of gates. Unknown gate name."
+};
+
 auto Qo::input(Circuit& circuit, std::string const& filename)
   throw(IfExc, std::ios_base::failure) -> void {
   auto ifs = std::ifstream(filename);

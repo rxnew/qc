@@ -16,8 +16,8 @@ class Gate::Impl {
   Impl(CBits&& cbits, TBit const& tbit);
   Impl(CBits const& cbits, TBits const& tbits);
   Impl(CBits&& cbits, TBits&& tbits);
-  template <class... Args>
-  Impl(Args&&... args);
+  //template <class... Args>
+  //explict Impl(Args&&... args);
   Impl(Impl const&) = default;
   Impl(Impl&&) noexcept = default;
 
@@ -32,14 +32,16 @@ class Gate::Impl {
   virtual auto get_type_name() const -> char const* const& = 0;
   virtual auto get_cbits() const -> CBits const&;
   virtual auto get_tbits() const -> TBits const&;
-  virtual auto print(std::ostream& os) const -> void;
+  virtual auto print(std::ostream& os = std::cout) const -> void;
 
   CBits cbits_;
   TBits tbits_;
 
  private:
   auto _add_bit(CBit const& cbit) -> void;
-  auto _add_bit(TBit const& tbit) -> void;
+  auto _add_bit(CBit&& tbit) -> void;
+  auto _add_bit(TBit const& cbit) -> void;
+  auto _add_bit(TBit&& tbit) -> void;
   template <class BitT, class... Args>
   auto _add_bit(BitT&& bit, Args&&... args) -> void;
 

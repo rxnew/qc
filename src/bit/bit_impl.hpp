@@ -48,6 +48,10 @@ inline auto CBit::operator>(CBit const& other) const -> bool {
   return !(*this < other) && *this != other;
 }
 
+inline auto CBit::get_polarity() const -> bool {
+  return polarity_;
+}
+
 inline auto CBit::invert_polarity() -> bool {
   return polarity_ ^= true;
 }

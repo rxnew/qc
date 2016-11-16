@@ -10,7 +10,7 @@ inline auto hash<qc::Bit>::operator()(qc::Bit const& obj) const -> size_t {
   return hash<qc::Bit::No>()(obj.get_no());
 }
 
-auto hash<qc::CBit>::operator()(qc::CBit const& obj) const -> size_t {
+inline auto hash<qc::CBit>::operator()(qc::CBit const& obj) const -> size_t {
   auto constexpr const mask =
     static_cast<size_t>(1) << ((sizeof(size_t) << 3) - 1);
   return hash<qc::Bit::No>()(obj.get_no()) ^ (obj.get_polarity() ? 0 : mask);

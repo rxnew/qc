@@ -34,15 +34,7 @@ class Esop {
   using Counts = std::unordered_map<std::string, size_t>;
   using Messages = std::array<char const* const, 7>;
 
-  static constexpr Messages _err_msgs = {
-    "Illegal format of headers. Too many or few columns.",
-    "Illegal format of headers. Too many or few rows.",
-    "Illegal format of headers. Unknown parameter.",
-    "Illegal format of terms. Too many or few columns.",
-    "Illegal format of terms. Too many or few rows.",
-    "Illegal format of terms. Too many or few inputs or outputs.",
-    "Illegal format of terms. Unknown parameter."
-  };
+  static Messages const _err_msgs;
 
   Esop() = delete;
 

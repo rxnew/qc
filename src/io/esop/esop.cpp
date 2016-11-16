@@ -1,12 +1,23 @@
 #include "../esop.hpp"
 
 #include "../../circuit.hpp"
+#include "../../algorithm/oracle.hpp"
 #include "../../gate/library/x.hpp"
 #include "../../util/container.hpp"
 #include "../../util/string.hpp"
 
 namespace qc {
 namespace io {
+constexpr Esop::Messages const Esop::_err_msgs = {
+  "Illegal format of headers. Too many or few columns.",
+  "Illegal format of headers. Too many or few rows.",
+  "Illegal format of headers. Unknown parameter.",
+  "Illegal format of terms. Too many or few columns.",
+  "Illegal format of terms. Too many or few rows.",
+  "Illegal format of terms. Too many or few inputs or outputs.",
+  "Illegal format of terms. Unknown parameter."
+};
+
 auto Esop::input(Circuit& circuit, std::string const& filename)
   throw(IfExc, std::ios_base::failure) -> void {
   auto ifs = std::ifstream(filename);

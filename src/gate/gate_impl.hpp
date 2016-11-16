@@ -10,7 +10,7 @@
 #include "impl.hpp"
 
 namespace qc {
-Gate::Gate(Gate const& other) : impl_(other.impl_->clone()) {}
+inline Gate::Gate(Gate const& other) : impl_(other.impl_->clone()) {}
 
 template <class Type, class... Args>
 inline auto Gate::make(Args&&... args) -> Gate {
@@ -142,5 +142,5 @@ inline auto Gate::print(std::ostream& os) const -> void {
 
 inline Gate::Gate(std::unique_ptr<Impl>&& impl) : impl_(std::move(impl)) {}
 
-inline Gate::Gate(Impl*&& impl) : impl_(std::move(impl_)) {}
+inline Gate::Gate(Impl*&& impl) : impl_(std::move(impl)) {}
 }

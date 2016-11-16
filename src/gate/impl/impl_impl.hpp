@@ -36,10 +36,12 @@ inline Gate::Impl::Impl(CBits&& cbits, TBits&& tbits) :
   cbits_(std::move(cbits)), tbits_(std::move(tbits)) {
 }
 
+/*
 template <class... Args>
 inline Gate::Impl::Impl(Args&&... args) {
   _add_bit(std::forward<Args>(args)...);
 }
+*/
 
 inline auto Gate::Impl::operator==(Impl const& other) const -> bool {
   return
@@ -63,13 +65,21 @@ inline auto Gate::Impl::_add_bit(CBit const& cbit) -> void {
   cbits_.insert(cbit);
 }
 
+inline auto Gate::Impl::_add_bit(CBit&& cbit) -> void {
+  cbits_.insert(std::move(cbit));
+}
+
 inline auto Gate::Impl::_add_bit(TBit const& tbit) -> void {
   tbits_.insert(tbit);
+}
+
+inline auto Gate::Impl::_add_bit(TBit&& tbit) -> void {
+  tbits_.insert(std::move(tbit));
 }
 
 template <class BitT, class... Args>
 inline auto Gate::Impl::_add_bit(BitT&& bit, Args&&... args) -> void {
   _add_bit(std::forward<BitT>(bit));
-  _add_bit(std::forward<BitT>(args)...);
+  _add_bit(std::forward<Args>(args)...);
 }
 }

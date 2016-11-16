@@ -3,8 +3,6 @@
 namespace qc {
 class X::Impl : public GateImpl {
  public:
-  static constexpr char const* const TYPE_NAME = "X";
-
   template <class... Args>
   Impl(Args&&... args);
 

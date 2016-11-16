@@ -10,7 +10,7 @@
 namespace qc {
 class X : private GateType {
  public:
-  static char const constexpr* const TYPE_NAME = "X";
+  static char const* const TYPE_NAME;
 
  private:
   class Impl;

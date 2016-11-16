@@ -38,7 +38,7 @@ auto collect_tbits(Gate const& gate) -> BitNos {
   return bit_nos;
 }
 
-auto collectTbits(Circuit const& circuit) -> BitNos {
+auto collect_tbits(Circuit const& circuit) -> BitNos {
   auto bit_nos = BitNos();
   for(auto const& gate : circuit.get_gates()) {
     for(auto const& tbit : gate.get_tbits()) {

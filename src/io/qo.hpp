@@ -36,13 +36,7 @@ class Qo {
                     std::ostream& os = std::cout) -> void;
 
  private:
-  static constexpr Messages const _err_msgs = {
-    "Illegal format of gates. Too many or few parameters.",
-    "Illegal format of gates. Gate name contains spaces.",
-    "Illegal format of gates. Contorol and target bits is empty.",
-    "Illegal format of gates. Bit is not numberic.",
-    "Illegal format of gates. Unknown gate name."
-  };
+  static Messages const _err_msgs;
 
   Qo() = delete;
 
