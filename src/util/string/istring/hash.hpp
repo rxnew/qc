@@ -6,7 +6,7 @@ namespace std {
 template <>
 struct hash<qc::util::string::istring> {
   using istring = qc::util::string::istring;
-  auto operator()(const istring& obj) const -> size_t;
+  auto operator()(istring const& obj) const -> size_t;
 };
 }
 

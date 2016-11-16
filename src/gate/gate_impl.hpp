@@ -17,6 +17,11 @@ inline auto Gate::make(Args&&... args) -> Gate {
   return Gate(new typename Type::Impl(std::forward<Args>(args)...));
 }
 
+inline auto Gate::make_dummy(bool assert_flag) -> Gate {
+  assert(!assert_flag);
+  return Gate(nullptr);
+}
+
 inline auto Gate::operator=(Gate const& other) -> Gate& {
   impl_ = other.impl_->clone();
   return *this;
@@ -30,15 +35,15 @@ inline auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
-inline auto Gate::get_type_name() const -> const std::string& {
+inline auto Gate::get_type_name() const -> char const* const& {
   return impl_->get_type_name();
 }
 
-inline auto Gate::get_cbits() const -> const CBits& {
+inline auto Gate::get_cbits() const -> CBits const& {
   return impl_->get_cbits();
 }
 
-inline auto Gate::get_tbits() const -> const TBits& {
+inline auto Gate::get_tbits() const -> TBits const& {
   return impl_->get_tbits();
 }
 

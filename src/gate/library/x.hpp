@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "../../gate.hpp"
+
 namespace qc {
 class X : private GateType {
  public:
@@ -16,3 +18,5 @@ class X : private GateType {
   friend class Gate;
 };
 }
+
+#include "x/x_impl.hpp"

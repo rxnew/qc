@@ -6,9 +6,12 @@
 #pragma once
 
 #include <fstream>
+#include <iostream>
 #include <tuple>
+#include <unordered_set>
+#include <vector>
 
-#include "../circuit.hpp"
+#include "../forward_declarations.hpp"
 #include "exc/illegal_format_exception.hpp"
 
 namespace qc {
@@ -16,44 +19,49 @@ namespace io {
 class Qo {
  private:
   using IfExc = exc::IllegalFormatException;
-  using Messages = std::array<std::string, 5>;
+  using Messages = std::array<char const* const, 5>;
   using strings = std::vector<std::string>;
-  using BitListTuple = std::tuple<CbitList, TbitList>;
+  using BitsTuple = std::tuple<CBits, TBits>;
 
-  static Messages _err_msgs;
+ public:
+  static constexpr char const* const extension = ".qo";
+
+  static auto input(Circuit& circuit, std::string const& filename)
+    throw(IfExc, std::ios_base::failure) -> void;
+  static auto output(Circuit const& circuit, std::string const& filename)
+    throw(std::ios_base::failure) -> void;
+  static auto open(std::string const& filename)
+    throw(IfExc, std::ios_base::failure) -> Circuit;
+  static auto print(Circuit const& circuit,
+                    std::ostream& os = std::cout) -> void;
+
+ private:
+  static constexpr Messages const _err_msgs = {
+    "Illegal format of gates. Too many or few parameters.",
+    "Illegal format of gates. Gate name contains spaces.",
+    "Illegal format of gates. Contorol and target bits is empty.",
+    "Illegal format of gates. Bit is not numberic.",
+    "Illegal format of gates. Unknown gate name."
+  };
 
   Qo() = delete;
 
-  static auto _divideIntoGroups(const std::string& line)
+  static auto _divide_into_groups(std::string const& line)
     throw(IfExc) -> strings;
-  static auto _getGateString(const std::string& str)
+  static auto _get_gate_string(std::string const& str)
     throw(IfExc) -> std::string;
-  static auto _getBitStrings(const std::string& str)
+  static auto _get_bit_strings(std::string const& str)
     throw(IfExc) -> strings;
-  static auto _getOptionStrings(const std::string& str)
+  static auto _get_option_strings(std::string const& str)
     throw(IfExc) -> strings;
-  static auto _getCbit(const std::string& bit_str)
-    throw(IfExc) -> Cbit;
-  static auto _getTbit(const std::string& bit_str)
-    throw(IfExc) -> Tbit;
-  static auto _getBits(const strings& bit_strs)
-    throw(IfExc) -> BitListTuple;
-  static auto _getGate(const std::string& gate_str, const BitListTuple& bits)
-    -> GatePtr;
-
- public:
-  static const std::string extension;
-
-  static auto input(Circuit& circuit, const std::string& filename)
-    throw(IfExc, std::ios_base::failure) -> void;
-  static auto output(const Circuit& circuit, const std::string& filename)
-    throw(std::ios_base::failure) -> void;
-  static auto open(const std::string& filename)
-    throw(IfExc, std::ios_base::failure) -> Circuit;
-  static auto print(const Circuit& circuit,
-                    std::ostream& os = std::cout) -> void;
+  static auto _get_cbit(std::string const& bit_str)
+    throw(IfExc) -> CBit;
+  static auto _get_tbit(std::string const& bit_str)
+    throw(IfExc) -> TBit;
+  static auto _get_bits(strings const& bit_strs)
+    throw(IfExc) -> BitsTuple;
+  static auto _get_gate(std::string const& gate_str, BitsTuple const& bits)
+    -> Gate;
 };
 }
 }
-
-#include "qo/qo_impl.hpp"

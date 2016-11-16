@@ -13,7 +13,7 @@ auto istring::operator=(Args&&... args) -> istring& {
 }
 
 inline auto istring::operator==(const istring& other) const -> bool {
-  return equalCaseInsensitive(*this, other);
+  return equal_case_insensitive(*this, other);
 }
 
 inline auto istring::operator!=(const istring& other) const -> bool {
@@ -21,7 +21,7 @@ inline auto istring::operator!=(const istring& other) const -> bool {
 }
 
 inline auto istring::operator<(const istring& other) const -> bool {
-  return this->case_insensitive() < other.case_insensitive();
+  return case_insensitive() < other.case_insensitive();
 }
 
 inline auto istring::operator>(const istring& other) const -> bool {
@@ -29,13 +29,13 @@ inline auto istring::operator>(const istring& other) const -> bool {
 }
 
 inline auto istring::to_string() const -> Super {
-  return std::move(Super(this->c_str()));
+  return Super(c_str());
 }
 
 inline auto istring::case_insensitive() const -> Super {
   auto str = this->to_string();
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-  return std::move(str);
+  return str;
 }
 }
 }

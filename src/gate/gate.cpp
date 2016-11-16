@@ -3,7 +3,6 @@
  * @brief implementation of quantum gate classes
  */
 
-#include "gate_private.hpp"
 #include "../gate.hpp"
 
 #include <set>
@@ -11,23 +10,23 @@
 #include "../util/container.hpp"
 
 namespace qc {
-auto Gate::get_cbit(BitNo bit_no) const -> Cbit const& {
-  auto cbit_pos = impl_->cbits_.find(Cbit(bit_no, true));
+auto Gate::get_cbit(BitNo bit_no) const -> CBit const& {
+  auto cbit_pos = impl_->cbits_.find(CBit(bit_no, true));
   if(cbit_pos != impl_->cbits_.cend()) return *cbit_pos;
-  cbit_pos = impl_->cbits_.find(Cbit(bit_no, false));
+  cbit_pos = impl_->cbits_.find(CBit(bit_no, false));
   assert(cbit_pos != impl_->cbits_.cend());
   return *cbit_pos;
 }
 
-auto Gate::get_tbit(BitNo bit_no) const -> Tbit const& {
-  const auto tbit_pos = impl_->tbits_.find(Tbit(bit_no));
+auto Gate::get_tbit(BitNo bit_no) const -> TBit const& {
+  const auto tbit_pos = impl_->tbits_.find(TBit(bit_no));
   assert(tbit_pos != impl_->tbits_.cend());
   return *tbit_pos;
 }
 
 auto Gate::invert_cbit_polarity(BitNo bit_no) -> bool {
   auto polarity = get_cbit_polarity(bit_no);
-  impl_->cbits_.erase(Cbit(bit_no, polarity));
+  impl_->cbits_.erase(CBit(bit_no, polarity));
   add_cbit(bit_no, polarity ^= true);
   return polarity;
 }

@@ -8,13 +8,15 @@
 #include <iostream>
 #include <utility>
 
+#include "forward_declarations.hpp"
+
 namespace qc {
 /**
  * @brief bit class
  */
 class Bit {
  public:
-  using No = unsigned int;
+  using No = BitNo;
 
   explicit Bit(No no);
   Bit(Bit const&) = default;

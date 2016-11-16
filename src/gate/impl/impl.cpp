@@ -1,4 +1,7 @@
+#include "../../gate.hpp"
 #include "../impl.hpp"
+
+#include "../../util/container.hpp"
 
 namespace qc {
 auto Gate::Impl::print(std::ostream& os) const -> void {

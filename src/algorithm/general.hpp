@@ -5,24 +5,15 @@
 
 #pragma once
 
-#include "../gate/library.hpp"
-#include "../circuit.hpp"
+#include "../forward_declarations.hpp"
+#include "../gate/library/forward_declarations.hpp"
 
 namespace qc {
-auto getGateTypeName(const std::string& str) -> const std::string&;
-template <class GatePtrT = GatePtr, class... Args>
-static auto createGate(const std::string& str, Args&&... args) -> GatePtrT;
-template <class GatePtrT = GatePtr, class... Args>
-static auto createGate(const Matrix& target_matrix, Args&&... args) -> GatePtrT;
-auto getCbit(const Gate& gate) -> const Cbit&;
-template <class GatePtrT>
-auto getCbit(const GatePtrT& gate) -> const Cbit&;
-auto getTbit(const Gate& gate) -> const Tbit&;
-template <class GatePtrT>
-auto getTbit(const GatePtrT& gate) -> const Tbit&;
-template <class GatePtrT, class GateListT = std::list<GatePtrT>>
-auto decompIntoSingleTargetGates(const GatePtrT& gate) -> GateListT;
-auto decompIntoSingleTargetGates(Circuit& circuit) -> void;
+auto decode_alias(std::string const& alias) -> std::string const&;
+auto get_cbit(Gate const& gate) -> CBit const&;
+auto get_tbit(Gate const& gate) -> TBit const&;
+auto decomp_to_single_target_gates(Gate const& gate) -> Gates;
+auto decomp_to_single_target_gates(Circuit& circuit) -> void;
 }
 
 #include "general/general_impl.hpp"

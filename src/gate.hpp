@@ -6,17 +6,11 @@
 #pragma once
 
 #include <memory>
-#include <unordered_set>
-#include <unordered_map>
 
+#include "forward_declarations.hpp"
 #include "bit/hash.hpp"
 
 namespace qc {
-using BitNo = Bit::No;
-using BitNos = std::unordered_set<BitNo>;
-using CBits = std::unordered_set<CBit>;
-using TBits = std::unordered_set<TBit>;
-
 class Gate {
  public:
   Gate(Gate const& other);
@@ -26,13 +20,14 @@ class Gate {
 
   template <class Type, class... Args>
   static auto make(Args&&... args) -> Gate;
+  static auto make_dummy(bool assert_flag = true) -> Gate;
 
   auto operator=(Gate const&) -> Gate&;
   auto operator=(Gate&&) noexcept -> Gate& = default;
   auto operator==(Gate const& other) const -> bool;
   auto operator!=(Gate const& other) const -> bool;
 
-  auto get_type_name() const -> const std::string&;
+  auto get_type_name() const -> char const* const&;
   auto get_cbits() const -> CBits const&;
   auto get_tbits() const -> TBits const&;
   auto set_cbits(CBits const& cbits) -> void;

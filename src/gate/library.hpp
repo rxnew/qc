@@ -14,3 +14,11 @@
 //#include "library/t.hpp"
 //#include "library/hadamard.hpp"
 //#include "library/swap.hpp"
+
+namespace qc {
+template <class... Args>
+auto make_gate(std::string const& type_name, Args&&... args)
+  -> Gate;
+}
+
+#include "library/library_impl.hpp"

@@ -5,23 +5,5 @@
 
 #pragma once
 
-#include "../../gate/library/x.hpp"
-#include "../../util/math.hpp"
-
 namespace qc {
-template <class GatePtrT>
-inline auto collectCbits(const GatePtrT& gate) -> BitList {
-  return std::move(qc::collectCbits(*gate));
-}
-
-template <class GatePtrT>
-inline auto collectTbits(const GatePtrT& gate) -> BitList {
-  return std::move(qc::collectTbits(*gate));
-}
-
-template <class GatePtrT>
-inline auto getMctCost(const GatePtrT& gate,
-                       bool decomp) -> unsigned long long {
-  return std::move(qc::getMctCost(*gate, decomp));
-}
 }

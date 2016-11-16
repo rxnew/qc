@@ -7,11 +7,61 @@
 
 #include "../blif.hpp"
 
+#include <vector>
+
+#include "../../gate.hpp"
+
 namespace qc {
 namespace io {
 class Blif::Parser {
+ public:
+  Parser(std::string const& filename);
+  ~Parser() = default;
+
+  auto parse()
+    throw(IfExc, std::ios_base::failure) -> Circuit;
+
  private:
   using Tokens = std::vector<std::string>;
+
+  auto _init() -> void;
+  auto _set_tokens(Tokens& tokens) -> void;
+  auto _parse_line()
+    throw(IfExc) -> bool;
+  auto _parse_model_name(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_inputs(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_outputs(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_clocks(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_gate(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_mlatch(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_latch(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_names(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_subckt(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _parse_gate_params(std::string const& token)
+    throw(IfExc) ->  std::pair<std::string, std::string>;
+  auto _create_gate_nand2(Tokens const& tokens)
+    throw(IfExc) -> void;
+  auto _create_circuit() -> Circuit;
+  auto _place_gates(Circuit& circuit) -> void;
+  auto _is_ancilla(std::string const& wire_name) -> bool;
+  auto _add_bit(std::string const& wire_name) -> bool;
+  auto _error(std::string const& code)
+    throw(IfExc) -> void;
+  template <class... Args>
+  auto _error(std::string const& code, Args&&... args)
+    throw(IfExc) -> void;
+  auto _warn(std::string const& code) -> void;
+  template <class... Args>
+  auto _warn(std::string const& code, Args&&... args) -> void;
 
   std::string filename_;
 
@@ -21,56 +71,10 @@ class Blif::Parser {
   mutable std::unordered_set<std::string> output_wire_names_;
   mutable std::string line_;
   mutable int lines_counter_;
-  mutable std::unordered_map<std::string, Bitno> bit_map_;
+  mutable std::unordered_map<std::string, BitNo> bit_map_;
   mutable int bit_counter_;
-  mutable std::unordered_map<Bitno, GatePtr> middle_gate_map_;
-  mutable GateList output_gates_;
-
-  auto _init() -> void;
-  auto _setTokens(Tokens& tokens) -> void;
-    auto _parseLine()
-    throw(IfExc) -> bool;
-  auto _parseModelName(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseInputs(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseOutputs(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseClocks(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseGate(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseMlatch(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseLatch(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseNames(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseSubckt(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _parseGateParams(const std::string& token)
-    throw(IfExc) ->  std::pair<std::string, std::string>;
-  auto _createGateNand2(const Tokens& tokens)
-    throw(IfExc) -> void;
-  auto _createCircuit() -> Circuit;
-  auto _placeGates(Circuit& circuit) -> void;
-  auto _isAncilla(const std::string& wire_name) -> bool;
-  auto _addBit(const std::string& wire_name) -> bool;
-  auto _error(const std::string& code)
-    throw(IfExc) -> void;
-  template <class... Args>
-  auto _error(const std::string& code, Args&&... args)
-    throw(IfExc) -> void;
-  auto _warn(const std::string& code) -> void;
-  template <class... Args>
-  auto _warn(const std::string& code, Args&&... args) -> void;
-
- public:
-  Parser(const std::string& filename);
-  ~Parser() = default;
-
-  auto parse()
-    throw(IfExc, std::ios_base::failure) -> Circuit;
+  mutable std::unordered_map<BitNo, Gate> middle_gate_map_;
+  mutable Gates output_gates_;
 };
 }
 }

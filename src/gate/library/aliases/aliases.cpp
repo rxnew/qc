@@ -5,8 +5,6 @@
 
 #include "../aliases.hpp"
 
-#include "../../util/string/istring/hash.hpp"
-
 namespace qc {
 std::unordered_map<util::string::istring, std::string> const
 gate_type_aliases = {

@@ -5,24 +5,19 @@
 
 #pragma once
 
-#include <list>
-
+#include "forward_declarations.hpp"
 #include "gate.hpp"
 #include "util/tmpl.hpp"
 
 namespace qc {
-using Gates = std::list<Gate>;
-using GatesIter = Gates::iterator;
-using GatesCIter = Gates::const_iterator;
-
 /**
  * @brief quantum circuit class
  */
 class Circuit {
  public:
   Circuit() = default;
-  template <class StringT>
-  explicit Circuit(StringT&& description);
+  explicit Circuit(std::string const& description);
+  explicit Circuit(std::string&& description);
   template <class StringT>
   Circuit(Gates&& gates, StringT&& description = "");
   template <class GatesT, class stringT,
