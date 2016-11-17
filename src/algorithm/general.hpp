@@ -9,7 +9,6 @@
 #include "../gate/library/forward_declarations.hpp"
 
 namespace qc {
-auto decode_alias(std::string const& alias) -> std::string const&;
 auto get_cbit(Gate const& gate) -> CBit const&;
 auto get_tbit(Gate const& gate) -> TBit const&;
 auto decomp_to_single_target_gates(Gate const& gate) -> Gates;

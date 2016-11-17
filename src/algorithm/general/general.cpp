@@ -6,15 +6,9 @@
 #include "../general.hpp"
 
 #include "../../gate/library.hpp"
-#include "../../gate/library/aliases.hpp"
 #include "../../circuit.hpp"
 
 namespace qc {
-auto decode_alias(std::string const& alias) -> std::string const& {
-  auto pos = gate_type_aliases.find(alias);
-  return pos == gate_type_aliases.cend() ? alias : pos->second;
-}
-
 auto get_cbit(Gate const& gate) -> CBit const& {
   assert(gate.is_single_controlled());
   return *gate.get_cbits().cbegin();
