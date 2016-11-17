@@ -53,11 +53,19 @@ inline auto Gate::Impl::operator!=(Impl const& other) const -> bool {
   return !(*this == other);
 }
 
-inline auto Gate::Impl::get_cbits() const -> const CBits& {
+inline auto Gate::Impl::get_cbits() -> CBits& {
   return cbits_;
 }
 
-inline auto Gate::Impl::get_tbits() const -> const TBits& {
+inline auto Gate::Impl::get_cbits() const -> CBits const& {
+  return cbits_;
+}
+
+inline auto Gate::Impl::get_tbits() -> TBits& {
+  return tbits_;
+}
+
+inline auto Gate::Impl::get_tbits() const -> TBits const& {
   return tbits_;
 }
 
@@ -81,5 +89,24 @@ template <class BitT, class... Args>
 inline auto Gate::Impl::_add_bit(BitT&& bit, Args&&... args) -> void {
   _add_bit(std::forward<BitT>(bit));
   _add_bit(std::forward<Args>(args)...);
+}
+
+inline auto Gate::Impl::_get_inners() -> Gates& {
+  static Gates gates;
+  return gates;
+}
+
+inline auto Gate::Impl::_get_inners() const -> Gates const& {
+  static Gates const gates;
+  return gates;
+}
+
+inline auto GateType::get_impl(Gate& gate) -> std::unique_ptr<GateImpl>& {
+  return gate.impl_;
+}
+
+inline auto GateType::get_impl(Gate const& gate)
+  -> std::unique_ptr<GateImpl> const& {
+  return gate.impl_;
 }
 }

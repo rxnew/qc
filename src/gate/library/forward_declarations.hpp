@@ -11,4 +11,5 @@ class S;
 class T;
 class Hadamard;
 class Swap;
+class Module;
 }

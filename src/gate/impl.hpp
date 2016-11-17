@@ -30,12 +30,17 @@ class Gate::Impl {
 
   virtual auto clone() const -> std::unique_ptr<Impl> = 0;
   virtual auto get_type_name() const -> char const* const& = 0;
+  virtual auto get_cbits() -> CBits&;
   virtual auto get_cbits() const -> CBits const&;
+  virtual auto get_tbits() -> TBits&;
   virtual auto get_tbits() const -> TBits const&;
   virtual auto print(std::ostream& os = std::cout) const -> void;
 
   CBits cbits_;
   TBits tbits_;
+
+  virtual auto _get_inners() -> Gates&;
+  virtual auto _get_inners() const -> Gates const&;
 
  private:
   auto _add_bit(CBit const& cbit) -> void;
@@ -51,6 +56,9 @@ class Gate::Impl {
 class GateType {
  protected:
   using GateImpl = Gate::Impl;
+
+  static auto get_impl(Gate& gate) -> std::unique_ptr<GateImpl>&;
+  static auto get_impl(Gate const& gate) -> std::unique_ptr<GateImpl> const&;
 };
 }
 
