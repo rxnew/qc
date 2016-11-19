@@ -6,6 +6,7 @@
 namespace qc {
 class GatesWrapper : public GatesWrapperCore, public GatesWrapperShell {
  public:
+  GatesWrapper() = default;
   template <class... Args>
   GatesWrapper(Args&&... args);
 
@@ -16,5 +17,6 @@ class GatesWrapper : public GatesWrapperCore, public GatesWrapperShell {
  protected:
   virtual auto get_gates() -> Gates& final;
 };
+}
 
 #include "gates_wrapper/gates_wrapper_impl.hpp"

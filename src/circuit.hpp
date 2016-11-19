@@ -6,26 +6,20 @@
 #pragma once
 
 #include "forward_declarations.hpp"
-#include "gate.hpp"
+#include "gate/gates_wrapper.hpp"
 #include "util/tmpl.hpp"
 
 namespace qc {
 /**
  * @brief quantum circuit class
  */
-class Circuit {
+class Circuit : public GatesWrapper {
  public:
   Circuit() = default;
   explicit Circuit(std::string const& description);
   explicit Circuit(std::string&& description);
-  template <class StringT>
-  Circuit(Gates&& gates, StringT&& description = "");
-  template <class GatesT, class stringT,
-            util::tmpl::enable_if_lvalue_t<GatesT>* = nullptr>
-  Circuit(GatesT&& gates, stringT&& description = "");
-  template <class GatesT, class stringT,
-            util::tmpl::enable_if_rvalue_t<GatesT>* = nullptr>
-  Circuit(GatesT&& gates, stringT&& description = "");
+  template <class GatesT, class StringT>
+  explicit Circuit(GatesT&& gates, StringT&& description = "");
   Circuit(Circuit const& other) = default;
   Circuit(Circuit&&) noexcept = default;
 
@@ -36,49 +30,11 @@ class Circuit {
   auto operator==(Circuit const& other) const -> bool;
   auto operator!=(Circuit const& other) const -> bool;
 
-  [[deprecated("please use get_gates()")]]
-  auto _get_gates() -> Gates&;
-  auto get_gates() const -> Gates const&;
-  auto set_gates(Gates&& gates) -> void;
-  template <class GatesT, util::tmpl::enable_if_lvalue_t<GatesT>* = nullptr>
-  auto set_gates(GatesT&& gates) -> void;
-  template <class GatesT, util::tmpl::enable_if_rvalue_t<GatesT>* = nullptr>
-  auto set_gates(GatesT&& gates) -> void;
   auto get_description() const -> std::string const&;
   template <class StringT>
   auto set_description(StringT&& description) -> void;
-  template <class GateT,
-            util::tmpl::enable_if_same_plain_t<GateT, Gate>* = nullptr>
-  auto add_gate(GateT&& gate) -> void;
-  template <class GatesT, util::tmpl::enable_if_container_t<GatesT>* = nullptr>
-  auto add_gate(GatesT&& gates) -> void;
-  template <class GateT,
-            util::tmpl::enable_if_same_plain_t<GateT, Gate>* = nullptr>
-  auto insert_gate(GatesCIter pos, GateT&& gate) -> GatesIter;
-  template <class GatesT,
-            util::tmpl::enable_if_container_t<GatesT>* = nullptr,
-            util::tmpl::enable_if_lvalue_t<GatesT>* = nullptr>
-  auto insert_gate(GatesCIter pos, GatesT&& gates) -> GatesIter;
-  template <class GatesT,
-            util::tmpl::enable_if_container_t<GatesT>* = nullptr,
-            util::tmpl::enable_if_rvalue_t<GatesT>* = nullptr>
-  auto insert_gate(GatesCIter pos, GatesT&& gates) -> GatesIter;
-  auto erase_gate(GatesCIter pos) -> GatesIter;
-  auto erase_gate(GatesIter pos, Gate& gate) -> GatesIter;
-  auto erase_gate(GatesCIter first, GatesCIter last) -> GatesIter;
-  auto move_gate(GatesCIter to, GatesIter from) -> GatesIter;
-  auto swap_gate(GatesIter pos_a, GatesIter pos_b) -> void;
-  auto begin_gates() -> GatesIter;
-  auto end_gates() -> GatesIter;
-  auto extend(Circuit const& circuit) -> Circuit&;
-  auto extend(Circuit&& circuit) -> Circuit&;
-  auto clear() -> void;
-  auto get_gates_count() const -> size_t;
-  auto collect_bits() const -> BitNos;
-  auto print(std::ostream& os = std::cout) const -> void;
 
  private:
-  Gates gates_;
   std::string description_;
 };
 }

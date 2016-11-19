@@ -32,7 +32,7 @@ auto decomp_to_single_target_gates(Gate const& gate) -> Gates {
 
 auto decomp_to_single_target_gates(Circuit& circuit) -> void {
   auto circuit_tmp = Circuit();
-  auto const& gates = circuit.get_gates();
+  auto const& gates = static_cast<Circuit const&>(circuit).get_gates();
   for(auto const& gate : gates) {
     circuit_tmp.insert_gate(gates.cend(), decomp_to_single_target_gates(gate));
   }

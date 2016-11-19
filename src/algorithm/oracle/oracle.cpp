@@ -93,7 +93,7 @@ auto sort_gates_by_cbits(Circuit& circuit) -> void {
   auto const f = [&g](Gate const& lhs, Gate const& rhs) {
     return util::container::Compare()(lhs.get_cbits(), rhs.get_cbits(), g);
   };
-  auto gates = circuit.get_gates();
+  auto gates = static_cast<Circuit const&>(circuit).get_gates();
   gates.sort(f);
   circuit.set_gates(std::move(gates));
 }
@@ -102,7 +102,7 @@ auto sort_gates_by_tbits(Circuit& circuit) -> void {
   const auto f = [](Gate const& lhs, Gate const& rhs) {
     return util::container::Compare()(lhs.get_tbits(), rhs.get_tbits());
   };
-  auto gates = circuit.get_gates();
+  auto gates = static_cast<Circuit const&>(circuit).get_gates();
   gates.sort(f);
   circuit.set_gates(std::move(gates));
 }
