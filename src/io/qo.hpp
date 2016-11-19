@@ -40,7 +40,13 @@ class Qo {
 
   Qo() = delete;
 
-  static auto _divide_into_groups(std::string const& line)
+  static auto _create_circuit(std::ifstream& ifs)
+    throw(IfExc) -> Circuit;
+  static auto _create_group(std::ifstream& ifs)
+    throw(IfExc) -> Gate;
+  static auto _create_gate(std::string const& line)
+    throw(IfExc) -> Gate;
+  static auto _divide_data(std::string const& line)
     throw(IfExc) -> strings;
   static auto _get_gate_string(std::string const& str)
     throw(IfExc) -> std::string;

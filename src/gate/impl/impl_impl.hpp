@@ -91,21 +91,24 @@ inline auto Gate::Impl::_add_bit(BitT&& bit, Args&&... args) -> void {
   _add_bit(std::forward<Args>(args)...);
 }
 
-inline auto Gate::Impl::_get_inners() -> Gates& {
+inline auto Gate::Impl::_get_gates() -> Gates& {
+  return _make_gates();
+}
+
+inline auto Gate::Impl::_get_gates() const -> Gates const& {
+  return _make_gates();
+}
+
+inline auto Gate::Impl::_make_gates() const -> Gates& {
   static Gates gates;
   return gates;
 }
 
-inline auto Gate::Impl::_get_inners() const -> Gates const& {
-  static Gates const gates;
-  return gates;
-}
-
-inline auto GateType::get_impl(Gate& gate) -> std::unique_ptr<GateImpl>& {
+inline auto GateType::_get_impl(Gate& gate) -> std::unique_ptr<GateImpl>& {
   return gate.impl_;
 }
 
-inline auto GateType::get_impl(Gate const& gate)
+inline auto GateType::_get_impl(Gate const& gate)
   -> std::unique_ptr<GateImpl> const& {
   return gate.impl_;
 }

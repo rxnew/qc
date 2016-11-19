@@ -20,5 +20,6 @@ auto Gate::Impl::print(std::ostream& os) const -> void {
   //os << ' ' << this->getVariable();
   os << R"( \)";
   //os << ' ' << this->getFunction();
+  os << std::endl;
 }
 }

@@ -36,11 +36,13 @@ class Gate::Impl {
   virtual auto get_tbits() const -> TBits const&;
   virtual auto print(std::ostream& os = std::cout) const -> void;
 
+  // for GateGroup
+  virtual auto _get_gates() -> Gates&;
+  virtual auto _get_gates() const -> Gates const&;
+  auto _make_gates() const -> Gates&;
+
   CBits cbits_;
   TBits tbits_;
-
-  virtual auto _get_inners() -> Gates&;
-  virtual auto _get_inners() const -> Gates const&;
 
  private:
   auto _add_bit(CBit const& cbit) -> void;
@@ -57,8 +59,8 @@ class GateType {
  protected:
   using GateImpl = Gate::Impl;
 
-  static auto get_impl(Gate& gate) -> std::unique_ptr<GateImpl>&;
-  static auto get_impl(Gate const& gate) -> std::unique_ptr<GateImpl> const&;
+  static auto _get_impl(Gate& gate) -> std::unique_ptr<GateImpl>&;
+  static auto _get_impl(Gate const& gate) -> std::unique_ptr<GateImpl> const&;
 };
 }
 

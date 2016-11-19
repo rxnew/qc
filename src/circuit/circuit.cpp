@@ -18,7 +18,6 @@ auto Circuit::collect_bits() const -> BitNos {
 auto Circuit::print(std::ostream& os) const -> void {
   for(auto const& gate : gates_) {
     gate.print(os);
-    os << std::endl;
   }
 }
 }

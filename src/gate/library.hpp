@@ -14,7 +14,6 @@
 //#include "library/t.hpp"
 //#include "library/hadamard.hpp"
 //#include "library/swap.hpp"
-#include "library/module.hpp"
 
 namespace qc {
 template <class... Args>

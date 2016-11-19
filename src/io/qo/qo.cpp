@@ -1,6 +1,7 @@
 #include "../qo.hpp"
 
 #include "../../gate/library.hpp"
+#include "../../gate/group.hpp"
 #include "../../circuit.hpp"
 #include "../../util/string.hpp"
 
@@ -17,27 +18,8 @@ constexpr Qo::Messages const Qo::_err_msgs = {
 auto Qo::input(Circuit& circuit, std::string const& filename)
   throw(IfExc, std::ios_base::failure) -> void {
   auto ifs = std::ifstream(filename);
-
   if(ifs.fail()) throw std::ios_base::failure("Cannot open file.");
-
-  auto line = std::string();
-  while(getline(ifs, line)) {
-    auto groups = _divide_into_groups(line);
-
-    auto gate_str = _get_gate_string(groups[0]);
-    auto bit_strs = _get_bit_strings(groups[1]);
-    auto var_strs = _get_option_strings(groups[2]);
-    auto function_strs = _get_option_strings(groups[3]);
-
-    auto bits = _get_bits(bit_strs);
-    //auto vars = _getVariables(var_strs);
-    //auto functions = _getFunctions(function_strs);
-
-    //auto gate = _getGate(gate_str, bits, vars, functions);
-    auto gate = _get_gate(gate_str, bits);
-
-    circuit.add_gate(std::move(gate));
-  }
+  circuit = _create_circuit(ifs);
 }
 
 auto Qo::output(Circuit const& circuit, std::string const& filename)
@@ -59,17 +41,64 @@ auto Qo::print(Circuit const& circuit, std::ostream& os) -> void {
   circuit.print(os);
 }
 
-auto Qo::_divide_into_groups(std::string const& line)
+auto Qo::_create_circuit(std::ifstream& ifs)
+  throw(IfExc) -> Circuit {
+  auto circuit = Circuit();
+  auto line = std::string();
+  while(getline(ifs, line)) {
+    line = util::string::trim_comments(line, '#');
+    line = util::string::trim_white_spaces(line);
+    if(line == Group::BEGIN_TAG) {
+      circuit.add_gate(_create_group(ifs));
+    }
+    else {
+      circuit.add_gate(_create_gate(line));
+    }
+  }
+  return circuit;
+}
+
+auto Qo::_create_group(std::ifstream& ifs)
+  throw(IfExc) -> Gate {
+  auto group = Group::make();
+  auto line = std::string();
+  while(getline(ifs, line)) {
+    line = util::string::trim_comments(line, '#');
+    line = util::string::trim_white_spaces(line);
+    if(line == Group::END_TAG) break;
+    Group::add_gate(group, _create_gate(line));
+  }
+  return group;
+}
+
+auto Qo::_create_gate(std::string const& line)
+  throw(IfExc) -> Gate {
+  auto data = _divide_data(line);
+
+  auto gate_str = _get_gate_string(data[0]);
+  auto bit_strs = _get_bit_strings(data[1]);
+  auto var_strs = _get_option_strings(data[2]);
+  auto function_strs = _get_option_strings(data[3]);
+
+  auto bits = _get_bits(bit_strs);
+  //auto vars = _get_variables(var_strs);
+  //auto functions = _get_functions(function_strs);
+
+  //return _get_gate(gate_str, bits, vars, functions);
+  return _get_gate(gate_str, bits);
+}
+
+auto Qo::_divide_data(std::string const& line)
   throw(IfExc) -> strings {
-  auto groups = util::string::split(line, '\\', false);
-  if(groups.size() != 4u) throw IfExc(_err_msgs[0]);
-  return groups;
+  auto data = util::string::split(line, '\\', false);
+  if(data.size() != 4u) throw IfExc(_err_msgs[0]);
+  return data;
 }
 
 auto Qo::_get_gate_string(std::string const& str)
   throw(IfExc) -> std::string {
   auto gate_strs = util::string::split(str);
-  if(gate_strs.size() != 1) throw IfExc(_err_msgs[1]);
+  if(gate_strs.size() != 1u) throw IfExc(_err_msgs[1]);
   return std::move(gate_strs.front());
 }
 
