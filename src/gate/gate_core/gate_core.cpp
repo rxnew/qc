@@ -1,10 +1,9 @@
-#include "../../gate.hpp"
-#include "../impl.hpp"
+#include "../gate_core.hpp"
 
 #include "../../util/container.hpp"
 
 namespace qc {
-auto Gate::Impl::print(std::ostream& os) const -> void {
+auto GateCore::print(std::ostream& os) const -> void {
   auto ordered_cbits = util::container::convert<std::set>(cbits_);
   auto ordered_tbits = util::container::convert<std::set>(tbits_);
 

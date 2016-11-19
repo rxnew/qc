@@ -11,6 +11,8 @@
 #include "bit/hash.hpp"
 
 namespace qc {
+class GateCore;
+
 class Gate {
  public:
   Gate(Gate const& other);
@@ -59,14 +61,10 @@ class Gate {
   auto print(std::ostream& os = std::cout) const -> void;
 
  private:
-  class Impl;
+  explicit Gate(std::unique_ptr<GateCore>&& core);
+  explicit Gate(GateCore*&& core);
 
-  explicit Gate(std::unique_ptr<Impl>&& impl);
-  explicit Gate(Impl*&& impl);
-
-  std::unique_ptr<Impl> impl_;
-
-  friend class GateType;
+  std::unique_ptr<GateCore> core_;
 };
 }
 
