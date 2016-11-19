@@ -66,7 +66,7 @@ auto Qo::_create_group(std::ifstream& ifs)
     line = util::string::trim_comments(line, '#');
     line = util::string::trim_white_spaces(line);
     if(line == Group::END_TAG) break;
-    Group::add_gate(group, _create_gate(line));
+    group.add_gate(_create_gate(line));
   }
   return group;
 }

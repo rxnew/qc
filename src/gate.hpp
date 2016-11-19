@@ -9,11 +9,12 @@
 
 #include "forward_declarations.hpp"
 #include "bit/hash.hpp"
+#include "gate/gates_wrapper/gates_wrapper_shell.hpp"
 
 namespace qc {
 class GateCore;
 
-class Gate {
+class Gate : public GatesWrapperShell {
  public:
   Gate(Gate const& other);
   Gate(Gate&& other) noexcept = default;
@@ -58,11 +59,15 @@ class Gate {
   auto is_multi_target() const -> bool;
   auto is_single_qubit_rotation() const -> bool;
   auto is_all_positive() const -> bool;
-  auto print(std::ostream& os = std::cout) const -> void;
+  virtual auto print(std::ostream& os = std::cout) const -> void;
 
- private:
+  virtual auto get_gates() const -> Gates const&;
+
+ protected:
   explicit Gate(std::unique_ptr<GateCore>&& core);
   explicit Gate(GateCore*&& core);
+
+  virtual auto get_gates() -> Gates&;
 
   std::unique_ptr<GateCore> core_;
 };

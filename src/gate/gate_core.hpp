@@ -1,5 +1,10 @@
 #pragma once
 
+#include <memory>
+
+#include "../forward_declarations.hpp"
+#include "../bit/hash.hpp"
+
 namespace qc {
 class GateCore {
  public:
@@ -34,9 +39,8 @@ class GateCore {
   virtual auto print(std::ostream& os = std::cout) const -> void;
 
   // for GateGroup
-  virtual auto _get_gates() -> Gates&;
-  virtual auto _get_gates() const -> Gates const&;
-  auto _make_gates() const -> Gates&;
+  virtual auto get_gates() -> Gates&;
+  virtual auto get_gates() const -> Gates const&;
 
   CBits cbits_;
   TBits tbits_;

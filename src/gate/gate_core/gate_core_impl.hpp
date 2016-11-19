@@ -56,17 +56,4 @@ inline auto GateCore::get_tbits() -> TBits& {
 inline auto GateCore::get_tbits() const -> TBits const& {
   return tbits_;
 }
-
-inline auto GateCore::_get_gates() -> Gates& {
-  return _make_gates();
-}
-
-inline auto GateCore::_get_gates() const -> Gates const& {
-  return _make_gates();
-}
-
-inline auto GateCore::_make_gates() const -> Gates& {
-  static Gates gates;
-  return gates;
-}
 }

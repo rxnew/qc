@@ -6,24 +6,24 @@ namespace qc {
 template <class GateCoreT>
 class GateType : public Gate {
  public:
-  static constexpr char const* const TYPE_NAME = GateCoreT::TYPE_NAME;
-  static constexpr auto const ALIASES = GateCoreT::ALIASES;
+  static constexpr auto const& TYPE_NAME = GateCoreT::TYPE_NAME;
+  static constexpr auto const& ALIASES = GateCoreT::ALIASES;
 
   template <class... Args>
   GateType(Args&&... args);
   GateType(GateType const& other);
   GateType(GateType&&) noexcept = default;
-  template <class GateT>
-  GateType(GateType<GateT> const& gate);
-  template <class GateT>
-  GateType(GateType<GateT>&& gate);
+  template <class GateCoreU>
+  GateType(GateType<GateCoreU> const& gate);
+  template <class GateCoreU>
+  GateType(GateType<GateCoreU>&& gate);
 
   ~GateType() noexcept = default;
 
-  template <class GateT>
-  auto operator=(GateType<GateT> const& gate) -> GateType&;
-  template <class GateT>
-  auto operator=(GateType<GateT>&& gate) -> GateType&;
+  template <class GateCoreU>
+  auto operator=(GateType<GateCoreU> const& gate) -> GateType&;
+  template <class GateCoreU>
+  auto operator=(GateType<GateCoreU>&& gate) -> GateType&;
 };
 }
 

@@ -34,10 +34,10 @@ struct template_class;
 template <template <class...> class T, class... Args1>
 struct template_class<T<Args1...>>;
 
-template <class T, std::size_t N = 0u>
+template <class T, int N = 0>
 struct template_parameter;
 
-template <class T, std::size_t N = 0u>
+template <class T, int N = 0>
 using template_parameter_t = typename template_parameter<T, N>::type;
 
 template <template <class...> class T, template <class...> class U>

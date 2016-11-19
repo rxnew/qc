@@ -1,5 +1,6 @@
 #include "../gate_core.hpp"
 
+#include "../../gate.hpp"
 #include "../../util/container.hpp"
 
 namespace qc {
@@ -20,5 +21,17 @@ auto GateCore::print(std::ostream& os) const -> void {
   os << R"( \)";
   //os << ' ' << this->getFunction();
   os << std::endl;
+}
+
+auto GateCore::get_gates() -> Gates& {
+  assert(!"not a group");
+  static auto gates = Gates();
+  return gates;
+}
+
+auto GateCore::get_gates() const -> Gates const& {
+  assert(!"not a group");
+  static auto const gates = Gates();
+  return gates;
 }
 }

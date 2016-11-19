@@ -20,7 +20,7 @@ struct template_class<T<Args1...>> {
     using type = T<Args2...>;
 };
 
-template <std::size_t, class>
+template <int, class>
 struct _template_parameter {};
 
 template <template<class...> class T, class Head, class... Args>
@@ -28,12 +28,12 @@ struct _template_parameter<0, T<Head, Args...>> {
   using type = Head;
 };
 
-template <std::size_t N, template<class...> class T, class Head, class... Args>
+template <int N, template<class...> class T, class Head, class... Args>
 struct _template_parameter<N, T< Head, Args... >> {
   using type = typename _template_parameter<N - 1, T<Args...>>::type;
 };
 
-template <class T, std::size_t N>
+template <class T, int N>
 struct template_parameter : _template_parameter<N, remove_qualifier_t<T>> {};
 
 template <template <class...> class T, template <class...> class U>

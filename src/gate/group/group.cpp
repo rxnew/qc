@@ -1,33 +1,19 @@
 #include "../group.hpp"
 
 namespace qc {
-constexpr char const* const Group::TYPE_NAME = "Group";
-constexpr util::string::Aliases<6> const Group::ALIASES = {
-  "group",
-  "module",
-  "macrogate",
-  "gatearray",
-  "step",
-  "pqgate"
-};
-constexpr char const* const Group::BEGIN_TAG = "<Group>";
-constexpr char const* const Group::END_TAG = "</Group>";
+constexpr char const* const GroupCore::TYPE_NAME;
 
-auto Group::make(std::initializer_list<Gate> list) -> Gate {
-  auto gate = Gate::make_dummy(false);
-  GateType::_get_impl(gate) = std::make_unique<Impl>(list);
-  return gate;
-}
+constexpr util::string::Aliases<6> const GroupCore::ALIASES;
 
-auto Group::Impl::print(std::ostream& os) const -> void {
-  os << BEGIN_TAG << std::endl;
-  for(auto const& gate : gates_) {
+auto GroupCore::print(std::ostream& os) const -> void {
+  os << Group::BEGIN_TAG << std::endl;
+  for(auto const& gate : get_gates()) {
     gate.print(os);
   }
-  os << END_TAG << std::endl;
+  os << Group::END_TAG << std::endl;
 }
 
-auto Group::Impl::_get_cbits() const -> CBits& {
+auto GroupCore::_get_cbits() const -> CBits& {
   m_cbits_.clear();
   for(auto const& gate : gates_) {
     for(auto const& cbit : gate.get_cbits()) {
@@ -37,7 +23,7 @@ auto Group::Impl::_get_cbits() const -> CBits& {
   return m_cbits_;
 }
 
-auto Group::Impl::_get_tbits() const -> TBits& {
+auto GroupCore::_get_tbits() const -> TBits& {
   m_tbits_.clear();
   for(auto const& gate : gates_) {
     for(auto const& tbit : gate.get_tbits()) {
@@ -46,4 +32,8 @@ auto Group::Impl::_get_tbits() const -> TBits& {
   }
   return m_tbits_;
 }
+
+constexpr char const* const GateType<GroupCore>::BEGIN_TAG;
+
+constexpr char const* const GateType<GroupCore>::END_TAG;
 }

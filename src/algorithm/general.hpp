@@ -6,7 +6,6 @@
 #pragma once
 
 #include "../forward_declarations.hpp"
-#include "../gate/library/forward_declarations.hpp"
 
 namespace qc {
 auto get_cbit(Gate const& gate) -> CBit const&;
