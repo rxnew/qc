@@ -5,139 +5,71 @@
 
 #pragma once
 
-#include <set>
-#include <unordered_set>
-#include <unordered_map>
 #include <memory>
-#include <algorithm>
 
+#include "forward_declarations.hpp"
 #include "bit/hash.hpp"
-#include "util/container.hpp"
-#include "util/string.hpp"
-#include "util/matrix.hpp"
+#include "gate/gates_wrapper/gates_wrapper_shell.hpp"
 
 namespace qc {
-class Gate;
+class GateKernel;
 
-using BitList = std::unordered_set<Bitno>;
-using CbitList = std::unordered_set<Cbit>;
-using TbitList = std::unordered_set<Tbit>;
-using GatePtr = std::unique_ptr<Gate>;
-using GateList = std::list<GatePtr>;
-using IterGateList = GateList::iterator;
-using CIterGateList = GateList::const_iterator;
+class Gate : public GatesWrapperShell {
+ public:
+  Gate(Gate const& other);
+  Gate(Gate&& other) noexcept = default;
 
-using util::matrix::Complex;
-using util::matrix::Matrix;
-using util::matrix::Vector;
-using util::matrix::operator"" _i;
+  ~Gate() noexcept = default;
 
-/**
- * @brief quantum gate class
- * @note this class is abstract
- */
-class Gate {
- private:
-  class MatrixMap;
+  template <class Type, class... Args>
+  static auto make(Args&&... args) -> Gate;
+  static auto make_dummy(bool assert_flag = true) -> Gate;
 
-  using ui = unsigned int;
+  auto operator=(Gate const&) -> Gate&;
+  auto operator=(Gate&&) noexcept -> Gate& = default;
+  auto operator==(Gate const& other) const -> bool;
+  auto operator!=(Gate const& other) const -> bool;
 
-  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
+  auto get_type_name() const -> char const* const&;
+  auto get_cbits() const -> CBits const&;
+  auto get_tbits() const -> TBits const&;
+  auto set_cbits(CBits const& cbits) -> void;
+  auto set_cbits(CBits&& cbits) -> void;
+  auto set_tbits(TBits const& tbits) -> void;
+  auto set_tbits(TBits&& tbits) -> void;
+  auto add_cbit(CBit const& cbit) -> void;
+  auto add_cbit(BitNo bit_no, bool polarity = true) -> void;
+  auto add_tbit(TBit const& tbit) -> void;
+  auto add_tbit(BitNo bit_no) -> void;
+  auto has_bit(BitNo bit_no) const -> bool;
+  auto has_cbit(CBit const& cbit) const -> bool;
+  auto has_cbit(BitNo bit_no) const -> bool;
+  auto has_tbit(TBit const& tbit) const -> bool;
+  auto has_tbit(BitNo bit_no) const -> bool;
+  auto erase_bit(BitNo bit_no) -> size_t;
+  auto get_cbit(BitNo bit_no) const -> CBit const&;
+  auto get_tbit(BitNo bit_no) const -> TBit const&;
+  auto get_cbit_polarity(BitNo bit_no) const -> bool;
+  auto invert_cbit_polarity(BitNo bit_no) -> bool;
+  auto collect_bits() const -> BitNos;
+  auto is_controlled() const -> bool;
+  auto is_single_controlled() const -> bool;
+  auto is_multi_controlled() const -> bool;
+  auto is_single_target() const -> bool;
+  auto is_multi_target() const -> bool;
+  auto is_single_qubit_rotation() const -> bool;
+  auto is_all_positive() const -> bool;
+  virtual auto print(std::ostream& os = std::cout) const -> void;
+
+  virtual auto get_gates() const -> Gates const&;
 
  protected:
-  CbitList cbits_;
-  TbitList tbits_;
+  explicit Gate(std::unique_ptr<GateKernel>&& kernel);
+  explicit Gate(GateKernel*&& kernel);
 
-  Gate() = default;
-  explicit Gate(const Tbit& tbit);
-  Gate(const Tbit& tbit1, const Tbit& tbit2);
-  Gate(const Cbit& cbit, const Tbit& tbit);
-  Gate(const Cbit& cbit, const TbitList& tbits);
-  Gate(const Cbit& cbit, TbitList&& tbits);
-  Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit);
-  Gate(const CbitList& cbits, const Tbit& tbit);
-  Gate(CbitList&& cbits, const Tbit& tbit);
-  Gate(const CbitList& cbits, const TbitList& tbits);
-  Gate(CbitList&& cbits, TbitList&& tbits);
-  Gate(const Gate&) = default;
-  Gate(Gate&&) noexcept = default;
+  virtual auto get_gates() -> Gates&;
 
-  auto _computeMatrix(const MatrixMap& matrix_map) const -> Matrix;
-  auto _simulate(const Vector& input, const MatrixMap& matrix_map) const
-    -> Vector;
-
- public:
-  static const std::string TYPE_NAME;
-  static const Matrix TARGET_MATRIX;
-
-  virtual ~Gate() = default;
-
-  auto operator=(const Gate&) -> Gate& = default;
-  auto operator=(Gate&&) -> Gate& = default;
-  auto operator==(const Gate& other) const -> bool;
-  auto operator!=(const Gate& other) const -> bool;
-
-  virtual auto clone() const -> GatePtr = 0;
-  virtual auto getTypeName() const -> const std::string& = 0;
-  auto getCbitList() const -> const CbitList&;
-  auto getTbitList() const -> const TbitList&;
-  auto addCbit(const Cbit& cbit) -> void;
-  auto addCbit(Bitno bit, bool polarity = true) -> void;
-  auto addTbit(const Tbit& tbit) -> void;
-  auto addTbit(Bitno bit) -> void;
-  auto setCbits(const CbitList& cbits) -> void;
-  auto setCbits(CbitList&& cbits) -> void;
-  auto setTbits(const TbitList& tbits) -> void;
-  auto setTbits(TbitList&& tbits) -> void;
-  auto isIncluded(Bitno bit) const -> bool;
-  auto isIncluded(const Cbit& cbit) const -> bool;
-  auto isIncluded(const Tbit& tbit) const -> bool;
-  auto isIncludedInCbitList(Bitno bit) const -> bool;
-  auto isIncludedInTbitList(Bitno bit) const -> bool;
-  auto eraseBit(Bitno bit) -> size_t;
-  auto getCbit(Bitno bit) const -> const Cbit&;
-  auto getTbit(Bitno bit) const -> const Tbit&;
-  auto getCbitPolarity(Bitno bit) const -> bool;
-  auto invertCbitPolarity(Bitno bit) -> bool;
-  auto collectUsedBits() const -> BitList;
-  virtual auto getTargetMatrix() const -> const Matrix& = 0;
-  virtual auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
-  auto computeMatrix(const BitList& bits) const -> Matrix;
-  auto computeMatrix() const -> Matrix;
-  auto simulate(const Vector& input, const std::set<Bitno>& bits) const
-    -> Vector;
-  auto simulate(const Vector& input, const BitList& bits) const -> Vector;
-  auto simulate(const Vector& input) const -> Vector;
-  auto isControlled() const -> bool;
-  auto isSingleControlled() const -> bool;
-  auto isMultiControlled() const -> bool;
-  auto isSingleTarget() const -> bool;
-  auto isMultiTarget() const -> bool;
-  auto isSingleQubitRotation() const -> bool;
-  auto isAllPositive() const -> bool;
-  auto print(std::ostream& os = std::cout) const -> void;
-};
-
-class Gate::MatrixMap {
- private:
-  const Gate& gate_;
-  ui active_polarity_pattern_;
-  ui polarity_pattern_mask_;
-
-  auto _init() -> void;
-  auto _setActivePolarityPattern() -> void;
-  auto _updateActive(bool is_cbit, Bitno bit) -> void;
-  auto _updateInactive(bool is_cbit) -> void;
-  auto _mask(ui polarity_pattern) const -> bool;
-  auto _isActive() const -> bool;
-
- public:
-  // matrix of active input pattern of each target
-  std::unordered_map<Bitno, Matrix> active_;
-  // matrix of inactive each input pattern
-  std::unordered_map<ui, Matrix> inactive_;
-
-  MatrixMap(const Gate& gate, const std::set<Bitno>& bits);
+  std::unique_ptr<GateKernel> kernel_;
 };
 }
 

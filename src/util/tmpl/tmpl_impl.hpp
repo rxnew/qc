@@ -17,8 +17,24 @@ struct template_class {};
 template <template <class...> class T, class... Args1>
 struct template_class<T<Args1...>> {
   template <class... Args2>
-    using type = T<Args2...>;
+  using type = T<Args2...>;
 };
+
+template <int, class>
+struct _template_parameter {};
+
+template <template<class...> class T, class Head, class... Args>
+struct _template_parameter<0, T<Head, Args...>> {
+  using type = Head;
+};
+
+template <int N, template<class...> class T, class Head, class... Args>
+struct _template_parameter<N, T< Head, Args... >> {
+  using type = typename _template_parameter<N - 1, T<Args...>>::type;
+};
+
+template <class T, int N>
+struct template_parameter : _template_parameter<N, remove_qualifier_t<T>> {};
 
 template <template <class...> class T, template <class...> class U>
 struct is_same_template : std::false_type {};
@@ -57,36 +73,48 @@ struct is_container_template {
 };
 
 template <class E>
-struct is_array {
+struct _is_array {
   static constexpr bool value = false;
 };
 
 template <template <class...> class T, class... Args>
-struct is_array<T<Args...>> : is_array_template<T> {};
+struct _is_array<T<Args...>> : is_array_template<T> {};
+
+template <class T, class R>
+struct is_array : _is_array<R> {};
 
 template <class E>
-struct is_set {
+struct _is_set {
   static constexpr bool value = false;
 };
 
 template <template <class...> class T, class... Args>
-struct is_set<T<Args...>> : is_set_template<T> {};
+struct _is_set<T<Args...>> : is_set_template<T> {};
+
+template <class T, class R>
+struct is_set : _is_set<R> {};
 
 template <class E>
-struct is_map {
+struct _is_map {
   static constexpr bool value = false;
 };
 
 template <template <class...> class T, class... Args>
-struct is_map<T<Args...>> : is_map_template<T> {};
+struct _is_map<T<Args...>> : is_map_template<T> {};
+
+template <class T, class R>
+struct is_map : _is_map<R> {};
 
 template <class E>
-struct is_container {
+struct _is_container {
   static constexpr bool value = false;
 };
 
 template <template <class...> class T, class... Args>
-struct is_container<T<Args...>> : is_container_template<T> {};
+struct _is_container<T<Args...>> : is_container_template<T> {};
+
+template <class T, class R>
+struct is_container : _is_container<R> {};
 }
 }
 }

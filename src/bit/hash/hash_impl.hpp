@@ -6,11 +6,17 @@
 #pragma once
 
 namespace std {
-inline auto hash<qc::Bit>::operator()(const qc::Bit& obj) const -> size_t {
-  return hash<unsigned short>()(static_cast<unsigned short>(obj.bitno_));
+inline auto hash<qc::Bit>::operator()(qc::Bit const& obj) const -> size_t {
+  return hash<qc::Bit::No>()(obj.get_no());
 }
 
-inline auto hash<qc::Tbit>::operator()(const qc::Tbit& obj) const -> size_t {
-  return hash<unsigned short>()(static_cast<unsigned short>(obj.bitno_));
+inline auto hash<qc::CBit>::operator()(qc::CBit const& obj) const -> size_t {
+  auto constexpr const mask =
+    static_cast<size_t>(1) << ((sizeof(size_t) << 3) - 1);
+  return hash<qc::Bit::No>()(obj.get_no()) ^ (obj.get_polarity() ? 0 : mask);
+}
+
+inline auto hash<qc::TBit>::operator()(qc::TBit const& obj) const -> size_t {
+  return hash<qc::Bit::No>()(obj.get_no());
 }
 }

@@ -3,37 +3,44 @@
 #include <vector>
 #include <string>
 #include <tuple>
-#include <algorithm>
-#include <locale>
 
 namespace qc {
 namespace util {
 namespace string {
+template <class CharT>
+struct CaseInsensitiveCharCompare {
+  constexpr auto operator()(CharT lhs, CharT rhs) const -> bool;
+};
+
+template <class CharT>
+constexpr auto to_lower(CharT c) -> CharT;
+template <class CharT>
+constexpr auto to_upper(CharT c) -> CharT;
 template <class T>
-auto toString(T&& arg, int precision = -1) -> std::string;
+auto to_string(T&& arg, int precision = -1) -> std::string;
 template <class... Args>
-auto format(const std::string& str, Args&&... args) -> std::string;
-auto split(const std::string& str, const char* delim = " \t",
-           const bool ignore_empty = true) -> std::vector<std::string>;
-auto split(const std::string& str, const char delim,
-           const bool ignore_empty = true) -> std::vector<std::string>;
-auto split(const std::string& str, const std::string& delim,
-           const bool ignore_empty = true) -> std::vector<std::string>;
-auto trimWhiteSpaces(const std::string& str) -> std::string;
-auto trimComments(const std::string& str, const char tag = '#') -> std::string;
-auto trimComments(const std::string& str,
-                  const std::string& tag) -> std::string;
-auto isNumeric(const std::string& str) -> bool;
-auto equalCaseInsensitive(const std::string& lhs,
-                          const std::string& rhs) -> bool;
-auto splitext(const std::string& filename)
+auto format(std::string const& str, Args&&... args) -> std::string;
+auto split(std::string const& str, char const* const delim = " \t",
+           bool const ignore_empty = true) -> std::vector<std::string>;
+auto split(std::string const& str, char const delim,
+           bool const ignore_empty = true) -> std::vector<std::string>;
+auto split(std::string const& str, std::string const& delim,
+           bool const ignore_empty = true) -> std::vector<std::string>;
+auto trim_white_spaces(std::string const& str) -> std::string;
+auto trim_comments(std::string const& str, char const tag = '#') -> std::string;
+auto trim_comments(std::string const& str, std::string const& tag)
+  -> std::string;
+auto is_numeric(std::string const& str) -> bool;
+auto equal_case_insensitive(std::string const& lhs, std::string const& rhs)
+  -> bool;
+auto splitext(std::string const& filename)
   -> std::tuple<std::string, std::string>;
-auto basename(const std::string& filename) -> std::string;
-auto dirname(const std::string& filename) -> std::string;
-auto getExtension(const std::string& filename) -> std::string;
-auto addExtension(const std::string& filename,
-                  const std::string& extension) -> std::string;
-auto excludeExtension(const std::string& filename) -> std::string;
+auto basename(std::string const& filename) -> std::string;
+auto dirname(std::string const& filename) -> std::string;
+auto get_extension(std::string const& filename) -> std::string;
+auto add_extension(std::string const& filename, std::string const& extension)
+  -> std::string;
+auto exclude_extension(std::string const& filename) -> std::string;
 }
 }
 }

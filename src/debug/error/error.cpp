@@ -7,7 +7,7 @@ bool enabled = true;
 std::ofstream ofs;
 std::ostream* os = &std::cerr;
 
-auto issue(const std::string& msg) -> void {
+auto issue(std::string const& msg) -> void {
   if(!error::enabled) return;
   *error::os << "\x1b[31m"
              << "error: "

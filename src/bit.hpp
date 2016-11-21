@@ -7,64 +7,77 @@
 
 #include <iostream>
 #include <utility>
-#include <cassert>
+
+#include "forward_declarations.hpp"
 
 namespace qc {
-using Bitno = unsigned short;
 /**
- * @brief target bit class
+ * @brief bit class
  */
 class Bit {
  public:
-  Bitno bitno_;
+  using No = BitNo;
 
-  explicit Bit(Bitno bitno);
-  Bit(const Bit&) = default;
+  explicit Bit(No no);
+  Bit(Bit const&) = default;
   Bit(Bit&&) noexcept = default;
+
   virtual ~Bit() = default;
 
-  auto operator=(const Bit&) -> Bit& = default;
+  auto operator=(Bit const&) -> Bit& = default;
   auto operator=(Bit&&) -> Bit& = default;
-  auto operator==(const Bit& other) const -> bool;
-  auto operator!=(const Bit& other) const -> bool;
-  auto operator<(const Bit& other) const -> bool;
-  auto operator>(const Bit& other) const -> bool;
+  auto operator==(Bit const& other) const -> bool;
+  auto operator!=(Bit const& other) const -> bool;
+  auto operator<(Bit const& other) const -> bool;
+  auto operator>(Bit const& other) const -> bool;
+
+  auto get_no() const -> No;
+
+ protected:
+  No no_;
 };
 
 /**
  * @brief control bit class
  */
-class Cbit : public Bit {
+class CBit : public Bit {
  public:
+  explicit CBit(No no, bool polarity = true);
+  CBit(CBit const& other) = default;
+  CBit(CBit&&) noexcept = default;
+
+  ~CBit() = default;
+
+  auto operator=(CBit const&) -> CBit& = default;
+  auto operator=(CBit&&) -> CBit& = default;
+  auto operator==(CBit const& other) const -> bool;
+  auto operator!=(CBit const& other) const -> bool;
+  auto operator<(CBit const& other) const -> bool;
+  auto operator>(CBit const& other) const -> bool;
+
+  auto get_polarity() const -> bool;
+  auto invert_polarity() -> bool;
+
+ private:
   bool polarity_;
-
-  template <class... Args>
-  Cbit(Args&&... args);
-  Cbit(Bitno bitno, bool polarity);
-  Cbit(const Cbit& other) = default;
-  Cbit(Cbit&&) noexcept = default;
-
-  auto operator=(const Cbit&) -> Cbit& = default;
-  auto operator=(Cbit&&) -> Cbit& = default;
-  auto operator==(const Cbit& other) const -> bool;
-  auto operator!=(const Cbit& other) const -> bool;
-  auto operator<(const Cbit& other) const -> bool;
-  auto operator>(const Cbit& other) const -> bool;
-
-  auto invertPolarity() -> bool;
 };
 
 /**
  * @brief target bit class
  */
-class Tbit : public Bit {
+class TBit : public Bit {
  public:
   template <class... Args>
-  Tbit(Args&&... args);
+  TBit(Args&&... args);
+
+  ~TBit() = default;
 };
 
-auto operator<<(std::ostream& os, const Cbit& obj) -> std::ostream&;
-auto operator<<(std::ostream& os, const Tbit& obj) -> std::ostream&;
+auto operator<<(std::ostream& os, Bit const& obj) -> std::ostream&;
+auto operator<<(std::ostream& os, CBit const& obj) -> std::ostream&;
+auto operator<<(std::ostream& os, TBit const& obj) -> std::ostream&;
+
+auto operator"" _bit(unsigned long long bit_no_i) -> Bit::No;
 }
 
 #include "bit/bit_impl.hpp"

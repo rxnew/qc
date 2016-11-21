@@ -1,12 +1,11 @@
-/**
- * @file x.cpp
- * @brief implementation of X class
- */
-
 #include "../x.hpp"
 
 namespace qc {
-const std::string X::TYPE_NAME = "X";
-const Matrix X::TARGET_MATRIX =
-  util::matrix::create(X::_createTargetMatrixList());
+constexpr char const* const XKernel::TYPE_NAME;
+
+constexpr util::string::Aliases<5> const XKernel::ALIASES;
+
+auto XKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<XKernel>(*this);
+}
 }

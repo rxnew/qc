@@ -1,12 +1,19 @@
-/**
- * @file t.cpp
- * @brief implementation of T class
- */
-
 #include "../t.hpp"
 
 namespace qc {
-const std::string T::TYPE_NAME = "T";
-const Matrix T::TARGET_MATRIX =
-  util::matrix::create(T::_createTargetMatrixList());
+constexpr char const* const TKernel::TYPE_NAME;
+
+constexpr util::string::Aliases<1> const TKernel::ALIASES;
+
+auto TKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<TKernel>(*this);
+}
+
+constexpr char const* const TDaggerKernel::TYPE_NAME;
+
+constexpr util::string::Aliases<4> const TDaggerKernel::ALIASES;
+
+auto TDaggerKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<TDaggerKernel>(*this);
+}
 }

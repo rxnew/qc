@@ -5,65 +5,30 @@
 
 #pragma once
 
+#include "../../debug/assert.hpp"
+
 namespace qc {
-template <class GatePtrT = GatePtr, class... Args>
-auto createGate(const std::string& str, Args&&... args) -> GatePtrT {
-  const auto& gate_type = qc::getGateTypeName(str);
-
-#define IF_GEN(type) \
-  if(util::string::equalCaseInsensitive(gate_type, type::TYPE_NAME)) \
-    return GatePtrT(new type(std::forward<Args>(args)...))
-
-  IF_GEN(I);
-  IF_GEN(X);
-  IF_GEN(Z);
-  IF_GEN(V);
-  IF_GEN(VPlus);
-  IF_GEN(S);
-  IF_GEN(T);
-  IF_GEN(Hadamard);
-  IF_GEN(Swap);
-
-#undef IF_GEN
-
-  return GatePtrT(nullptr);
+template <class T>
+auto add_gate_front(GatesWrapperShell& target, T&& gate) -> void {
+  target.insert_gate(target.cbegin_gates(), std::forward<T>(gate));
 }
 
-template <class GatePtrT = GatePtr, class... Args>
-inline auto createGate(const Matrix& target_matrix,
-                       Args&&... args) -> GatePtrT {
-  return GatePtrT(new U(std::forward<Args>(args)...));
+template <class T>
+auto add_gate_back(GatesWrapperShell& target, T&& gate) -> void {
+  target.add_gate(std::forward<T>(gate));
 }
 
-inline auto getCbit(const Gate& gate) -> const Cbit& {
-  assert(gate.isSingleControlled());
-  return *gate.getCbitList().cbegin();
+template <class T>
+auto insert_gate_before(GatesWrapperShell& target, GatesCIter pos, T&& gate)
+  -> GatesIter {
+  return target.insert_gate(pos, std::forward<T>(gate));
 }
 
-template <class GatePtrT>
-inline auto getCbit(const GatePtrT& gate) -> const Cbit& {
-  return qc::getCbit(*gate);
-}
-
-inline auto getTbit(const Gate& gate) -> const Tbit& {
-  assert(gate.isSingleTarget());
-  return *gate.getTbitList().cbegin();
-}
-
-template <class GatePtrT>
-inline auto getTbit(const GatePtrT& gate) -> const Tbit& {
-  return qc::getTbit(*gate);
-}
-
-template <class GatePtrT, class GateListT = std::list<GatePtrT>>
-auto decompIntoSingleTargetGates(const GatePtrT& gate) -> GateListT {
-  const auto& gate_type_name = gate->getTypeName();
-  const auto& cbits = gate->getCbitList();
-  const auto& tbits = gate->getTbitList();
-  GateListT result;
-  for(const auto& tbit : tbits) {
-    result.push_back(qc::createGate(gate_type_name, cbits, tbit));
-  }
-  return std::move(result);
+template <class T>
+auto insert_gate_after(GatesWrapperShell& target, GatesCIter pos, T&& gate)
+  -> GatesIter {
+  assert_m(pos != target.cend_gates(),
+           "Cannot insert a gate after the end of a iterator.");
+  return target.insert_gate(++pos, std::forward<T>(gate));
 }
 }

@@ -7,3 +7,4 @@
 
 #include "algorithm/general.hpp"
 #include "algorithm/oracle.hpp"
+#include "algorithm/group.hpp"

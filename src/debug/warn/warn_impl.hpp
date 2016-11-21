@@ -14,11 +14,11 @@ inline auto set(bool enabled) -> bool {
 }
 
 inline auto set(bool enabled, std::ostream& os) -> bool {
-  return warn::set(enabled) && warn::set(os);
+  return set(enabled) && set(os);
 }
 
 inline auto set(bool enabled, std::ofstream&& ofs) -> bool {
-  return warn::set(enabled) && warn::set(std::move(ofs));
+  return set(enabled) && set(std::move(ofs));
 }
 }
 }
