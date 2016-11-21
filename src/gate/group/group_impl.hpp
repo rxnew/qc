@@ -13,14 +13,6 @@ inline auto GroupCore::get_type_name() const -> char const* const& {
   return TYPE_NAME;
 }
 
-inline auto GroupCore::get_gates() const -> Gates const& {
-  return gates_;
-}
-
-inline auto GroupCore::get_gates() -> Gates& {
-  return gates_;
-}
-
 inline auto GroupCore::get_cbits() -> CBits& {
   return _get_cbits();
 }
@@ -35,6 +27,14 @@ inline auto GroupCore::get_tbits() -> TBits& {
 
 inline auto GroupCore::get_tbits() const -> TBits const& {
   return _get_tbits();
+}
+
+inline auto GroupCore::get_gates() -> Gates& {
+  return gates_;
+}
+
+inline auto GroupCore::get_gates() const -> Gates const& {
+  return gates_;
 }
 
 template <class... Args>

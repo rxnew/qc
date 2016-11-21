@@ -14,6 +14,9 @@
 namespace qc {
 class GroupCore : public GateCore, public GatesWrapperCore {
  public:
+  ~GroupCore() noexcept = default;
+
+ private:
   static constexpr char const* const TYPE_NAME = "Group";
   static constexpr util::string::Aliases<6> const ALIASES = {
     "group",
@@ -29,20 +32,22 @@ class GroupCore : public GateCore, public GatesWrapperCore {
 
   virtual auto clone() const -> std::unique_ptr<GateCore> final;
   virtual auto get_type_name() const -> char const* const& final;
-  virtual auto get_gates() const -> Gates const& final;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() -> TBits& final;
   virtual auto get_tbits() const -> TBits const& final;
   virtual auto print(std::ostream& os = std::cout) const -> void final;
-
- private:
   virtual auto get_gates() -> Gates& final;
+  virtual auto get_gates() const -> Gates const& final;
+
   virtual auto _get_cbits() const -> CBits& final;
   virtual auto _get_tbits() const -> TBits& final;
 
   mutable CBits m_cbits_;
   mutable TBits m_tbits_;
+
+  friend class Gate;
+  friend class GateType<GroupCore>;
 };
 
 template <>

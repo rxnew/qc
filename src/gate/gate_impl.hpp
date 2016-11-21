@@ -146,11 +146,11 @@ inline auto Gate::get_gates() const -> Gates const& {
   return core_->get_gates();
 }
 
-inline Gate::Gate(std::unique_ptr<GateCore>&& core) : core_(std::move(core)) {}
-
-inline Gate::Gate(GateCore*&& core) : core_(std::move(core)) {}
-
 inline auto Gate::get_gates() -> Gates& {
   return core_->get_gates();
 }
+
+inline Gate::Gate(std::unique_ptr<GateCore>&& core) : core_(std::move(core)) {}
+
+inline Gate::Gate(GateCore*&& core) : core_(std::move(core)) {}
 }

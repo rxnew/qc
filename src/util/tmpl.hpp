@@ -28,6 +28,10 @@ using enable_if_same_t = typename std::enable_if_t<std::is_same<T, U>::value>;
 template <class T, class U>
 using enable_if_same_plain_t = typename std::enable_if_t<is_same_plain_v<T, U>>;
 
+template <class T, class U>
+using enable_if_convertible_t =
+  typename std::enable_if_t<std::is_convertible<T, U>::value>;
+
 template <class T>
 struct template_class;
  
@@ -74,8 +78,13 @@ template <class T>
 bool constexpr is_container_v = is_container<T>::value;
 
 template <class T>
-using enable_if_container_t =
-  std::enable_if_t<is_container_v<T>>;
+using enable_if_container_t = typename std::enable_if_t<is_container_v<T>>;
+
+// 型Tが型Eを要素とするコンテナかどうか
+template <class T, class E>
+using enable_if_specified_type_container_t =
+  typename std::enable_if_t<is_container_v<T> &&
+                            std::is_same<E, typename T::value_type>::value>;
 }
 }
 }

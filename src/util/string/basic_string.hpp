@@ -1,13 +1,10 @@
 #pragma once
 
+#include "../string.hpp"
+
 namespace qc {
 namespace util {
 namespace string {
-template <class CharT>
-struct CaseInsensitiveCharCompare {
-  constexpr auto operator()(CharT lhs, CharT rhs) const -> bool;
-};
-
 template <class CharT, class Compare = std::equal_to<CharT>>
 class BasicString {
  public:

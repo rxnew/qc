@@ -33,7 +33,7 @@ inline GateCore::GateCore(CBits&& cbits, TBits&& tbits) :
 
 inline auto GateCore::operator==(GateCore const& other) const -> bool {
   return
-    std::is_same<decltype(*this), decltype(other)>::value &&
+    get_type_name() == other.get_type_name() &&
     cbits_ == other.cbits_ && tbits_ == other.tbits_;
 }
 

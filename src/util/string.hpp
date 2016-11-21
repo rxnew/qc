@@ -7,6 +7,15 @@
 namespace qc {
 namespace util {
 namespace string {
+template <class CharT>
+struct CaseInsensitiveCharCompare {
+  constexpr auto operator()(CharT lhs, CharT rhs) const -> bool;
+};
+
+template <class CharT>
+constexpr auto to_lower(CharT c) -> CharT;
+template <class CharT>
+constexpr auto to_upper(CharT c) -> CharT;
 template <class T>
 auto to_string(T&& arg, int precision = -1) -> std::string;
 template <class... Args>

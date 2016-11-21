@@ -3,13 +3,6 @@
 namespace qc {
 namespace util {
 namespace string {
-template <class CharT>
-constexpr auto CaseInsensitiveCharCompare<CharT>::operator()(CharT lhs,
-                                                             CharT rhs) const
-  -> bool {
-  return (lhs < 'a' ? lhs + 0x20 : lhs) == (rhs < 'a' ? rhs + 0x20 : rhs);
-}
-
 template <class CharT, class Compare>
 constexpr BasicString<CharT, Compare>::BasicString(CharT const* const str)
   : str_(str) {}

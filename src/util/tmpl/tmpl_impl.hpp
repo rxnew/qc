@@ -17,7 +17,7 @@ struct template_class {};
 template <template <class...> class T, class... Args1>
 struct template_class<T<Args1...>> {
   template <class... Args2>
-    using type = T<Args2...>;
+  using type = T<Args2...>;
 };
 
 template <int, class>

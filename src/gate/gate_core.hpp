@@ -37,7 +37,6 @@ class GateCore {
   virtual auto get_tbits() -> TBits&;
   virtual auto get_tbits() const -> TBits const&;
   virtual auto print(std::ostream& os = std::cout) const -> void;
-
   // for GateGroup
   virtual auto get_gates() -> Gates&;
   virtual auto get_gates() const -> Gates const&;

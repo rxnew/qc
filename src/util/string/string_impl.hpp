@@ -26,6 +26,23 @@ auto _format(std::ostringstream& os, std::string::const_iterator& it, T&& arg,
 namespace qc {
 namespace util {
 namespace string {
+template <class CharT>
+constexpr auto CaseInsensitiveCharCompare<CharT>::operator()(CharT lhs,
+                                                             CharT rhs) const
+  -> bool {
+  return to_lower(lhs) == to_lower(rhs);
+}
+
+template <class CharT>
+constexpr auto to_lower(CharT c) -> CharT {
+  return c >= 'A' && c <= 'Z' ? c + 0x20 : c;
+}
+
+template <class CharT>
+constexpr auto to_upper(CharT c) -> CharT {
+  return c >= 'a' && c <= 'z' ? c - 0x20 : c;
+}
+
 template <class T>
 auto to_string(T&& arg, int precision) -> std::string {
   auto os = std::ostringstream();

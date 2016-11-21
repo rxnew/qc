@@ -21,6 +21,10 @@ auto GatesWrapperShell::erase_gate(GatesCIter first, GatesCIter last)
   return get_gates().erase(first, last);
 }
 
+auto GatesWrapperShell::remove_gate(Gate const& gate) -> void {
+  get_gates().remove(gate);
+}
+
 auto GatesWrapperShell::move_gate(GatesCIter to, GatesIter from)
   -> GatesIter {
   insert_gate(to, std::move(*from));
@@ -40,15 +44,23 @@ auto GatesWrapperShell::end_gates() -> GatesIter {
   return std::end(get_gates());
 }
 
-auto GatesWrapperShell::extend(GatesWrapperShell const& circuit)
+auto GatesWrapperShell::cbegin_gates() const -> GatesCIter {
+  return std::cbegin(get_gates());
+}
+
+auto GatesWrapperShell::cend_gates() const -> GatesCIter {
+  return std::cend(get_gates());
+}
+
+auto GatesWrapperShell::extend(GatesWrapperShell const& other)
   -> GatesWrapperShell& {
-  add_gate(circuit.get_gates());
+  add_gate(other.get_gates());
   return *this;
 }
 
-auto GatesWrapperShell::extend(GatesWrapperShell&& circuit)
+auto GatesWrapperShell::extend(GatesWrapperShell&& other)
   -> GatesWrapperShell& {
-  add_gate(std::move(circuit.get_gates()));
+  add_gate(std::move(other.get_gates()));
   return *this;
 }
 
@@ -56,12 +68,12 @@ auto GatesWrapperShell::clear() -> void {
   get_gates().clear();
 }
 
-auto GatesWrapperShell::get_gates_count() const -> size_t {
-  return get_gates().size();
+auto GatesWrapperShell::empty() const -> bool {
+  return get_gates().empty();
 }
 
-auto GatesWrapperShell::_get_gates() -> Gates& {
-  return get_gates();
+auto GatesWrapperShell::get_gates_count() const -> size_t {
+  return get_gates().size();
 }
 
 auto GatesWrapperShell::collect_bits() const -> BitNos {
@@ -77,5 +89,9 @@ auto GatesWrapperShell::print(std::ostream& os) const -> void {
   for(auto const& gate : get_gates()) {
     gate.print(os);
   }
+}
+
+auto GatesWrapperShell::get_gates() -> Gates& {
+  return get_gates();
 }
 }
