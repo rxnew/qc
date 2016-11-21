@@ -13,17 +13,11 @@ class GateType : public Gate {
   GateType(Args&&... args);
   GateType(GateType const& other);
   GateType(GateType&&) noexcept = default;
-  template <class GateKernelU>
-  GateType(GateType<GateKernelU> const& gate);
-  template <class GateKernelU>
-  GateType(GateType<GateKernelU>&& gate);
 
   ~GateType() noexcept = default;
 
-  template <class GateKernelU>
-  auto operator=(GateType<GateKernelU> const& gate) -> GateType&;
-  template <class GateKernelU>
-  auto operator=(GateType<GateKernelU>&& gate) -> GateType&;
+  auto operator=(GateType const& gate) -> GateType&;
+  auto operator=(GateType&& gate) noexcept -> GateType& = default;
 };
 }
 
