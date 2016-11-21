@@ -20,12 +20,12 @@ How to use
 ### qc::Bit クラス
 量子ビットを実装しているクラス．
   
-派生クラスとして，***qc::Cbit*** と ***qc::Tbit*** がある．
+派生クラスとして，***qc::CBit*** と ***qc::TBit*** がある．
 それぞれ，コントロールビットとターゲットビットに対応している．
 
 ```
-auto cbit = Cbit(0, true);
-auto tbit = Tbit(1);
+auto cbit = qc::CBit(0_bit, true);
+auto tbit = qc::TBit(1_bit);
 ```
 
 qc::Bit クラスの主なメンバを以下にまとめる．
@@ -35,7 +35,7 @@ qc::Bit クラスの主なメンバを以下にまとめる．
 |no_|ビット番号 (private member variable)|
 |get_no|ビット番号を取得する (public member function)|
 
-qc::Cbit クラスの主なメンバを以下にまとめる．
+qc::CBit クラスの主なメンバを以下にまとめる．
 
 |members|description|
 |---|---|
@@ -46,9 +46,43 @@ qc::Cbit クラスの主なメンバを以下にまとめる．
 ### qc::Gate クラス
 量子ゲートを実装しているクラス．
 ゲートの機能を提供する ***qc::GateKernel*** **抽象**クラスをポインタで保持している．
-qc::GateKernel は qc::Cbit と qc::Tbit の集合を保持している．
+qc::GateKernel は qc::CBit と qc::TBit の集合を保持している．
   
-qc::GateKernel の派生クラスを用いて各量子ゲート (e.g., X, T) を実装している．実装済みのゲートは以下の通り．
+qc::GateKernel の派生クラスを用いて各量子ゲート (e.g., H, X) のカーネルを実装している．
+各ゲートに対応するクラスは，qc::Gate を継承している．
+また，qc::Gate への暗黙的な型変換が可能．
+
+```
+auto x = qc::X(cbit, tbit);
+auto gate = static_cast<qc::Gate>(x);
+```
+
+以下のような例に注意する必要がある．
+
+```
+auto h = qc::H(tbit);
+auto x = qc::X(cbit, tbit);
+h = x; // error
+```
+
+qc::X から qc::H など，異なる種類のゲート間の型変換はできない．
+同様に qc::Gate から qc::X などへの型変換もできない．
+異なる種類のゲートを同列に扱う場合，各ゲートを qc::Gate オブジェクトとして扱うべきである．
+
+```
+auto h = static_cast<qc::Gate>(qc::H(tbit));
+auto x = static_cast<qc::Gate>(qc::X(cbit, tbit));
+h = x; // ok
+```
+
+上記の例では，qc::H (qc::X) の一時オブジェクトが生成されている．
+一時オブジェクトを生成せずに，直接 qc::Gate オブジェクトを生成する場合は，***qc::Gate::make()*** を利用する．
+
+```
+auto x = qc::Gate::make<X>(cbit, tbit);
+```
+
+実装済みのゲートは以下の通り．
 
 * ***U*** (任意のユニタリ行列)
 * ***I*** (単位行列)
@@ -63,10 +97,6 @@ qc::GateKernel の派生クラスを用いて各量子ゲート (e.g., X, T) を
 * ***T*** (Rz(pi/4))
 * ___T*___ (***T+***, ***TDagger***, ***TPlus***)
 * ***Swap***
-
-```
-auto gate = qc::X(cbit, tbit);
-```
 
 qc::Gate クラスの主なメンバ関数を以下にまとめる．
 
@@ -101,7 +131,7 @@ qc::Gate をリストで保持している．
 
 ```
 auto circuit = qc::Circuit();
-circuit.add_gate(gate);
+circuit.add_gate(x);
 ```
 
 qc::Circuit クラスの主なメンバ関数を以下にまとめる．
@@ -131,6 +161,40 @@ qc::Circuit クラスの主なメンバ関数を以下にまとめる．
 |get_gate_count|ゲート数を取得する (public member function)|
 |collect_bits|使用しているビットの集合を生成する (public member function)|
 |print|ストリームに出力する (public member function)|
+
+### qc::Group クラス
+複数の qc::Gate をグループとして扱うためのクラス．
+qc::Gate をリストで保持しており，qc::Circuit と同様のメンバを持っている．
+qc::Group 自体も qc::Gate を継承しており，qc::Circuit のゲートのリストの要素として扱うことが可能．
+
+```
+auto group = qc::Group(x);
+group.add_gate(h);
+circuit.add_gate(group);
+```
+
+直接 qc::Gate オブジェクトを生成する場合は，qc::Gate::make() または，***qc::Group::make()*** を利用する．
+
+```
+auto group = qc::Group::make();
+group.add_gate(h);
+```
+
+上記の例で，qc::Gate オブジェクトに対して add_gate() が呼べていることに注意すべきである．
+これは，qc::Gate が qc::Circuit と同様のメソッドを持っているためである．
+そのため，以下のようなコードのコンパイルは通ってしまう．
+
+```
+auto x = qc::X(tbit);
+x.add_gate(x); // コンパイルは通る
+```
+
+しかし，このようなコードは実行時に例外が発生する．
+qc::Gate オブジェクトに対して add_gate() などのメソッドを呼ぶときには，***qc::is_group()*** を使うべきである．
+
+```
+if(qc::is_group(gate)) gate.add_gate(x);
+```
 
 ### 入出力
 ***qc::io*** に IO 関連の機能がまとめられている．
