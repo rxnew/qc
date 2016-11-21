@@ -44,25 +44,9 @@ inline GateType<GroupKernel>::GateType(Args&&... args)
 inline GateType<GroupKernel>::GateType(GateType const& other)
   : Gate(other.kernel_->clone()) {}
 
-template <class GateKernelU>
-inline GateType<GroupKernel>::GateType(GateType<GateKernelU> const& gate)
-  : Gate(gate.kernel_->clone()) {}
-
-template <class GateKernelU>
-inline GateType<GroupKernel>::GateType(GateType<GateKernelU>&& gate)
-  : Gate(std::move(gate.kernel_)) {}
-
-template <class GateKernelU>
-inline auto GateType<GroupKernel>::operator=(GateType<GateKernelU> const& gate)
+inline auto GateType<GroupKernel>::operator=(GateType const& gate)
   -> GateType& {
   kernel_ = gate.kernel_->clone();
-  return *this;
-}
-
-template <class GateKernelU>
-inline auto GateType<GroupKernel>::operator=(GateType<GateKernelU>&& gate)
-  -> GateType& {
-  kernel_ = std::move(gate.kernel_);
   return *this;
 }
 

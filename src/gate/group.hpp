@@ -59,20 +59,14 @@ class GateType<GroupKernel> : public Gate {
   GateType(Args&&... args);
   GateType(GateType const& other);
   GateType(GateType&&) noexcept = default;
-  template <class GateT>
-  GateType(GateType<GateT> const& gate);
-  template <class GateT>
-  GateType(GateType<GateT>&& gate);
 
   ~GateType() noexcept = default;
 
   template <class... Args>
   static auto make(Args&&... args) -> Gate;
 
-  template <class GateT>
-  auto operator=(GateType<GateT> const& gate) -> GateType&;
-  template <class GateT>
-  auto operator=(GateType<GateT>&& gate) -> GateType&;
+  auto operator=(GateType const& gate) -> GateType&;
+  auto operator=(GateType&& gate) noexcept -> GateType& = default;
 };
 
 using Group = GateType<GroupKernel>;
