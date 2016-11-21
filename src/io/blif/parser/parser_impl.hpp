@@ -29,6 +29,7 @@ inline auto Blif::Parser::_error(std::string const& code)
   throw(IfExc) -> void {
   auto const& msg = _get_error_message(code);
   error::issue(msg, line_, filename_, lines_counter_);
+  throw exc::IllegalFormatException("Cannot parse a blif file.");
 }
 
 template <class... Args>
@@ -37,6 +38,7 @@ auto Blif::Parser::_error(std::string const& code, Args&&... args)
   auto const& raw_msg = _get_error_message(code);
   auto const& msg = util::string::format(raw_msg, std::forward<Args>(args)...);
   error::issue(msg, line_, filename_, lines_counter_);
+  throw exc::IllegalFormatException("Cannot parse a blif file.");
 }
 
 inline auto Blif::Parser::_warn(std::string const& code) -> void {
