@@ -6,11 +6,11 @@
 #pragma once
 
 #include "../gate_type.hpp"
-#include "../gate_core.hpp"
+#include "../gate_kernel.hpp"
 #include "../../util/string/aliases.hpp"
 
 namespace qc {
-class SCore : public GateCore {
+class SKernel : public GateKernel {
  public:
   static constexpr char const* const TYPE_NAME = "S";
   static constexpr util::string::Aliases<1> const ALIASES = {
@@ -18,13 +18,13 @@ class SCore : public GateCore {
   };
 
   template <class... Args>
-  SCore(Args&&... args);
+  SKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-class SDaggerCore : public GateCore {
+class SDaggerKernel : public GateKernel {
  public:
   static constexpr char const* const TYPE_NAME = "S*";
   static constexpr util::string::Aliases<4> const ALIASES = {
@@ -35,14 +35,14 @@ class SDaggerCore : public GateCore {
   };
 
   template <class... Args>
-  SDaggerCore(Args&&... args);
+  SDaggerKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-using S = GateType<SCore>;
-using SDagger = GateType<SDaggerCore>;
+using S = GateType<SKernel>;
+using SDagger = GateType<SDaggerKernel>;
 }
 
 #include "s/s_impl.hpp"

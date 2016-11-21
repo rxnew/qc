@@ -1,11 +1,11 @@
 #include "../x.hpp"
 
 namespace qc {
-constexpr char const* const XCore::TYPE_NAME;
+constexpr char const* const XKernel::TYPE_NAME;
 
-constexpr util::string::Aliases<5> const XCore::ALIASES;
+constexpr util::string::Aliases<5> const XKernel::ALIASES;
 
-auto XCore::clone() const -> std::unique_ptr<GateCore> {
-  return std::make_unique<XCore>(*this);
+auto XKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<XKernel>(*this);
 }
 }

@@ -6,11 +6,11 @@
 #pragma once
 
 #include "../gate_type.hpp"
-#include "../gate_core.hpp"
+#include "../gate_kernel.hpp"
 #include "../../util/string/aliases.hpp"
 
 namespace qc {
-class WCore : public GateCore {
+class WKernel : public GateKernel {
  public:
   static constexpr char const* const TYPE_NAME = "W";
   static constexpr util::string::Aliases<1> const ALIASES = {
@@ -18,13 +18,13 @@ class WCore : public GateCore {
   };
 
   template <class... Args>
-  WCore(Args&&... args);
+  WKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-class WDaggerCore : public GateCore {
+class WDaggerKernel : public GateKernel {
  public:
   static constexpr char const* const TYPE_NAME = "W*";
   static constexpr util::string::Aliases<4> const ALIASES = {
@@ -35,14 +35,14 @@ class WDaggerCore : public GateCore {
   };
 
   template <class... Args>
-  WDaggerCore(Args&&... args);
+  WDaggerKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-using W = GateType<WCore>;
-using WDagger = GateType<WDaggerCore>;
+using W = GateType<WKernel>;
+using WDagger = GateType<WDaggerKernel>;
 }
 
 #include "w/w_impl.hpp"

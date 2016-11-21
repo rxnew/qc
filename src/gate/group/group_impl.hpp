@@ -2,76 +2,76 @@
 
 namespace qc {
 template <class... Args>
-inline GroupCore::GroupCore(Args&&... args)
-  : GatesWrapperCore(std::forward<Args>(args)...) {}
+inline GroupKernel::GroupKernel(Args&&... args)
+  : GatesWrapperKernel(std::forward<Args>(args)...) {}
 
-inline auto GroupCore::clone() const -> std::unique_ptr<GateCore> {
-  return std::make_unique<GroupCore>(*this);
+inline auto GroupKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<GroupKernel>(*this);
 }
 
-inline auto GroupCore::get_type_name() const -> char const* const& {
+inline auto GroupKernel::get_type_name() const -> char const* const& {
   return TYPE_NAME;
 }
 
-inline auto GroupCore::get_cbits() -> CBits& {
+inline auto GroupKernel::get_cbits() -> CBits& {
   return _get_cbits();
 }
 
-inline auto GroupCore::get_cbits() const -> CBits const& {
+inline auto GroupKernel::get_cbits() const -> CBits const& {
   return _get_cbits();
 }
 
-inline auto GroupCore::get_tbits() -> TBits& {
+inline auto GroupKernel::get_tbits() -> TBits& {
   return _get_tbits();
 }
 
-inline auto GroupCore::get_tbits() const -> TBits const& {
+inline auto GroupKernel::get_tbits() const -> TBits const& {
   return _get_tbits();
 }
 
-inline auto GroupCore::get_gates() -> Gates& {
+inline auto GroupKernel::get_gates() -> Gates& {
   return gates_;
 }
 
-inline auto GroupCore::get_gates() const -> Gates const& {
+inline auto GroupKernel::get_gates() const -> Gates const& {
   return gates_;
 }
 
 template <class... Args>
-inline GateType<GroupCore>::GateType(Args&&... args)
-  : Gate(new GroupCore(std::forward<Args>(args)...)) {}
+inline GateType<GroupKernel>::GateType(Args&&... args)
+  : Gate(new GroupKernel(std::forward<Args>(args)...)) {}
 
-inline GateType<GroupCore>::GateType(GateType const& other)
-  : Gate(other.core_->clone()) {}
+inline GateType<GroupKernel>::GateType(GateType const& other)
+  : Gate(other.kernel_->clone()) {}
 
-template <class GateCoreU>
-inline GateType<GroupCore>::GateType(GateType<GateCoreU> const& gate)
-  : Gate(gate.core_->clone()) {}
+template <class GateKernelU>
+inline GateType<GroupKernel>::GateType(GateType<GateKernelU> const& gate)
+  : Gate(gate.kernel_->clone()) {}
 
-template <class GateCoreU>
-inline GateType<GroupCore>::GateType(GateType<GateCoreU>&& gate)
-  : Gate(std::move(gate.core_)) {}
+template <class GateKernelU>
+inline GateType<GroupKernel>::GateType(GateType<GateKernelU>&& gate)
+  : Gate(std::move(gate.kernel_)) {}
 
-template <class GateCoreU>
-inline auto GateType<GroupCore>::operator=(GateType<GateCoreU> const& gate)
+template <class GateKernelU>
+inline auto GateType<GroupKernel>::operator=(GateType<GateKernelU> const& gate)
   -> GateType& {
-  core_ = gate.core_->clone();
+  kernel_ = gate.kernel_->clone();
   return *this;
 }
 
-template <class GateCoreU>
-inline auto GateType<GroupCore>::operator=(GateType<GateCoreU>&& gate)
+template <class GateKernelU>
+inline auto GateType<GroupKernel>::operator=(GateType<GateKernelU>&& gate)
   -> GateType& {
-  core_ = std::move(gate.core_);
+  kernel_ = std::move(gate.kernel_);
   return *this;
 }
 
 template <class... Args>
-inline auto GateType<GroupCore>::make(Args&&... args) -> Gate {
-  return Gate::make<GateType<GroupCore>>(std::forward<Args>(args)...);
+inline auto GateType<GroupKernel>::make(Args&&... args) -> Gate {
+  return Gate::make<GateType<GroupKernel>>(std::forward<Args>(args)...);
 }
 
-inline auto GateType<GroupCore>::is_group(Gate const& target) -> bool {
+inline auto GateType<GroupKernel>::is_group(Gate const& target) -> bool {
   return ALIASES == target.get_type_name();
 }
 }

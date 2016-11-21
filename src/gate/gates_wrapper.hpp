@@ -1,10 +1,10 @@
 #pragma once
 
-#include "gates_wrapper/gates_wrapper_core.hpp"
+#include "gates_wrapper/gates_wrapper_kernel.hpp"
 #include "gates_wrapper/gates_wrapper_shell.hpp"
 
 namespace qc {
-class GatesWrapper : public GatesWrapperCore, public GatesWrapperShell {
+class GatesWrapper : public GatesWrapperKernel, public GatesWrapperShell {
  public:
   GatesWrapper() = default;
   template <class... Args>

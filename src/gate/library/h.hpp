@@ -6,11 +6,11 @@
 #pragma once
 
 #include "../gate_type.hpp"
-#include "../gate_core.hpp"
+#include "../gate_kernel.hpp"
 #include "../../util/string/aliases.hpp"
 
 namespace qc {
-class HCore : public GateCore {
+class HKernel : public GateKernel {
  public:
   static constexpr char const* const TYPE_NAME = "H";
   static constexpr util::string::Aliases<2> const ALIASES = {
@@ -19,13 +19,13 @@ class HCore : public GateCore {
   };
 
   template <class... Args>
-  HCore(Args&&... args);
+  HKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-using H = GateType<HCore>;
+using H = GateType<HKernel>;
 }
 
 #include "h/h_impl.hpp"

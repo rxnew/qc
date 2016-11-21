@@ -1,11 +1,11 @@
 #include "../y.hpp"
 
 namespace qc {
-constexpr char const* const YCore::TYPE_NAME;
+constexpr char const* const YKernel::TYPE_NAME;
 
-constexpr util::string::Aliases<1> const YCore::ALIASES;
+constexpr util::string::Aliases<1> const YKernel::ALIASES;
 
-auto YCore::clone() const -> std::unique_ptr<GateCore> {
-  return std::make_unique<YCore>(*this);
+auto YKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<YKernel>(*this);
 }
 }

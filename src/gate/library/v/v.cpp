@@ -1,19 +1,19 @@
 #include "../v.hpp"
 
 namespace qc {
-constexpr char const* const VCore::TYPE_NAME;
+constexpr char const* const VKernel::TYPE_NAME;
 
-constexpr util::string::Aliases<1> const VCore::ALIASES;
+constexpr util::string::Aliases<1> const VKernel::ALIASES;
 
-auto VCore::clone() const -> std::unique_ptr<GateCore> {
-  return std::make_unique<VCore>(*this);
+auto VKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<VKernel>(*this);
 }
 
-constexpr char const* const VDaggerCore::TYPE_NAME;
+constexpr char const* const VDaggerKernel::TYPE_NAME;
 
-constexpr util::string::Aliases<4> const VDaggerCore::ALIASES;
+constexpr util::string::Aliases<4> const VDaggerKernel::ALIASES;
 
-auto VDaggerCore::clone() const -> std::unique_ptr<GateCore> {
-  return std::make_unique<VDaggerCore>(*this);
+auto VDaggerKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<VDaggerKernel>(*this);
 }
 }

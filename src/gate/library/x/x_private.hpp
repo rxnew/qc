@@ -28,7 +28,10 @@ class XKernel : public GateKernel {
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-using X = GateType<XKernel>;
-}
+template <class... Args>
+XKernel::XKernel(Args&&... args) : GateKernel(std::forward<Args>(args)...) {}
 
-#include "x/x_impl.hpp"
+inline auto XKernel::get_type_name() const -> char const* const& {
+  return TYPE_NAME;
+}
+}

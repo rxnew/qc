@@ -6,11 +6,11 @@
 #pragma once
 
 #include "../gate_type.hpp"
-#include "../gate_core.hpp"
+#include "../gate_kernel.hpp"
 #include "../../util/string/aliases.hpp"
 
 namespace qc {
-class VCore : public GateCore {
+class VKernel : public GateKernel {
  public:
   static constexpr char const* const TYPE_NAME = "V";
   static constexpr util::string::Aliases<1> const ALIASES = {
@@ -18,13 +18,13 @@ class VCore : public GateCore {
   };
 
   template <class... Args>
-  VCore(Args&&... args);
+  VKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-class VDaggerCore : public GateCore {
+class VDaggerKernel : public GateKernel {
  public:
   static constexpr char const* const TYPE_NAME = "V*";
   static constexpr util::string::Aliases<4> const ALIASES = {
@@ -35,14 +35,14 @@ class VDaggerCore : public GateCore {
   };
 
   template <class... Args>
-  VDaggerCore(Args&&... args);
+  VDaggerKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-using V = GateType<VCore>;
-using VDagger = GateType<VDaggerCore>;
+using V = GateType<VKernel>;
+using VDagger = GateType<VDaggerKernel>;
 }
 
 #include "v/v_impl.hpp"

@@ -2,9 +2,9 @@
 
 namespace qc {
 template <class... Args>
-YCore::YCore(Args&&... args) : GateCore(std::forward<Args>(args)...) {}
+YKernel::YKernel(Args&&... args) : GateKernel(std::forward<Args>(args)...) {}
 
-inline auto YCore::get_type_name() const -> char const* const& {
+inline auto YKernel::get_type_name() const -> char const* const& {
   return TYPE_NAME;
 }
 }

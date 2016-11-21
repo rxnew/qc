@@ -1,11 +1,11 @@
-#include "../gate_core.hpp"
+#include "../gate_kernel.hpp"
 
 #include "../../gate.hpp"
 #include "../../debug/assert.hpp"
 #include "../../util/container.hpp"
 
 namespace qc {
-auto GateCore::print(std::ostream& os) const -> void {
+auto GateKernel::print(std::ostream& os) const -> void {
   auto ordered_cbits = util::container::convert<std::set>(cbits_);
   auto ordered_tbits = util::container::convert<std::set>(tbits_);
 
@@ -24,13 +24,13 @@ auto GateCore::print(std::ostream& os) const -> void {
   os << std::endl;
 }
 
-auto GateCore::get_gates() -> Gates& {
+auto GateKernel::get_gates() -> Gates& {
   assert_m(false, "Not a group.");
   static auto gates = Gates();
   return gates;
 }
 
-auto GateCore::get_gates() const -> Gates const& {
+auto GateKernel::get_gates() const -> Gates const& {
   assert_m(false, "Not a group.");
   static auto const gates = Gates();
   return gates;

@@ -5,18 +5,15 @@
 
 #pragma once
 
-#include "gate_core.hpp"
+#include "gate_kernel.hpp"
 #include "gate_type.hpp"
-#include "gates_wrapper/gates_wrapper_core.hpp"
+#include "gates_wrapper/gates_wrapper_kernel.hpp"
 #include "../gate.hpp"
 #include "../util/string/aliases.hpp"
 
 namespace qc {
-class GroupCore : public GateCore, public GatesWrapperCore {
+class GroupKernel : public GateKernel, public GatesWrapperKernel {
  public:
-  ~GroupCore() noexcept = default;
-
- private:
   static constexpr char const* const TYPE_NAME = "Group";
   static constexpr util::string::Aliases<6> const ALIASES = {
     "group",
@@ -28,9 +25,11 @@ class GroupCore : public GateCore, public GatesWrapperCore {
   };
 
   template <class... Args>
-  GroupCore(Args&&... args);
+  GroupKernel(Args&&... args);
 
-  virtual auto clone() const -> std::unique_ptr<GateCore> final;
+  ~GroupKernel() noexcept = default;
+
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;
@@ -40,21 +39,19 @@ class GroupCore : public GateCore, public GatesWrapperCore {
   virtual auto get_gates() -> Gates& final;
   virtual auto get_gates() const -> Gates const& final;
 
+ private:
   virtual auto _get_cbits() const -> CBits& final;
   virtual auto _get_tbits() const -> TBits& final;
 
   mutable CBits m_cbits_;
   mutable TBits m_tbits_;
-
-  friend class Gate;
-  friend class GateType<GroupCore>;
 };
 
 template <>
-class GateType<GroupCore> : public Gate {
+class GateType<GroupKernel> : public Gate {
  public:
-  static constexpr auto const& TYPE_NAME = GroupCore::TYPE_NAME;
-  static constexpr auto const& ALIASES = GroupCore::ALIASES;
+  static constexpr auto const& TYPE_NAME = GroupKernel::TYPE_NAME;
+  static constexpr auto const& ALIASES = GroupKernel::ALIASES;
   static constexpr char const* const BEGIN_TAG = "Group >>";
   static constexpr char const* const END_TAG = "<<";
 
@@ -79,7 +76,7 @@ class GateType<GroupCore> : public Gate {
   auto operator=(GateType<GateT>&& gate) -> GateType&;
 };
 
-using Group = GateType<GroupCore>;
+using Group = GateType<GroupKernel>;
 }
 
 #include "group/group_impl.hpp"

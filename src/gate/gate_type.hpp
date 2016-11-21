@@ -3,27 +3,27 @@
 #include "../gate.hpp"
 
 namespace qc {
-template <class GateCoreT>
+template <class GateKernelT>
 class GateType : public Gate {
  public:
-  static constexpr auto const& TYPE_NAME = GateCoreT::TYPE_NAME;
-  static constexpr auto const& ALIASES = GateCoreT::ALIASES;
+  static constexpr auto const& TYPE_NAME = GateKernelT::TYPE_NAME;
+  static constexpr auto const& ALIASES = GateKernelT::ALIASES;
 
   template <class... Args>
   GateType(Args&&... args);
   GateType(GateType const& other);
   GateType(GateType&&) noexcept = default;
-  template <class GateCoreU>
-  GateType(GateType<GateCoreU> const& gate);
-  template <class GateCoreU>
-  GateType(GateType<GateCoreU>&& gate);
+  template <class GateKernelU>
+  GateType(GateType<GateKernelU> const& gate);
+  template <class GateKernelU>
+  GateType(GateType<GateKernelU>&& gate);
 
   ~GateType() noexcept = default;
 
-  template <class GateCoreU>
-  auto operator=(GateType<GateCoreU> const& gate) -> GateType&;
-  template <class GateCoreU>
-  auto operator=(GateType<GateCoreU>&& gate) -> GateType&;
+  template <class GateKernelU>
+  auto operator=(GateType<GateKernelU> const& gate) -> GateType&;
+  template <class GateKernelU>
+  auto operator=(GateType<GateKernelU>&& gate) -> GateType&;
 };
 }
 

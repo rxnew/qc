@@ -1,38 +1,38 @@
 #pragma once
 
 namespace qc {
-template <class GateCoreT>
+template <class GateKernelT>
 template <class... Args>
-inline GateType<GateCoreT>::GateType(Args&&... args)
-  : Gate(new GateCoreT(std::forward<Args>(args)...)) {}
+inline GateType<GateKernelT>::GateType(Args&&... args)
+  : Gate(new GateKernelT(std::forward<Args>(args)...)) {}
 
-template <class GateCoreT>
-inline GateType<GateCoreT>::GateType(GateType const& other)
-  : Gate(other.core_->clone()) {}
+template <class GateKernelT>
+inline GateType<GateKernelT>::GateType(GateType const& other)
+  : Gate(other.kernel_->clone()) {}
 
-template <class GateCoreT>
-template <class GateCoreU>
-inline GateType<GateCoreT>::GateType(GateType<GateCoreU> const& gate)
-  : Gate(gate.core_->clone()) {}
+template <class GateKernelT>
+template <class GateKernelU>
+inline GateType<GateKernelT>::GateType(GateType<GateKernelU> const& gate)
+  : Gate(gate.kernel_->clone()) {}
 
-template <class GateCoreT>
-template <class GateCoreU>
-inline GateType<GateCoreT>::GateType(GateType<GateCoreU>&& gate)
-  : Gate(std::move(gate.core_)) {}
+template <class GateKernelT>
+template <class GateKernelU>
+inline GateType<GateKernelT>::GateType(GateType<GateKernelU>&& gate)
+  : Gate(std::move(gate.kernel_)) {}
 
-template <class GateCoreT>
-template <class GateCoreU>
-inline auto GateType<GateCoreT>::operator=(GateType<GateCoreU> const& gate)
+template <class GateKernelT>
+template <class GateKernelU>
+inline auto GateType<GateKernelT>::operator=(GateType<GateKernelU> const& gate)
   -> GateType& {
-  core_ = gate.core_->clone();
+  kernel_ = gate.kernel_->clone();
   return *this;
 }
 
-template <class GateCoreT>
-template <class GateCoreU>
-inline auto GateType<GateCoreT>::operator=(GateType<GateCoreU>&& gate)
+template <class GateKernelT>
+template <class GateKernelU>
+inline auto GateType<GateKernelT>::operator=(GateType<GateKernelU>&& gate)
   -> GateType& {
-  core_ = std::move(gate.core_);
+  kernel_ = std::move(gate.kernel_);
   return *this;
 }
 }

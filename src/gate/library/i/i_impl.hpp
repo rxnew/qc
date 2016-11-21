@@ -2,9 +2,9 @@
 
 namespace qc {
 template <class... Args>
-ICore::ICore(Args&&... args) : GateCore(std::forward<Args>(args)...) {}
+IKernel::IKernel(Args&&... args) : GateKernel(std::forward<Args>(args)...) {}
 
-inline auto ICore::get_type_name() const -> char const* const& {
+inline auto IKernel::get_type_name() const -> char const* const& {
   return TYPE_NAME;
 }
 }

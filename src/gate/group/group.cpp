@@ -1,11 +1,11 @@
 #include "../group.hpp"
 
 namespace qc {
-constexpr char const* const GroupCore::TYPE_NAME;
+constexpr char const* const GroupKernel::TYPE_NAME;
 
-constexpr util::string::Aliases<6> const GroupCore::ALIASES;
+constexpr util::string::Aliases<6> const GroupKernel::ALIASES;
 
-auto GroupCore::print(std::ostream& os) const -> void {
+auto GroupKernel::print(std::ostream& os) const -> void {
   os << Group::BEGIN_TAG << std::endl;
   for(auto const& gate : get_gates()) {
     gate.print(os);
@@ -13,7 +13,7 @@ auto GroupCore::print(std::ostream& os) const -> void {
   os << Group::END_TAG << std::endl;
 }
 
-auto GroupCore::_get_cbits() const -> CBits& {
+auto GroupKernel::_get_cbits() const -> CBits& {
   m_cbits_.clear();
   for(auto const& gate : gates_) {
     for(auto const& cbit : gate.get_cbits()) {
@@ -23,7 +23,7 @@ auto GroupCore::_get_cbits() const -> CBits& {
   return m_cbits_;
 }
 
-auto GroupCore::_get_tbits() const -> TBits& {
+auto GroupKernel::_get_tbits() const -> TBits& {
   m_tbits_.clear();
   for(auto const& gate : gates_) {
     for(auto const& tbit : gate.get_tbits()) {
@@ -33,7 +33,7 @@ auto GroupCore::_get_tbits() const -> TBits& {
   return m_tbits_;
 }
 
-constexpr char const* const GateType<GroupCore>::BEGIN_TAG;
+constexpr char const* const GateType<GroupKernel>::BEGIN_TAG;
 
-constexpr char const* const GateType<GroupCore>::END_TAG;
+constexpr char const* const GateType<GroupKernel>::END_TAG;
 }

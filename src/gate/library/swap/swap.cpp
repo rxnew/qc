@@ -1,11 +1,11 @@
 #include "../swap.hpp"
 
 namespace qc {
-constexpr char const* const SwapCore::TYPE_NAME;
+constexpr char const* const SwapKernel::TYPE_NAME;
 
-constexpr util::string::Aliases<1> const SwapCore::ALIASES;
+constexpr util::string::Aliases<1> const SwapKernel::ALIASES;
 
-auto SwapCore::clone() const -> std::unique_ptr<GateCore> {
-  return std::make_unique<SwapCore>(*this);
+auto SwapKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<SwapKernel>(*this);
 }
 }

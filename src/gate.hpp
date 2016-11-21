@@ -12,7 +12,7 @@
 #include "gate/gates_wrapper/gates_wrapper_shell.hpp"
 
 namespace qc {
-class GateCore;
+class GateKernel;
 
 class Gate : public GatesWrapperShell {
  public:
@@ -64,12 +64,12 @@ class Gate : public GatesWrapperShell {
   virtual auto get_gates() const -> Gates const&;
 
  protected:
-  explicit Gate(std::unique_ptr<GateCore>&& core);
-  explicit Gate(GateCore*&& core);
+  explicit Gate(std::unique_ptr<GateKernel>&& kernel);
+  explicit Gate(GateKernel*&& kernel);
 
   virtual auto get_gates() -> Gates&;
 
-  std::unique_ptr<GateCore> core_;
+  std::unique_ptr<GateKernel> kernel_;
 };
 }
 

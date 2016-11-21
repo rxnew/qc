@@ -1,11 +1,11 @@
 #include "../i.hpp"
 
 namespace qc {
-constexpr char const* const ICore::TYPE_NAME;
+constexpr char const* const IKernel::TYPE_NAME;
 
-constexpr util::string::Aliases<2> const ICore::ALIASES;
+constexpr util::string::Aliases<2> const IKernel::ALIASES;
 
-auto ICore::clone() const -> std::unique_ptr<GateCore> {
-  return std::make_unique<ICore>(*this);
+auto IKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<IKernel>(*this);
 }
 }
