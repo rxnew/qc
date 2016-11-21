@@ -5,185 +5,153 @@
 
 #pragma once
 
+#include <cassert>
+
+#include "gate_kernel.hpp"
+#include "../util/tmpl.hpp"
+
 namespace qc {
-inline auto Gate::_createTargetMatrixList()
-  -> std::initializer_list<Complex> {
-  return {};
+inline Gate::Gate(Gate const& other) : kernel_(other.kernel_->clone()) {}
+
+template <class Type, class... Args>
+inline auto Gate::make(Args&&... args) -> Gate {
+  using GateKernelT = util::tmpl::template_parameter_t<Type>;
+  return Gate(new GateKernelT(std::forward<Args>(args)...));
 }
 
-inline Gate::Gate(const Tbit& tbit) : tbits_{tbit} {
+inline auto Gate::make_dummy(bool assert_flag) -> Gate {
+  assert(!assert_flag);
+  return Gate(nullptr);
 }
 
-inline Gate::Gate(const Tbit& tbit1, const Tbit& tbit2) : tbits_{tbit1, tbit2} {
+inline auto Gate::operator=(Gate const& other) -> Gate& {
+  kernel_ = other.kernel_->clone();
+  return *this;
 }
 
-inline Gate::Gate(const Cbit& cbit, const Tbit& tbit)
-  : cbits_{cbit}, tbits_{tbit} {
-}
-
-inline Gate::Gate(const Cbit& cbit, const TbitList& tbits)
-  : cbits_{cbit}, tbits_(tbits) {
-}
-
-inline Gate::Gate(const Cbit& cbit, TbitList&& tbits)
-  : cbits_{cbit}, tbits_(std::move(tbits)) {
-}
-
-inline Gate::Gate(const Cbit& cbit1, const Cbit& cbit2, const Tbit& tbit)
-  : cbits_{cbit1, cbit2}, tbits_{tbit} {
-}
-
-inline Gate::Gate(const CbitList& cbits, const Tbit& tbit) :
-  cbits_(cbits), tbits_{tbit} {
-}
-
-inline Gate::Gate(CbitList&& cbits, const Tbit& tbit) :
-  cbits_(std::move(cbits)), tbits_{tbit} {
-}
-
-inline Gate::Gate(const CbitList& cbits, const TbitList& tbits) :
-  cbits_(cbits), tbits_(tbits) {
-}
-
-inline Gate::Gate(CbitList&& cbits, TbitList&& tbits) :
-  cbits_(std::move(cbits)), tbits_(std::move(tbits)) {
+inline auto Gate::operator==(const Gate& other) const -> bool {
+  return *kernel_ == *other.kernel_;
 }
 
 inline auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
-inline auto Gate::getCbitList() const -> const CbitList& {
-  return this->cbits_;
+inline auto Gate::get_type_name() const -> char const* const& {
+  return kernel_->get_type_name();
 }
 
-inline auto Gate::getTbitList() const -> const TbitList& {
-  return this->tbits_;
+inline auto Gate::get_cbits() const -> CBits const& {
+  return kernel_->get_cbits();
 }
 
-inline auto Gate::addCbit(const Cbit& cbit) -> void {
-  this->cbits_.insert(cbit);
+inline auto Gate::get_tbits() const -> TBits const& {
+  return kernel_->get_tbits();
 }
 
-inline auto Gate::addCbit(Bitno bit, bool polarity) -> void {
-  this->cbits_.emplace(bit, polarity);
+inline auto Gate::set_cbits(CBits const& cbits) -> void {
+  kernel_->get_cbits() = cbits;
 }
 
-inline auto Gate::addTbit(const Tbit& tbit) -> void {
-  this->tbits_.insert(tbit);
+inline auto Gate::set_cbits(CBits&& cbits) -> void {
+  kernel_->get_cbits() = std::move(cbits);
 }
 
-inline auto Gate::addTbit(Bitno bit) -> void {
-  this->tbits_.emplace(bit);
+inline auto Gate::set_tbits(TBits const& tbits) -> void {
+  kernel_->get_tbits() = tbits;
 }
 
-inline auto Gate::setCbits(const CbitList& cbits) -> void {
-  this->cbits_ = cbits;
+inline auto Gate::set_tbits(TBits&& tbits) -> void {
+  kernel_->get_tbits() = std::move(tbits);
 }
 
-inline auto Gate::setCbits(CbitList&& cbits) -> void {
-  this->cbits_ = std::move(cbits);
+inline auto Gate::add_cbit(CBit const& cbit) -> void {
+  kernel_->get_cbits().insert(cbit);
 }
 
-inline auto Gate::setTbits(const TbitList& tbits) -> void {
-  this->tbits_ = tbits;
+inline auto Gate::add_cbit(BitNo bit_no, bool polarity) -> void {
+  kernel_->get_cbits().emplace(bit_no, polarity);
 }
 
-inline auto Gate::setTbits(TbitList&& tbits) -> void {
-  this->tbits_ = std::move(tbits);
+inline auto Gate::add_tbit(TBit const& tbit) -> void {
+  kernel_->get_tbits().insert(tbit);
 }
 
-inline auto Gate::isIncluded(Bitno bit) const -> bool {
-  return this->isIncludedInTbitList(bit) || this->isIncludedInCbitList(bit);
+inline auto Gate::add_tbit(BitNo bit_no) -> void {
+  kernel_->get_tbits().emplace(bit_no);
 }
 
-inline auto Gate::isIncluded(const Cbit& cbit) const -> bool {
-  return this->cbits_.count(cbit);
+inline auto Gate::has_bit(BitNo bit_no) const -> bool {
+  return has_tbit(bit_no) || has_cbit(bit_no);
 }
 
-inline auto Gate::isIncluded(const Tbit& tbit) const -> bool {
-  return this->tbits_.count(tbit);
+inline auto Gate::has_cbit(CBit const& cbit) const -> bool {
+  return kernel_->get_cbits().count(cbit);
 }
 
-inline auto Gate::isIncludedInCbitList(Bitno bit) const -> bool {
+inline auto Gate::has_cbit(BitNo bit_no) const -> bool {
   return
-    this->isIncluded(Cbit(bit, true)) ||
-    this->isIncluded(Cbit(bit, false));
+    has_cbit(CBit(bit_no, true)) ||
+    has_cbit(CBit(bit_no, false));
 }
 
-inline auto Gate::isIncludedInTbitList(Bitno bit) const -> bool {
-  return this->isIncluded(Tbit(bit));
+inline auto Gate::has_tbit(TBit const& tbit) const -> bool {
+  return kernel_->get_tbits().count(tbit);
 }
 
-inline auto Gate::eraseBit(Bitno bit) -> size_t {
+inline auto Gate::has_tbit(BitNo bit_no) const -> bool {
+  return has_tbit(TBit(bit_no));
+}
+
+inline auto Gate::erase_bit(BitNo bit_no) -> size_t {
   return
-    this->cbits_.erase(this->getCbit(bit)) ||
-    this->tbits_.erase(Tbit(bit));
+    kernel_->get_cbits().erase(get_cbit(bit_no)) ||
+    kernel_->get_tbits().erase(TBit(bit_no));
 }
 
-inline auto Gate::getCbitPolarity(Bitno bit) const -> bool {
-  assert(this->isIncludedInCbitList(bit));
-  return this->cbits_.count(Cbit(bit, true));
+inline auto Gate::get_cbit_polarity(BitNo bit_no) const -> bool {
+  assert(has_cbit(bit_no));
+  return kernel_->get_cbits().count(CBit(bit_no, true));
 }
 
-inline auto Gate::computeMatrix(const std::set<Bitno>& bits) const -> Matrix {
-  return std::move(this->_computeMatrix(MatrixMap(*this, bits)));
+inline auto Gate::is_controlled() const -> bool {
+  return !kernel_->get_cbits().empty();
 }
 
-inline auto Gate::computeMatrix(const BitList& bits) const -> Matrix {
-  return this->computeMatrix(util::container::convert<std::set>(bits));
+inline auto Gate::is_single_controlled() const -> bool {
+  return kernel_->get_cbits().size() == 1u;
 }
 
-inline auto Gate::computeMatrix() const -> Matrix {
-  return this->computeMatrix(this->collectUsedBits());
+inline auto Gate::is_multi_controlled() const -> bool {
+  return kernel_->get_cbits().size() > 1u;
 }
 
-inline auto Gate::simulate(const Vector& input, const std::set<Bitno>& bits) \
-  const -> Vector {
-  assert(input.rows() == std::pow(2, bits.size()));
-  return std::move(this->_simulate(input, MatrixMap(*this, bits)));
+inline auto Gate::is_single_target() const -> bool {
+  return kernel_->get_tbits().size() == 1u;
 }
 
-inline auto Gate::simulate(const Vector& input, const BitList& bits) const
-  -> Vector {
-  auto ordered_bits = util::container::convert<std::set>(bits);
-  return this->simulate(input, ordered_bits);
+inline auto Gate::is_multi_target() const -> bool {
+  return kernel_->get_tbits().size() > 1u;
 }
 
-inline auto Gate::simulate(const Vector& input) const -> Vector {
-  return this->simulate(input, this->collectUsedBits());
+inline auto Gate::is_single_qubit_rotation() const -> bool {
+  return !is_controlled() && is_single_target();
 }
 
-inline auto Gate::isControlled() const -> bool {
-  return !this->cbits_.empty();
+inline auto Gate::print(std::ostream& os) const -> void {
+  kernel_->print(os);
 }
 
-inline auto Gate::isSingleControlled() const -> bool {
-  return this->cbits_.size() == 1;
+inline auto Gate::get_gates() const -> Gates const& {
+  return kernel_->get_gates();
 }
 
-inline auto Gate::isMultiControlled() const -> bool {
-  return this->cbits_.size() > 1;
+inline auto Gate::get_gates() -> Gates& {
+  return kernel_->get_gates();
 }
 
-inline auto Gate::isSingleTarget() const -> bool {
-  return this->tbits_.size() == 1;
-}
+inline Gate::Gate(std::unique_ptr<GateKernel>&& kernel)
+  : kernel_(std::move(kernel)) {}
 
-inline auto Gate::isMultiTarget() const -> bool {
-  assert(!this->tbits_.empty());
-  return !this->isSingleTarget();
-}
-
-inline auto Gate::isSingleQubitRotation() const -> bool {
-  return !this->isControlled() && this->isSingleTarget();
-}
-
-inline auto Gate::MatrixMap::_mask(ui polarity_pattern) const -> bool {
-  return polarity_pattern & polarity_pattern_mask_;
-}
-
-inline auto Gate::MatrixMap::_isActive() const -> bool {
-  return this->_mask(this->active_polarity_pattern_);
-}
+inline Gate::Gate(GateKernel*&& kernel) : kernel_(std::move(kernel)) {}
 }

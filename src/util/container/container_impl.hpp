@@ -7,78 +7,78 @@ namespace qc {
 namespace util {
 namespace container {
 template <template <class...> class U, class T>
-inline auto convert(const T& c) -> U<typename T::value_type> {
-  return std::move(U<typename T::value_type>(c.cbegin(), c.cend()));
+inline auto convert(T const& c) -> U<typename T::value_type> {
+  return U<typename T::value_type>(c.cbegin(), c.cend());
 }
 
 template <template <class...> class U, class K, class V>
-inline auto convert(const std::map<K, V>& c) -> U<K, V> {
-  return std::move(U<K, V>(c.cbegin(), c.cend()));
+inline auto convert(std::map<K, V> const& c) -> U<K, V> {
+  return U<K, V>(c.cbegin(), c.cend());
 }
 
 template <template <class...> class U, class K, class V>
-inline auto convert(const std::unordered_map<K, V>& c) -> U<K, V> {
-  return std::move(U<K, V>(c.cbegin(), c.cend()));
+inline auto convert(std::unordered_map<K, V> const& c) -> U<K, V> {
+  return U<K, V>(c.cbegin(), c.cend());
 }
 
 template <template <class...> class T, class E>
-inline auto ordered(const T<E>& c) -> std::set<E> {
-  return std::move(container::convert<std::set>(c));
+inline auto ordered(T<E> const& c) -> std::set<E> {
+  return convert<std::set>(c);
 }
 
 template <class K, class V>
-inline auto ordered(const std::unordered_map<K, V>& c) -> std::map<K, V> {
-  return std::move(container::convert<std::map>(c));
+inline auto ordered(std::unordered_map<K, V> const& c) -> std::map<K, V> {
+  return convert<std::map>(c);
 }
 
 template <class E, class T>
-auto toMap(const T& c, const E& e) -> std::map<typename T::value_type, E> {
-  std::map<typename T::value_type, E> m;
-  for(const auto& k : c) {
-    m.insert(std::make_pair(k, e));
+auto to_map(T const& c, E const& e) -> std::map<typename T::value_type, E> {
+  auto m = std::map<typename T::value_type, E>();
+  for(auto const& k : c) {
+    m.emplace(k, e);
   }
-  return std::move(m);
+  return m;
 }
 
 template <class E, class T>
-inline auto toMap(const T& c) -> std::map<typename T::value_type, E> {
-  return container::toMap(c, E());
+inline auto to_map(T const& c) -> std::map<typename T::value_type, E> {
+  return to_map(c, E());
 }
 
 template <template <class...> class T, class E>
-auto isIntersected(const T<E>& lhs, const T<E>& rhs) -> bool {
-  for(const auto& e : lhs) {
+auto is_intersected(T<E> const& lhs, T<E> const& rhs) -> bool {
+  for(auto const& e : lhs) {
     if(std::find(rhs.cbegin(), rhs.cend(), e) != rhs.cend()) return true;
   }
   return false;
 }
 
 template <class E>
-inline auto isIntersected(const std::set<E>& lhs,
-                          const std::set<E>& rhs) -> bool {
-  return container::isIntersectedSet(lhs, rhs);
+inline auto is_intersected(std::set<E> const& lhs, std::set<E> const& rhs)
+  -> bool {
+  return is_intersected_set(lhs, rhs);
 }
 
 template <class E>
-inline auto isIntersected(const std::unordered_set<E>& lhs,
-                          const std::unordered_set<E>& rhs) -> bool {
-  return container::isIntersectedSet(lhs, rhs);
+inline auto is_intersected(std::unordered_set<E> const& lhs,
+                           std::unordered_set<E> const& rhs) -> bool {
+  return is_intersected_set(lhs, rhs);
 }
 
 template <class T>
-auto isIntersectedSet(const T& lhs, const T& rhs) -> bool {
-  const auto cmp = [&lhs, &rhs]() {return lhs.size() < rhs.size();};
-  const auto& tmp1 = cmp() ? lhs : rhs;
-  const auto& tmp2 = cmp() ? rhs : lhs;
-  for(const auto& e : tmp1) {
+auto is_intersected_set(T const& lhs, T const& rhs) -> bool {
+  auto const cmp = [&lhs, &rhs] {return lhs.size() < rhs.size();};
+  auto const& tmp1 = cmp() ? lhs : rhs;
+  auto const& tmp2 = cmp() ? rhs : lhs;
+  for(auto const& e : tmp1) {
     if(tmp2.find(e) != tmp2.cend()) return true;
   }
   return false;
 }
 
 template <template <class...> class T, class E, class ECompare>
-auto Compare::operator()(const T<E>& lhs, const T<E>& rhs,
-                         const ECompare& cmp) const -> bool {
+auto Compare::operator()(T<E> const& lhs, T<E> const& rhs,
+                         ECompare const& cmp) const -> bool {
   auto it_l = lhs.cbegin(); 
   auto it_r = rhs.cbegin();
   while(true) {
@@ -93,12 +93,12 @@ auto Compare::operator()(const T<E>& lhs, const T<E>& rhs,
 }
 
 template <class E, class ECompare>
-auto Compare::operator()(const std::unordered_set<E>& lhs,
-                         const std::unordered_set<E>& rhs,
-                         const ECompare& cmp) const -> bool {
-  const auto ordered_lhs = container::convert<std::set>(lhs);
-  const auto ordered_rhs = container::convert<std::set>(rhs);
-  return this->operator()(ordered_lhs, ordered_rhs, cmp);
+auto Compare::operator()(std::unordered_set<E> const& lhs,
+                         std::unordered_set<E> const& rhs,
+                         ECompare const& cmp) const -> bool {
+  auto const ordered_lhs = convert<std::set>(lhs);
+  auto const ordered_rhs = convert<std::set>(rhs);
+  return operator()(ordered_lhs, ordered_rhs, cmp);
 }
 }
 }

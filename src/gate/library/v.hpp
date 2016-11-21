@@ -1,44 +1,48 @@
 /**
  * @file v.hpp
- * @brief header of V and VPlus class
+ * @brief header of V class
  */
 
 #pragma once
 
-#include "../../gate.hpp"
+#include "../gate_type.hpp"
+#include "../gate_kernel.hpp"
+#include "../../util/string/aliases.hpp"
 
 namespace qc {
-class V : public Gate {
- private:
-  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
-
+class VKernel : public GateKernel {
  public:
-  static const std::string TYPE_NAME;
-  static const Matrix TARGET_MATRIX;
+  static constexpr char const* const TYPE_NAME = "V";
+  static constexpr util::string::Aliases<1> const ALIASES = {
+    "v"
+  };
 
   template <class... Args>
-  V(Args&&... args);
+  VKernel(Args&&... args);
 
-  auto clone() const -> GatePtr;
-  auto getTypeName() const -> const std::string&;
-  auto getTargetMatrix() const -> const Matrix&;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
+  virtual auto get_type_name() const -> char const* const& final;
 };
 
-class VPlus : public Gate {
- private:
-  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
-
+class VDaggerKernel : public GateKernel {
  public:
-  static const std::string TYPE_NAME;
-  static const Matrix TARGET_MATRIX;
+  static constexpr char const* const TYPE_NAME = "V*";
+  static constexpr util::string::Aliases<4> const ALIASES = {
+    "v*",
+    "v+",
+    "vdagger",
+    "vplus"
+  };
 
   template <class... Args>
-  VPlus(Args&&... args);
+  VDaggerKernel(Args&&... args);
 
-  auto clone() const -> GatePtr;
-  auto getTypeName() const -> const std::string&;
-  auto getTargetMatrix() const -> const Matrix&;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
+  virtual auto get_type_name() const -> char const* const& final;
 };
+
+using V = GateType<VKernel>;
+using VDagger = GateType<VDaggerKernel>;
 }
 
 #include "v/v_impl.hpp"

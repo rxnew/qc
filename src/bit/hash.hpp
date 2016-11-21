@@ -12,17 +12,17 @@
 namespace std {
 template <>
 struct hash<qc::Bit> {
-  auto operator()(const qc::Bit& obj) const -> size_t;
+  auto operator()(qc::Bit const& obj) const -> size_t;
 };
 
 template <>
-struct hash<qc::Cbit> {
-  auto operator()(const qc::Cbit& obj) const -> size_t;
+struct hash<qc::CBit> {
+  auto operator()(qc::CBit const& obj) const -> size_t;
 };
 
 template <>
-struct hash<qc::Tbit> {
-  auto operator()(const qc::Tbit& obj) const -> size_t;
+struct hash<qc::TBit> {
+  auto operator()(qc::TBit const& obj) const -> size_t;
 };
 }
 

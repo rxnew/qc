@@ -6,8 +6,10 @@
 #pragma once
 
 #include <fstream>
+#include <iostream>
+#include <set>
 
-#include "../circuit.hpp"
+#include "../forward_declarations.hpp"
 #include "exc/illegal_format_exception.hpp"
 
 namespace qc {
@@ -15,41 +17,43 @@ namespace io {
 class Esop {
  private:
   using IfExc = exc::IllegalFormatException;
-  using Messages = std::array<std::string, 7>;
-  using Counts = std::map<std::string, size_t>;
 
-  static Messages _err_msgs;
+ public:
+  static constexpr char const* const extension = ".esop";
+
+  static auto input(Circuit& circuit, std::string const& filename)
+    throw(IfExc, std::ios_base::failure) -> void;
+  static auto output(Circuit const& circuit, std::string const& filename)
+    throw(std::ios_base::failure) -> void;
+  static auto open(std::string const& filename)
+    throw(IfExc, std::ios_base::failure) -> Circuit;
+  static auto print(Circuit const& circuit,
+                    std::ostream& os = std::cout) -> void;
+
+ private:
+  using Counts = std::unordered_map<std::string, size_t>;
+  using Messages = std::array<char const* const, 7>;
+
+  static Messages const _err_msgs;
 
   Esop() = delete;
 
-  static auto _isCommentLine(const std::string& line) -> bool;
-  static auto _isEndLine(const std::string& line) -> bool;
-  static auto _setCount(Counts& counts, const std::string& line)
+  static auto _is_comment_line(std::string const& line) -> bool;
+  static auto _is_end_line(std::string const& line) -> bool;
+  static auto _set_count(Counts& counts, std::string const& line)
     throw(IfExc) -> void;
-  static auto _getCounts(std::ifstream& ifs)
+  static auto _get_counts(std::ifstream& ifs)
     throw(IfExc) -> Counts;
-  static auto _getCbits(const std::string& str)
-    throw(IfExc) -> CbitList;
-  static auto _getTbits(const std::string& str, int first)
-    throw(IfExc) -> TbitList;
-  static auto _getGate(const std::string& line, const Counts& counts)
-    throw(IfExc) -> GatePtr;
-  static auto _print(const Gate& gate, std::ostream& os,
-                     const std::set<Bitno>& inputs,
-                     const std::set<Bitno>& outputs) -> void;
-  static auto _print(const Circuit& circuit, std::ostream& os) -> void;
-
- public:
-  static const std::string extension;
-
-  static auto input(Circuit& circuit, const std::string& filename)
-    throw(IfExc, std::ios_base::failure) -> void;
-  static auto output(const Circuit& circuit, const std::string& filename)
-    throw(std::ios_base::failure) -> void;
-  static auto open(const std::string& filename)
-    throw(IfExc, std::ios_base::failure) -> Circuit;
-  static auto print(const Circuit& circuit,
-                    std::ostream& os = std::cout) -> void;
+  static auto _get_cbits(std::string const& str)
+    throw(IfExc) -> CBits;
+  static auto _get_tbits(std::string const& str, int first)
+    throw(IfExc) -> TBits;
+  static auto _get_gate(std::string const& line, Counts const& counts)
+    throw(IfExc) -> Gate;
+  static auto _print(Gate const& gate, std::ostream& os,
+                     std::set<BitNo> const& inputs,
+                     std::set<BitNo> const& outputs) -> void;
+  static auto _print(Circuit const& circuit, std::ostream& os) -> void;
 };
 }
 }

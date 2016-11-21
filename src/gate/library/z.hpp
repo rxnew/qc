@@ -5,24 +5,26 @@
 
 #pragma once
 
-#include "../../gate.hpp"
+#include "../gate_type.hpp"
+#include "../gate_kernel.hpp"
+#include "../../util/string/aliases.hpp"
 
 namespace qc {
-class Z : public Gate {
- private:
-  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
-
+class ZKernel : public GateKernel {
  public:
-  static const std::string TYPE_NAME;
-  static const Matrix TARGET_MATRIX;
+  static constexpr char const* const TYPE_NAME = "Z";
+  static constexpr util::string::Aliases<1> const ALIASES = {
+    "z"
+  };
 
   template <class... Args>
-  Z(Args&&... args);
+  ZKernel(Args&&... args);
 
-  auto clone() const -> GatePtr;
-  auto getTypeName() const -> const std::string&;
-  auto getTargetMatrix() const -> const Matrix&;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
+  virtual auto get_type_name() const -> char const* const& final;
 };
+
+using Z = GateType<ZKernel>;
 }
 
 #include "z/z_impl.hpp"

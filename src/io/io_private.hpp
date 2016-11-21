@@ -11,15 +11,15 @@
 
 namespace qc {
 namespace io {
-auto _getUnknownFormatMessage(const std::string& extension)
+auto _get_unknown_format_message(std::string const& extension)
   -> std::string;
-auto _getNotSupportFormatMessage(const std::string& extension,
-                                 const std::string& method_name)
+auto _get_not_support_format_message(std::string const& extension,
+                                     std::string const& method_name)
   -> std::string;
-auto _getUnknownFormatException(const std::string& extension)
+auto _get_unknown_format_exception(std::string const& extension)
   -> std::ios_base::failure;
-auto _getNotSupportFormatException(const std::string& extension,
-                                   const std::string& method_name)
+auto _get_not_support_format_exception(std::string const& extension,
+                                       std::string const& method_name)
   -> exc::IllegalFormatException;
 }
 }
@@ -27,28 +27,28 @@ auto _getNotSupportFormatException(const std::string& extension,
 // implementation
 namespace qc {
 namespace io {
-inline auto _getUnknownFormatMessage(const std::string& extension)
+inline auto _get_unknown_format_message(std::string const& extension)
   -> std::string {
   return "Unknown format: '" + extension + "'.";
 }
 
-inline auto _getNotSupportFormatMessage(const std::string& extension,
-                                        const std::string& method_name)
+inline auto _get_not_support_format_message(std::string const& extension,
+                                            std::string const& method_name)
   -> std::string {
   return "'" + method_name + "()' not supports format: '" + extension + "'.";
 }
 
-inline auto _getUnknownFormatException(const std::string& extension)
+inline auto _get_unknown_format_exception(std::string const& extension)
   -> std::ios_base::failure {
   return std::ios_base::failure(
-    _getUnknownFormatMessage(extension));
+    _get_unknown_format_message(extension));
 }
 
-inline auto _getNotSupportFormatException(const std::string& extension,
-                                          const std::string& method_name)
+inline auto _get_not_support_format_exception(std::string const& extension,
+                                              std::string const& method_name)
   -> exc::IllegalFormatException {
   return exc::IllegalFormatException(
-    _getNotSupportFormatMessage(extension, method_name));
+    _get_not_support_format_message(extension, method_name));
 }
 }
 }

@@ -5,26 +5,26 @@
 
 #pragma once
 
-#include "../../gate.hpp"
+#include "../gate_type.hpp"
+#include "../gate_kernel.hpp"
+#include "../../util/string/aliases.hpp"
 
 namespace qc {
-class Swap : public Gate {
- private:
-  static auto _createTargetMatrixList() -> std::initializer_list<Complex>;
-
+class SwapKernel : public GateKernel {
  public:
-  static const std::string TYPE_NAME;
-  static const Matrix TARGET_MATRIX;
+  static constexpr char const* const TYPE_NAME = "Swap";
+  static constexpr util::string::Aliases<1> const ALIASES = {
+    "swap"
+  };
 
   template <class... Args>
-  Swap(Args&&... args);
+  SwapKernel(Args&&... args);
 
-  auto clone() const -> GatePtr;
-  auto getTypeName() const -> const std::string&;
-  auto getTargetMatrix() const -> const Matrix&;
-  auto computeMatrix(const std::set<Bitno>& bits) const -> Matrix;
-  auto decompose() const -> GateList;
+  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
+  virtual auto get_type_name() const -> char const* const& final;
 };
+
+using Swap = GateType<SwapKernel>;
 }
 
 #include "swap/swap_impl.hpp"

@@ -15,7 +15,7 @@ namespace error {
 extern bool enabled;
 extern std::ostream* os;
 
-auto issue(const std::string& msg) -> void;
+auto issue(std::string const& msg) -> void;
 auto set(bool enabled) -> bool;
 auto set(std::ostream& os) -> bool;
 auto set(std::ofstream&& ofs) -> bool;

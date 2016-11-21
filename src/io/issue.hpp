@@ -15,8 +15,7 @@ namespace qc {
 namespace io {
 namespace error {
 auto issue(const std::string& msg, const std::string& line,
-           const std::string& filename, int line_count)
-  throw(exc::IllegalFormatException) -> void;
+           const std::string& filename, int line_count) -> void;
 }
 
 namespace warn {

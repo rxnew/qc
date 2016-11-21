@@ -1,16 +1,19 @@
-/**
- * @file v.cpp
- * @brief implementation of V and VPlus class
- */
-
 #include "../v.hpp"
 
 namespace qc {
-const std::string V::TYPE_NAME = "V";
-const Matrix V::TARGET_MATRIX =
-  util::matrix::create(V::_createTargetMatrixList());
+constexpr char const* const VKernel::TYPE_NAME;
 
-const std::string VPlus::TYPE_NAME = "VPlus";
-const Matrix VPlus::TARGET_MATRIX =
-  util::matrix::create(VPlus::_createTargetMatrixList());
+constexpr util::string::Aliases<1> const VKernel::ALIASES;
+
+auto VKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<VKernel>(*this);
+}
+
+constexpr char const* const VDaggerKernel::TYPE_NAME;
+
+constexpr util::string::Aliases<4> const VDaggerKernel::ALIASES;
+
+auto VDaggerKernel::clone() const -> std::unique_ptr<GateKernel> {
+  return std::make_unique<VDaggerKernel>(*this);
+}
 }

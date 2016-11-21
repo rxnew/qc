@@ -5,30 +5,24 @@
 
 #pragma once
 
-#include "../circuit.hpp"
+#include "../forward_declarations.hpp"
 
 namespace qc {
-auto collectCbits(const Gate& gate) -> BitList;
-template <class GatePtrT>
-auto collectCbits(const GatePtrT& gate) -> BitList;
-auto collectCbits(const Circuit& circuit) -> BitList;
-auto collectTbits(const Gate& gate) -> BitList;
-template <class GatePtrT>
-auto collectTbits(const GatePtrT& gate) -> BitList;
-auto collectTbits(const Circuit& circuit) -> BitList;
-auto isMctCircuit(const Circuit& circuit) -> bool;
-auto isEsopCircuit(const Circuit& circuit) -> bool;
-auto getMctCost(const Gate& gate, bool decomp = false) -> unsigned long long;
-template <class GatePtrT>
-auto getMctCost(const GatePtrT& gate,
-                bool decomp = false) -> unsigned long long;
-auto calcMctCircuitCost(const Circuit& circuit,
-                        bool decomp = false) -> unsigned long long;
-auto sortGatesByCbits(Circuit& circuit) -> void;
-auto sortGatesByTbits(Circuit& circuit) -> void;
-auto sortGates(Circuit& circuit) -> void;
-auto decompIntoSingleTargetCircuits(const Circuit& circuit)
-  -> std::unordered_map<Tbit, Circuit>;
+auto collect_cbits(Gate const& gate) -> BitNos;
+auto collect_cbits(Circuit const& circuit) -> BitNos;
+auto collect_tbits(Gate const& gate) -> BitNos;
+auto collect_tbits(Circuit const& circuit) -> BitNos;
+auto is_mct_circuit(Circuit const& circuit) -> bool;
+auto is_esop_circuit(Circuit const& circuit) -> bool;
+auto get_mct_cost(Gate const& gate, bool decomp_flag = false)
+  -> unsigned long long;
+auto calculate_mct_circuit_cost(Circuit const& circuit,
+                                bool decomp_flag = false) -> unsigned long long;
+auto sort_gates_by_cbits(Circuit& circuit) -> void;
+auto sort_gates_by_tbits(Circuit& circuit) -> void;
+auto sort_gates(Circuit& circuit) -> void;
+auto decomp_to_single_target_circuits(Circuit const& circuit)
+  -> std::unordered_map<TBit, Circuit>;
 }
 
 #include "oracle/oracle_impl.hpp"

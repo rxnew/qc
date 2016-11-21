@@ -11,14 +11,14 @@
 
 namespace qc {
 namespace io {
-auto input(Circuit& circuit, const std::string& filename)
+auto input(Circuit& circuit, std::string const& filename)
   throw(exc::IllegalFormatException, std::ios_base::failure) -> void;
-auto output(const Circuit& circuit, const std::string& filename)
+auto output(Circuit const& circuit, std::string const& filename)
   throw(exc::IllegalFormatException, std::ios_base::failure) -> void;
-auto open(const std::string& filename)
+auto open(std::string const& filename)
   throw(exc::IllegalFormatException, std::ios_base::failure) -> Circuit;
-auto convert(const std::string& input_filename,
-             const std::string& output_filename)
+auto convert(std::string const& input_filename,
+             std::string const& output_filename)
   throw(exc::IllegalFormatException, std::ios_base::failure) -> void;
 }
 }

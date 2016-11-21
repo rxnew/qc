@@ -9,16 +9,16 @@ namespace qc {
 namespace util {
 namespace string {
 template <class T>
-auto _formatOne(std::ostringstream& os, std::string::const_iterator& it,
-                T&& arg) -> void;
+auto _format_one(std::ostringstream& os, std::string::const_iterator& it,
+                 T&& arg) -> void;
 
 template <class T>
-auto _format(std::ostringstream& os, std::string::const_iterator& it,
-             T&& arg) -> void;
+auto _format(std::ostringstream& os, std::string::const_iterator& it, T&& arg)
+  -> void;
 
 template <class T, class... Args>
-auto _format(std::ostringstream& os, std::string::const_iterator& it,
-             T&& arg, Args&&... args) -> void;
+auto _format(std::ostringstream& os, std::string::const_iterator& it, T&& arg,
+             Args&&... args) -> void;
 }
 }
 }
@@ -26,9 +26,26 @@ auto _format(std::ostringstream& os, std::string::const_iterator& it,
 namespace qc {
 namespace util {
 namespace string {
+template <class CharT>
+constexpr auto CaseInsensitiveCharCompare<CharT>::operator()(CharT lhs,
+                                                             CharT rhs) const
+  -> bool {
+  return to_lower(lhs) == to_lower(rhs);
+}
+
+template <class CharT>
+constexpr auto to_lower(CharT c) -> CharT {
+  return c >= 'A' && c <= 'Z' ? c + 0x20 : c;
+}
+
+template <class CharT>
+constexpr auto to_upper(CharT c) -> CharT {
+  return c >= 'a' && c <= 'z' ? c - 0x20 : c;
+}
+
 template <class T>
-auto toString(T&& arg, int precision) -> std::string {
-  std::ostringstream os;
+auto to_string(T&& arg, int precision) -> std::string {
+  auto os = std::ostringstream();
   os << std::fixed;
   if(precision != -1) os << std::setprecision(precision);
   os << arg;
@@ -36,62 +53,62 @@ auto toString(T&& arg, int precision) -> std::string {
 }
 
 template <class... Args>
-auto format(const std::string& str, Args&&... args) -> std::string {
-  std::ostringstream os;
+auto format(std::string const& str, Args&&... args) -> std::string {
+  auto os = std::ostringstream();
   auto it = str.cbegin();
-  string::_format(os, it, std::forward<Args>(args)...);
+  _format(os, it, std::forward<Args>(args)...);
   return os.str();
 }
 
-inline auto split(const std::string& str, const char* delim,
-                  const bool ignore_empty) -> std::vector<std::string> {
-  return string::split(str, std::string(delim), ignore_empty);
+inline auto split(std::string const& str, char const* const delim,
+                  bool const ignore_empty) -> std::vector<std::string> {
+  return split(str, std::string(delim), ignore_empty);
 }
 
-inline auto split(const std::string& str, const char delim,
-                  const bool ignore_empty) -> std::vector<std::string> {
-  return string::split(str, std::string(1, delim), ignore_empty);
+inline auto split(std::string const& str, char const delim,
+                  bool const ignore_empty) -> std::vector<std::string> {
+  return split(str, std::string(1, delim), ignore_empty);
 }
 
-inline auto trimWhiteSpaces(const std::string& str) -> std::string {
-  const std::regex re_f(R"(^[ \t]*)");
-  const std::regex re_b(R"([ \t]*$)");
+inline auto trim_white_spaces(std::string const& str) -> std::string {
+  std::regex const re_f(R"(^[ \t]*)");
+  std::regex const re_b(R"([ \t]*$)");
   return std::regex_replace(std::regex_replace(str, re_f, ""), re_b, "");
 }
 
-inline auto trimComments(const std::string& str,
-                         const char tag) -> std::string {
-  return trimComments(str, std::string(1, tag));
+inline auto trim_comments(std::string const& str, char const tag)
+  -> std::string {
+  return trim_comments(str, std::string(1, tag));
 }
 
-inline auto trimComments(const std::string& str,
-                         const std::string& tag) -> std::string {
-  const std::regex re(tag + R"(.*$)");
+inline auto trim_comments(std::string const& str, std::string const& tag)
+  -> std::string {
+  std::regex const re(tag + R"(.*$)");
   return std::regex_replace(str, re, "");
 }
 
-inline auto getExtension(const std::string& filename) -> std::string {
-  return std::move(std::get<1>(string::splitext(filename)));
+inline auto get_extension(std::string const& filename) -> std::string {
+  return std::get<1>(splitext(filename));
 }
 
-inline auto addExtension(const std::string& filename,
-                         const std::string& extension) -> std::string {
-  if(extension == string::getExtension(filename)) return filename;
-  return std::move(filename + "." + extension);
+inline auto add_extension(std::string const& filename,
+                          std::string const& extension) -> std::string {
+  if(extension == get_extension(filename)) return filename;
+  return filename + "." + extension;
 }
 
-inline auto excludeExtension(const std::string& filename) -> std::string {
-  return std::move(std::get<0>(string::splitext(filename)));
+inline auto exclude_extension(std::string const& filename) -> std::string {
+  return std::get<0>(string::splitext(filename));
 }
 
 template <class T>
-auto _formatOne(std::ostringstream& os, std::string::const_iterator& it,
-                T&& arg) -> void {
+auto _format_one(std::ostringstream& os, std::string::const_iterator& it,
+                 T&& arg) -> void {
   while(*it) {
     if(*it == '%') {
       auto next = *++it;
       if(next == 'd' || next == 'f' || next == 's') {
-        os << string::toString(std::forward<T>(arg));
+        os << to_string(std::forward<T>(arg));
         it++;
         return;
       }
@@ -101,17 +118,17 @@ auto _formatOne(std::ostringstream& os, std::string::const_iterator& it,
 }
 
 template <class T>
-auto _format(std::ostringstream& os, std::string::const_iterator& it,
-             T&& arg) -> void {
-  string::_formatOne(os, it, arg);
+auto _format(std::ostringstream& os, std::string::const_iterator& it, T&& arg)
+  -> void {
+  _format_one(os, it, arg);
   while(*it) os << *it++;
 }
 
 template <class T, class... Args>
-auto _format(std::ostringstream& os, std::string::const_iterator& it,
-             T&& arg, Args&&... args) -> void {
-  string::_formatOne(os, it, arg);
-  string::_format(os, it, std::forward<Args>(args)...);
+auto _format(std::ostringstream& os, std::string::const_iterator& it, T&& arg,
+             Args&&... args) -> void {
+  _format_one(os, it, arg);
+  _format(os, it, std::forward<Args>(args)...);
 }
 }
 }
