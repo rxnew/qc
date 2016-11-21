@@ -52,8 +52,8 @@ class GateType<GroupKernel> : public Gate {
  public:
   static constexpr auto const& TYPE_NAME = GroupKernel::TYPE_NAME;
   static constexpr auto const& ALIASES = GroupKernel::ALIASES;
-  static constexpr char const* const BEGIN_TAG = "Group >>";
-  static constexpr char const* const END_TAG = "<<";
+  static constexpr char const* const BEGIN_TAG = R"(Group \)";
+  static constexpr char const* const END_TAG = R"(\)";
 
   template <class... Args>
   GateType(Args&&... args);
@@ -68,7 +68,6 @@ class GateType<GroupKernel> : public Gate {
 
   template <class... Args>
   static auto make(Args&&... args) -> Gate;
-  static auto is_group(Gate const& target) -> bool;
 
   template <class GateT>
   auto operator=(GateType<GateT> const& gate) -> GateType&;

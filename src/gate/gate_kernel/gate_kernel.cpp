@@ -3,6 +3,7 @@
 #include "../../gate.hpp"
 #include "../../debug/assert.hpp"
 #include "../../util/container.hpp"
+#include "../../util/string.hpp"
 
 namespace qc {
 auto GateKernel::print(std::ostream& os) const -> void {
@@ -25,13 +26,15 @@ auto GateKernel::print(std::ostream& os) const -> void {
 }
 
 auto GateKernel::get_gates() -> Gates& {
-  assert_m(false, "Not a group.");
+  assert_m(false, util::string::format
+    ("This gate type is not 'Group', but '%s'.", get_type_name()).c_str());
   static auto gates = Gates();
   return gates;
 }
 
 auto GateKernel::get_gates() const -> Gates const& {
-  assert_m(false, "Not a group.");
+  assert_m(false, util::string::format
+    ("This gate type is not 'Group', but '%s'.", get_type_name()).c_str());
   static auto const gates = Gates();
   return gates;
 }

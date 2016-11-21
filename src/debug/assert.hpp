@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #ifdef NDEBUG
 
 #define assert_m(expr, msg) (__ASSERT_VOID_CAST(0))

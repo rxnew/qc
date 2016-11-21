@@ -70,8 +70,4 @@ template <class... Args>
 inline auto GateType<GroupKernel>::make(Args&&... args) -> Gate {
   return Gate::make<GateType<GroupKernel>>(std::forward<Args>(args)...);
 }
-
-inline auto GateType<GroupKernel>::is_group(Gate const& target) -> bool {
-  return ALIASES == target.get_type_name();
-}
 }
