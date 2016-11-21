@@ -4,7 +4,7 @@ This program is quantum circuit simulator.
 
 Requirements
 ---------------
-* g++ 5.3 or later
+* g++ 6.2.0 or later
 * [CMake][cmake] 2.8 or later
 
 How to install
@@ -84,7 +84,6 @@ auto x = qc::Gate::make<X>(cbit, tbit);
 
 実装済みのゲートは以下の通り．
 
-* ***U*** (任意のユニタリ行列)
 * ***I*** (単位行列)
 * ***H*** (***Hadamard***)
 * ***X*** (パウリ行列, ***NOT***, ***Toffoli***, ***MCT***, ***MPMCT***)]
@@ -92,6 +91,8 @@ auto x = qc::Gate::make<X>(cbit, tbit);
 * ***Z*** (パウリ行列)
 * ***V*** (Rx(pi/2))
 * ___V*___ (***V+***, ***VDagger***, ***VPlus***)
+* ***W*** (Rx(pi/4))
+* ___W*___ (***W+***, ***WDagger***, ***WPlus***)
 * ***S*** (Rz(pi/2), ***P***)
 * ___S*___ (***S+***, ***SDagger***, ***SPlus***)
 * ***T*** (Rz(pi/4))
