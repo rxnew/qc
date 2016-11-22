@@ -4,13 +4,9 @@
 #include "../../gate/gates_wrapper/gates_wrapper_shell.hpp"
 
 namespace qc {
-auto is_group(Gate const& gate) -> bool {
-  return gate.get_type_name() == Group::TYPE_NAME;
-}
-
 auto has_group(GatesWrapperShell const& target) -> bool {
   for(auto const& gate : target.get_gates()) {
-    if(is_group(gate)) return true;
+    if(gate.is_group()) return true;
   }
   return false;
 }
@@ -18,7 +14,7 @@ auto has_group(GatesWrapperShell const& target) -> bool {
 auto remove_empty_groups(GatesWrapperShell& target) -> void {
   auto it = target.begin_gates();
   while(it != target.end_gates()) {
-    if(is_group(*it)) {
+    if(it->is_group()) {
       remove_empty_groups(*it);
       if(it->empty()) {
         it = target.erase_gate(it);
@@ -32,11 +28,11 @@ auto remove_empty_groups(GatesWrapperShell& target) -> void {
 auto expand_groups(GatesWrapperShell& target) -> void {
   auto it = target.begin_gates();
   while(it != target.end_gates()) {
-    if(is_group(*it)) {
+    if(it->is_group()) {
       expand_groups(*it);
       auto jt = it->begin_gates();
       while(jt != it->end_gates()) {
-        assert(!is_group(*jt));
+        assert(!jt->is_group());
         auto pos = target.insert_gate(it, Gate::make_dummy(false));
         jt = it->erase_gate(jt, *pos);
       }

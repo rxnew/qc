@@ -10,16 +10,16 @@ class GatesWrapperKernel {
   GatesWrapperKernel() = default;
   template <class GateT,
             util::tmpl::enable_if_convertible_t<GateT, Gate>* = nullptr>
-  GatesWrapperKernel(GateT&& gate);
-  GatesWrapperKernel(Gates&& gates);
+  explicit GatesWrapperKernel(GateT&& gate);
+  explicit GatesWrapperKernel(Gates&& gates);
   template <class GatesT,
             util::tmpl::enable_if_container_t<GatesT>* = nullptr,
             util::tmpl::enable_if_lvalue_t<GatesT>* = nullptr>
-  GatesWrapperKernel(GatesT&& gates);
+  explicit GatesWrapperKernel(GatesT&& gates);
   template <class GatesT,
             util::tmpl::enable_if_container_t<GatesT>* = nullptr,
             util::tmpl::enable_if_rvalue_t<GatesT>* = nullptr>
-  GatesWrapperKernel(GatesT&& gates);
+  explicit GatesWrapperKernel(GatesT&& gates);
   GatesWrapperKernel(GatesWrapperKernel const& other) = default;
   GatesWrapperKernel(GatesWrapperKernel&&) noexcept = default;
 

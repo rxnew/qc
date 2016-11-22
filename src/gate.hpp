@@ -46,6 +46,7 @@ class Gate : public GatesWrapperShell {
   auto has_cbit(BitNo bit_no) const -> bool;
   auto has_tbit(TBit const& tbit) const -> bool;
   auto has_tbit(BitNo bit_no) const -> bool;
+  auto erase_bit(Bit const& bit) -> size_t;
   auto erase_bit(BitNo bit_no) -> size_t;
   auto get_cbit(BitNo bit_no) const -> CBit const&;
   auto get_tbit(BitNo bit_no) const -> TBit const&;
@@ -59,15 +60,16 @@ class Gate : public GatesWrapperShell {
   auto is_multi_target() const -> bool;
   auto is_single_qubit_rotation() const -> bool;
   auto is_all_positive() const -> bool;
-  virtual auto print(std::ostream& os = std::cout) const -> void;
-
-  virtual auto get_gates() const -> Gates const&;
+  auto print(std::ostream& os = std::cout) const -> void;
+  // for Group
+  auto is_group() const -> bool;
+  auto get_gates() const -> Gates const&;
 
  protected:
   explicit Gate(std::unique_ptr<GateKernel>&& kernel);
   explicit Gate(GateKernel*&& kernel);
 
-  virtual auto get_gates() -> Gates&;
+  auto get_gates() -> Gates&;
 
   std::unique_ptr<GateKernel> kernel_;
 };

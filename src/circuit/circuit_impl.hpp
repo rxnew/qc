@@ -18,11 +18,11 @@ inline Circuit::Circuit(GatesT&& gates, StringT&& description)
     description_(std::forward<StringT>(description)) {}
 
 inline auto Circuit::operator==(Circuit const& other) const -> bool {
-  return gates_ == other.gates_;
+  return GatesWrapperKernel::operator==(other);
 }
 
 inline auto Circuit::operator!=(Circuit const& other) const -> bool {
-  return !(*this == other);
+  return GatesWrapperKernel::operator!=(other);
 }
 
 inline auto Circuit::get_description() const -> std::string const& {

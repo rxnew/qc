@@ -41,6 +41,10 @@ inline auto GateKernel::operator!=(GateKernel const& other) const -> bool {
   return !(*this == other);
 }
 
+inline auto GateKernel::is_group() const -> bool {
+  return false;
+}
+
 inline auto GateKernel::get_cbits() -> CBits& {
   return cbits_;
 }

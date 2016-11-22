@@ -22,7 +22,7 @@ template <class T>
 auto insert_gate_after(GatesWrapperShell& target, GatesCIter pos, T&& gate)
   -> GatesIter;
 auto decomp_to_single_target_gates(Gate const& gate) -> Gates;
-auto decomp_to_single_target_gates(Circuit& circuit) -> void;
+auto decomp_to_single_target_gates(Circuit const& circuit) -> Circuit;
 }
 
 #include "general/general_impl.hpp"

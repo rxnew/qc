@@ -103,6 +103,10 @@ inline auto Gate::has_tbit(BitNo bit_no) const -> bool {
   return has_tbit(TBit(bit_no));
 }
 
+inline auto Gate::erase_bit(Bit const& bit) -> size_t {
+  return erase_bit(bit.get_no());
+}
+
 inline auto Gate::erase_bit(BitNo bit_no) -> size_t {
   return
     kernel_->get_cbits().erase(get_cbit(bit_no)) ||
@@ -140,6 +144,10 @@ inline auto Gate::is_single_qubit_rotation() const -> bool {
 
 inline auto Gate::print(std::ostream& os) const -> void {
   kernel_->print(os);
+}
+
+inline auto Gate::is_group() const -> bool {
+  return kernel_->is_group();
 }
 
 inline auto Gate::get_gates() const -> Gates const& {

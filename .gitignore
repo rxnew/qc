@@ -9,5 +9,11 @@ GRTAGS
 GSYMS
 GTAGS
 /build/*
+/bin/*
 !.gitkeep
-!/lib/*.a
+/sample/*
+!/sample/CMakeLists.txt
+!/sample/src
+!/sample/build
+!/sample/bin
+!/sample/circuit_data
