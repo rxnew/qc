@@ -4,8 +4,10 @@
  */
 
 #include "../general.hpp"
+#include "general_private.hpp"
 
 #include "../../gate/library.hpp"
+#include "../../gate/group.hpp"
 #include "../../circuit.hpp"
 
 namespace qc {
@@ -20,6 +22,8 @@ auto get_tbit(Gate const& gate) -> TBit const& {
 }
 
 auto decomp_to_single_target_gates(Gate const& gate) -> Gates {
+  if(gate.is_group()) return _decomp_to_single_target_gates(gate);
+
   auto const& gate_type_name = gate.get_type_name();
   auto const& cbits = gate.get_cbits();
   auto const& tbits = gate.get_tbits();
@@ -30,12 +34,23 @@ auto decomp_to_single_target_gates(Gate const& gate) -> Gates {
   return gates;
 }
 
-auto decomp_to_single_target_gates(Circuit& circuit) -> void {
-  auto circuit_tmp = Circuit();
-  auto const& gates = static_cast<Circuit const&>(circuit).get_gates();
+auto decomp_to_single_target_gates(Circuit const& circuit) -> Circuit {
+  return Circuit(_decomp_to_single_target_gates(circuit));
+}
+
+
+auto _decomp_to_single_target_gates(GatesWrapperShell const& target) -> Gates {
+  auto result_gates = Gates();
+  auto const& gates = target.get_gates();
   for(auto const& gate : gates) {
-    circuit_tmp.insert_gate(gates.cend(), decomp_to_single_target_gates(gate));
+    auto single_target_gates = decomp_to_single_target_gates(gate);
+    if(gate.is_group()) {
+      result_gates.push_back(Group::make(std::move(single_target_gates)));
+    }
+    else {
+      result_gates.splice(result_gates.cend(), std::move(single_target_gates));
+    }
   }
-  circuit = std::move(circuit_tmp);
+  return result_gates;
 }
 }

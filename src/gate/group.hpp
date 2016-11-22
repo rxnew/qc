@@ -26,11 +26,20 @@ class GroupKernel : public GateKernel, public GatesWrapperKernel {
 
   template <class... Args>
   GroupKernel(Args&&... args);
+  GroupKernel(GroupKernel const& other);
+  GroupKernel(GroupKernel&& other) noexcept;
 
   ~GroupKernel() noexcept = default;
 
+  auto operator=(GroupKernel const& other) -> GroupKernel&;
+  auto operator=(GroupKernel&& other) noexcept -> GroupKernel&;
+  auto operator==(GroupKernel const& other) const -> bool;
+  auto operator!=(GroupKernel const& other) const -> bool;
+
+  // from GateKernel
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
   virtual auto get_type_name() const -> char const* const& final;
+  virtual auto is_group() const -> bool final;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() -> TBits& final;

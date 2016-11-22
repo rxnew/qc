@@ -15,6 +15,18 @@ $ cmake [-DCMAKE_INSTALL_PREFIX=<dir>] [-DCMAKE_BUILD_TYPE=(Debug|Release)] ..
 $ make install
 ```
 
+How to run a sample program
+---------------
+```
+$ cd build
+$ cmake -DCMAKE_INSTALL_PREFIX=../sample ..
+$ make install
+$ cd ../sample/build
+$ make
+$ cd ..
+$ ./bin/main
+```
+
 How to use
 ---------------
 ### qc::Bit クラス
@@ -208,10 +220,10 @@ x.add_gate(x); // コンパイルは通る
 ```
 
 しかし，このようなコードは実行時に (NODEBUG マクロを定義していなければ) アサーションが発生する．
-qc::Gate オブジェクトに対して add_gate() などのメソッドを呼ぶときには，***qc::is_group()*** を使うべきである．
+qc::Gate オブジェクトに対して add_gate() などのメソッドを呼ぶときには，***qc::Gate::is_group()*** を使うべきである．
 
 ```cpp
-if(qc::is_group(gate)) gate.add_gate(x);
+if(gate.is_group()) gate.add_gate(x);
 ```
 
 ### アルゴリズム
@@ -237,7 +249,6 @@ if(qc::is_group(gate)) gate.add_gate(x);
 |sort_gates_by_tbits|ターゲットビットで回路をソートする|
 |sort_gates|回路をソートする|
 |decomp_to_single_target_circuits|1-出力回路に分解する|
-|is_group|ゲートがグループか確認する|
 |has_group|回路やグループ内にグループが存在するか確認する|
 |remove_empty_groups|回路やグループ内の空のグループを全て削除する|
 |expand_groups|回路やグループ内のグループを展開する|

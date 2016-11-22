@@ -18,7 +18,7 @@ class Circuit : public GatesWrapper {
   Circuit() = default;
   explicit Circuit(std::string const& description);
   explicit Circuit(std::string&& description);
-  template <class GatesT, class StringT>
+  template <class GatesT, class StringT = char const* const>
   explicit Circuit(GatesT&& gates, StringT&& description = "");
   Circuit(Circuit const& other) = default;
   Circuit(Circuit&&) noexcept = default;

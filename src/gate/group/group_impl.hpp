@@ -5,12 +5,40 @@ template <class... Args>
 inline GroupKernel::GroupKernel(Args&&... args)
   : GatesWrapperKernel(std::forward<Args>(args)...) {}
 
+inline GroupKernel::GroupKernel(GroupKernel const& other)
+  : GatesWrapperKernel(other) {}
+
+inline GroupKernel::GroupKernel(GroupKernel&& other) noexcept
+  : GatesWrapperKernel(std::move(other)) {}
+
+inline auto GroupKernel::operator=(GroupKernel const& other) -> GroupKernel& {
+  GatesWrapperKernel::operator=(other);
+  return *this;
+}
+
+inline auto GroupKernel::operator=(GroupKernel&& other) noexcept -> GroupKernel& {
+  GatesWrapperKernel::operator=(std::move(other));
+  return *this;
+}
+
+inline auto GroupKernel::operator==(GroupKernel const& other) const -> bool {
+  return GatesWrapperKernel::operator==(other);
+}
+
+inline auto GroupKernel::operator!=(GroupKernel const& other) const -> bool {
+  return GatesWrapperKernel::operator!=(other);
+}
+
 inline auto GroupKernel::clone() const -> std::unique_ptr<GateKernel> {
   return std::make_unique<GroupKernel>(*this);
 }
 
 inline auto GroupKernel::get_type_name() const -> char const* const& {
   return TYPE_NAME;
+}
+
+inline auto GroupKernel::is_group() const -> bool {
+  return true;
 }
 
 inline auto GroupKernel::get_cbits() -> CBits& {
@@ -44,14 +72,14 @@ inline GateType<GroupKernel>::GateType(Args&&... args)
 inline GateType<GroupKernel>::GateType(GateType const& other)
   : Gate(other.kernel_->clone()) {}
 
+template <class... Args>
+inline auto GateType<GroupKernel>::make(Args&&... args) -> Gate {
+  return Gate::make<GateType<GroupKernel>>(std::forward<Args>(args)...);
+}
+
 inline auto GateType<GroupKernel>::operator=(GateType const& gate)
   -> GateType& {
   kernel_ = gate.kernel_->clone();
   return *this;
-}
-
-template <class... Args>
-inline auto GateType<GroupKernel>::make(Args&&... args) -> Gate {
-  return Gate::make<GateType<GroupKernel>>(std::forward<Args>(args)...);
 }
 }

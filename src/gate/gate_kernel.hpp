@@ -31,6 +31,7 @@ class GateKernel {
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> = 0;
   virtual auto get_type_name() const -> char const* const& = 0;
+  virtual auto is_group() const -> bool;
   virtual auto get_cbits() -> CBits&;
   virtual auto get_cbits() const -> CBits const&;
   virtual auto get_tbits() -> TBits&;
