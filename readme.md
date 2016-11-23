@@ -29,6 +29,8 @@ $ ./bin/main
 
 How to use
 ---------------
+![UML_Class_Diagram](https://raw.github.com/wiki/rxnew/qc/images/uml_class_diagram.png)
+
 ### qc::Bit クラス
 ###### "qc/bit.hpp"
 量子ビットを実装しているクラス．
