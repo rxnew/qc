@@ -43,9 +43,9 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   explicit Gate(std::unique_ptr<GateKernel>&& kernel);
   explicit Gate(GateKernel*&& kernel);
 
-  virtual auto get_cbits() -> CBits& final;
-  virtual auto get_tbits() -> TBits& final;
-  virtual auto get_gates() -> Gates& final;
+  virtual auto _get_cbits() -> CBits& final;
+  virtual auto _get_tbits() -> TBits& final;
+  virtual auto _get_gates() -> Gates& final;
 
   std::unique_ptr<GateKernel> kernel_;
 };

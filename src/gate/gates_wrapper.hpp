@@ -15,7 +15,7 @@ class GatesWrapper : public GatesWrapperKernel, public GatesWrapperShell {
   virtual auto get_gates() const -> Gates const& final;
 
  private:
-  virtual auto get_gates() -> Gates& final;
+  virtual auto _get_gates() -> Gates& final;
 };
 }
 

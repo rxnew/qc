@@ -6,35 +6,35 @@
 
 namespace qc {
 inline auto BitsWrapperShell::set_cbits(CBits const& cbits) -> void {
-  get_cbits() = cbits;
+  _get_cbits() = cbits;
 }
 
 inline auto BitsWrapperShell::set_cbits(CBits&& cbits) -> void {
-  get_cbits() = std::move(cbits);
+  _get_cbits() = std::move(cbits);
 }
 
 inline auto BitsWrapperShell::set_tbits(TBits const& tbits) -> void {
-  get_tbits() = tbits;
+  _get_tbits() = tbits;
 }
 
 inline auto BitsWrapperShell::set_tbits(TBits&& tbits) -> void {
-  get_tbits() = std::move(tbits);
+  _get_tbits() = std::move(tbits);
 }
 
 inline auto BitsWrapperShell::add_cbit(CBit const& cbit) -> void {
-  get_cbits().insert(cbit);
+  _get_cbits().insert(cbit);
 }
 
 inline auto BitsWrapperShell::add_cbit(BitNo bit_no, bool polarity) -> void {
-  get_cbits().emplace(bit_no, polarity);
+  _get_cbits().emplace(bit_no, polarity);
 }
 
 inline auto BitsWrapperShell::add_tbit(TBit const& tbit) -> void {
-  get_tbits().insert(tbit);
+  _get_tbits().insert(tbit);
 }
 
 inline auto BitsWrapperShell::add_tbit(BitNo bit_no) -> void {
-  get_tbits().emplace(bit_no);
+  _get_tbits().emplace(bit_no);
 }
 
 inline auto BitsWrapperShell::has_bit(BitNo bit_no) const -> bool {
@@ -62,7 +62,8 @@ inline auto BitsWrapperShell::erase_bit(Bit const& bit) -> size_t {
 }
 
 inline auto BitsWrapperShell::erase_bit(BitNo bit_no) -> size_t {
-  return get_cbits().erase(get_cbit(bit_no)) || get_tbits().erase(TBit(bit_no));
+  return
+    _get_cbits().erase(get_cbit(bit_no)) || _get_tbits().erase(TBit(bit_no));
 }
 
 inline auto BitsWrapperShell::get_cbit_polarity(BitNo bit_no) const -> bool {

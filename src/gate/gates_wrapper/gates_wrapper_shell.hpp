@@ -13,8 +13,6 @@ class GatesWrapperShell {
   virtual ~GatesWrapperShell() noexcept = default;
 
   virtual auto get_gates() const -> Gates const& = 0;
-  [[deprecated("Please use get_gates().")]]
-  auto _get_gates() -> Gates&;
   auto set_gates(Gates&& gates) -> void;
   template <class GatesT, util::tmpl::enable_if_lvalue_t<GatesT>* = nullptr>
   auto set_gates(GatesT&& gates) -> void;
@@ -58,7 +56,7 @@ class GatesWrapperShell {
   virtual auto print(std::ostream& os = std::cout) const -> void;
 
  protected:
-  virtual auto get_gates() -> Gates& = 0;
+  virtual auto _get_gates() -> Gates& = 0;
 };
 }
 

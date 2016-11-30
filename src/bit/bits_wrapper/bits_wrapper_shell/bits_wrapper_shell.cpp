@@ -17,7 +17,7 @@ auto BitsWrapperShell::get_tbit(BitNo bit_no) const -> TBit const& {
 
 auto BitsWrapperShell::invert_cbit_polarity(BitNo bit_no) -> bool {
   auto polarity = get_cbit_polarity(bit_no);
-  get_cbits().erase(CBit(bit_no, polarity));
+  _get_cbits().erase(CBit(bit_no, polarity));
   add_cbit(bit_no, polarity ^= true);
   return polarity;
 }

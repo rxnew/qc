@@ -66,15 +66,15 @@ inline auto Gate::collect_bits() const -> BitNos {
     GatesWrapperShell::collect_bits() : BitsWrapperShell::collect_bits();
 }
 
-inline auto Gate::get_cbits() -> CBits& {
+inline auto Gate::_get_cbits() -> CBits& {
   return kernel_->get_cbits();
 }
 
-inline auto Gate::get_tbits() -> TBits& {
+inline auto Gate::_get_tbits() -> TBits& {
   return kernel_->get_tbits();
 }
 
-inline auto Gate::get_gates() -> Gates& {
+inline auto Gate::_get_gates() -> Gates& {
   return kernel_->get_gates();
 }
 

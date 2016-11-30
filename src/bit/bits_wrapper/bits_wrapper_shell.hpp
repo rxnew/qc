@@ -40,8 +40,8 @@ class BitsWrapperShell {
   auto is_all_positive() const -> bool;
 
  protected:
-  virtual auto get_cbits() -> CBits& = 0;
-  virtual auto get_tbits() -> TBits& = 0;
+  virtual auto _get_cbits() -> CBits& = 0;
+  virtual auto _get_tbits() -> TBits& = 0;
 };
 }
 
