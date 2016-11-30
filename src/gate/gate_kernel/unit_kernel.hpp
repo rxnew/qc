@@ -20,8 +20,6 @@ class UnitKernel : public GateKernel, public BitsWrapperKernel {
   virtual auto operator==(UnitKernel const& other) const -> bool;
   virtual auto operator!=(UnitKernel const& other) const -> bool;
 
-  virtual auto clone() const -> std::unique_ptr<GateKernel> = 0;
-  virtual auto get_type_name() const -> char const* const& = 0;
   virtual auto is_group() const -> bool final;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;

@@ -37,7 +37,7 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   virtual auto get_tbits() const -> TBits const& final;
   virtual auto get_gates() const -> Gates const& final;
   virtual auto print(std::ostream& os = std::cout) const -> void final;
-  auto collect_bits() const -> BitNos;
+  virtual auto collect_bits() const -> BitNos final;
 
  protected:
   explicit Gate(std::unique_ptr<GateKernel>&& kernel);
