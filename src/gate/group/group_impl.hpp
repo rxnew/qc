@@ -2,83 +2,19 @@
 
 namespace qc {
 template <class... Args>
-inline GroupKernel::GroupKernel(Args&&... args)
-  : GatesWrapperKernel(std::forward<Args>(args)...) {}
-
-inline GroupKernel::GroupKernel(GroupKernel const& other)
-  : GatesWrapperKernel(other) {}
-
-inline GroupKernel::GroupKernel(GroupKernel&& other) noexcept
-  : GatesWrapperKernel(std::move(other)) {}
-
-inline auto GroupKernel::operator=(GroupKernel const& other) -> GroupKernel& {
-  GatesWrapperKernel::operator=(other);
-  return *this;
-}
-
-inline auto GroupKernel::operator=(GroupKernel&& other) noexcept -> GroupKernel& {
-  GatesWrapperKernel::operator=(std::move(other));
-  return *this;
-}
-
-inline auto GroupKernel::operator==(GroupKernel const& other) const -> bool {
-  return GatesWrapperKernel::operator==(other);
-}
-
-inline auto GroupKernel::operator!=(GroupKernel const& other) const -> bool {
-  return GatesWrapperKernel::operator!=(other);
-}
-
-inline auto GroupKernel::clone() const -> std::unique_ptr<GateKernel> {
-  return std::make_unique<GroupKernel>(*this);
-}
-
-inline auto GroupKernel::get_type_name() const -> char const* const& {
-  return TYPE_NAME;
-}
-
-inline auto GroupKernel::is_group() const -> bool {
-  return true;
-}
-
-inline auto GroupKernel::get_cbits() -> CBits& {
-  return _get_cbits();
-}
-
-inline auto GroupKernel::get_cbits() const -> CBits const& {
-  return _get_cbits();
-}
-
-inline auto GroupKernel::get_tbits() -> TBits& {
-  return _get_tbits();
-}
-
-inline auto GroupKernel::get_tbits() const -> TBits const& {
-  return _get_tbits();
-}
-
-inline auto GroupKernel::get_gates() -> Gates& {
-  return gates_;
-}
-
-inline auto GroupKernel::get_gates() const -> Gates const& {
-  return gates_;
-}
-
-template <class... Args>
-inline GateType<GroupKernel>::GateType(Args&&... args)
+inline Unit<GroupKernel>::Unit(Args&&... args)
   : Gate(new GroupKernel(std::forward<Args>(args)...)) {}
 
-inline GateType<GroupKernel>::GateType(GateType const& other)
+inline Unit<GroupKernel>::Unit(Unit const& other)
   : Gate(other.kernel_->clone()) {}
 
 template <class... Args>
-inline auto GateType<GroupKernel>::make(Args&&... args) -> Gate {
-  return Gate::make<GateType<GroupKernel>>(std::forward<Args>(args)...);
+inline auto Unit<GroupKernel>::make(Args&&... args) -> Gate {
+  return Gate::make<Unit<GroupKernel>>(std::forward<Args>(args)...);
 }
 
-inline auto GateType<GroupKernel>::operator=(GateType const& gate)
-  -> GateType& {
+inline auto Unit<GroupKernel>::operator=(Unit const& gate)
+  -> Unit& {
   kernel_ = gate.kernel_->clone();
   return *this;
 }

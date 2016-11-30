@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include "../gate_type.hpp"
-#include "../gate_kernel.hpp"
+#include "../unit.hpp"
+#include "../gate_kernel/unit_kernel.hpp"
 #include "../../util/string/aliases.hpp"
 
 namespace qc {
-class WKernel : public GateKernel {
+class WKernel : public UnitKernel {
  public:
   static constexpr char const* const TYPE_NAME = "W";
   static constexpr util::string::Aliases<1> const ALIASES = {
@@ -24,7 +24,7 @@ class WKernel : public GateKernel {
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-class WDaggerKernel : public GateKernel {
+class WDaggerKernel : public UnitKernel {
  public:
   static constexpr char const* const TYPE_NAME = "W*";
   static constexpr util::string::Aliases<4> const ALIASES = {
@@ -41,8 +41,8 @@ class WDaggerKernel : public GateKernel {
   virtual auto get_type_name() const -> char const* const& final;
 };
 
-using W = GateType<WKernel>;
-using WDagger = GateType<WDaggerKernel>;
+using W = Unit<WKernel>;
+using WDagger = Unit<WDaggerKernel>;
 }
 
 #include "w/w_impl.hpp"
