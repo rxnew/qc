@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include "../gate_type.hpp"
-#include "../gate_kernel.hpp"
+#include "../unit.hpp"
+#include "../gate_kernel/unit_kernel.hpp"
 #include "../../util/string/aliases.hpp"
 
 namespace qc {
-class XKernel : public GateKernel {
+class XKernel : public UnitKernel {
  public:
   static constexpr char const* const TYPE_NAME = "X";
   static constexpr util::string::Aliases<5> const ALIASES = {
@@ -29,7 +29,7 @@ class XKernel : public GateKernel {
 };
 
 template <class... Args>
-XKernel::XKernel(Args&&... args) : GateKernel(std::forward<Args>(args)...) {}
+XKernel::XKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
 inline auto XKernel::get_type_name() const -> char const* const& {
   return TYPE_NAME;
