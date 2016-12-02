@@ -4,8 +4,10 @@
 
 namespace qc {
 inline namespace constants {
+inline namespace gate_constants {
 constexpr bool const dagger = true;
 constexpr char const* const DAGGER_TAG = "*";
+}
 }
 
 auto type_name(std::string const& type_name, bool dagger = false)

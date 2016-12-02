@@ -12,7 +12,7 @@
 
 namespace qc {
 inline namespace constants {
-inline namespace polarity_constants {
+inline namespace bit_constants {
 constexpr bool const positive = true;
 constexpr bool const negative = false;
 }
