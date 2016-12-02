@@ -21,7 +21,7 @@ class VKernel : public UnitKernel {
   VKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> std::string final;
 };
 
 class VDaggerKernel : public UnitKernel {
@@ -38,7 +38,7 @@ class VDaggerKernel : public UnitKernel {
   VDaggerKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> std::string final;
 };
 
 using V = Unit<VKernel>;

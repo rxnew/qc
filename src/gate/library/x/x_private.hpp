@@ -25,13 +25,13 @@ class XKernel : public UnitKernel {
   XKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> std::string final;
 };
 
 template <class... Args>
 XKernel::XKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto XKernel::get_type_name() const -> char const* const& {
+inline auto XKernel::get_type_name() const -> std::string {
   return TYPE_NAME;
 }
 }

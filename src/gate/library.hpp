@@ -20,7 +20,7 @@
 namespace qc {
 template <class... Args>
 auto make_gate(std::string const& type_name, Args&&... args) -> Gate;
-constexpr auto decode_alias(char const* const alias) -> char const* const;
+auto decode_alias(std::string const& alias) -> std::string;
 }
 
 #include "library/library_impl.hpp"

@@ -3,6 +3,11 @@
 namespace qc {
 namespace util {
 namespace string {
+template <class CharT>
+constexpr auto to_lower(CharT c) -> CharT;
+template <class CharT>
+constexpr auto to_upper(CharT c) -> CharT;
+
 template <class CharT, class Compare>
 constexpr BasicString<CharT, Compare>::BasicString(CharT const* const str)
   : str_(str) {}
@@ -35,6 +40,12 @@ constexpr auto BasicString<CharT, Compare>::operator!=(BasicString const& other)
 template <class CharT, class Compare>
 constexpr BasicString<CharT, Compare>::operator char const* const() const {
   return str_;
+}
+
+template <class CharT>
+constexpr auto CaseInsensitiveCharCompare<CharT>::operator()
+  (CharT lhs, CharT rhs) const -> bool {
+  return to_lower(lhs) == to_lower(rhs);
 }
 }
 }

@@ -30,7 +30,7 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   auto operator==(Gate const& other) const -> bool;
   auto operator!=(Gate const& other) const -> bool;
 
-  auto get_type_name() const -> char const* const&;
+  auto get_type_name() const -> std::string;
   auto is_group() const -> bool;
 
   virtual auto get_cbits() const -> CBits const& final;

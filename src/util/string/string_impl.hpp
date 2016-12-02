@@ -27,13 +27,6 @@ namespace qc {
 namespace util {
 namespace string {
 template <class CharT>
-constexpr auto CaseInsensitiveCharCompare<CharT>::operator()(CharT lhs,
-                                                             CharT rhs) const
-  -> bool {
-  return to_lower(lhs) == to_lower(rhs);
-}
-
-template <class CharT>
 constexpr auto to_lower(CharT c) -> CharT {
   return c >= 'A' && c <= 'Z' ? c + 0x20 : c;
 }

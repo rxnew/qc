@@ -21,7 +21,7 @@ class TKernel : public UnitKernel {
   TKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> std::string final;
 };
 
 class TDaggerKernel : public UnitKernel {
@@ -38,7 +38,7 @@ class TDaggerKernel : public UnitKernel {
   TDaggerKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> std::string final;
 };
 
 using T = Unit<TKernel>;

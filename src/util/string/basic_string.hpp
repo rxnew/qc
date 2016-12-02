@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../string.hpp"
-
 namespace qc {
 namespace util {
 namespace string {
@@ -19,6 +17,11 @@ class BasicString {
 
  private:
   CharT const* const str_;
+};
+
+template <class CharT>
+struct CaseInsensitiveCharCompare {
+  constexpr auto operator()(CharT lhs, CharT rhs) const -> bool;
 };
 
 using String = BasicString<char>;

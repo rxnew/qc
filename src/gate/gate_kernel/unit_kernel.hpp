@@ -17,8 +17,10 @@ class UnitKernel : public GateKernel, public BitsWrapperKernel {
 
   auto operator=(UnitKernel const& other) -> UnitKernel&;
   auto operator=(UnitKernel&& other) noexcept -> UnitKernel&;
-  virtual auto operator==(UnitKernel const& other) const -> bool;
-  virtual auto operator!=(UnitKernel const& other) const -> bool;
+  auto operator==(UnitKernel const& other) const -> bool;
+  auto operator!=(UnitKernel const& other) const -> bool;
+  virtual auto operator==(GateKernel const& other) const -> bool;
+  virtual auto operator!=(GateKernel const& other) const -> bool;
 
   virtual auto is_group() const -> bool final;
   virtual auto get_cbits() -> CBits& final;

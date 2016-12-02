@@ -29,6 +29,17 @@ inline auto UnitKernel::operator!=(UnitKernel const& other) const -> bool {
   return !(*this == other);
 }
 
+inline auto UnitKernel::operator==(GateKernel const& other) const -> bool {
+  return
+    GateKernel::operator==(other) &&
+    get_cbits() == other.get_cbits() &&
+    get_tbits() == other.get_tbits();
+}
+
+inline auto UnitKernel::operator!=(GateKernel const& other) const -> bool {
+  return !(*this == other);
+}
+
 inline auto UnitKernel::is_group() const -> bool {
   return false;
 }

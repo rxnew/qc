@@ -21,7 +21,7 @@ class SwapKernel : public UnitKernel {
   SwapKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> std::string final;
 };
 
 using Swap = Unit<SwapKernel>;

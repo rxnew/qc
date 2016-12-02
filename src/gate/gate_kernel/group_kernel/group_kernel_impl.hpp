@@ -29,11 +29,19 @@ inline auto GroupKernel::operator!=(GroupKernel const& other) const -> bool {
   return !(*this == other);
 }
 
+inline auto GroupKernel::operator==(GateKernel const& other) const -> bool {
+  return GateKernel::operator==(other) && get_gates() == other.get_gates();
+}
+
+inline auto GroupKernel::operator!=(GateKernel const& other) const -> bool {
+  return !(*this == other);
+}
+
 inline auto GroupKernel::clone() const -> std::unique_ptr<GateKernel> {
   return std::make_unique<GroupKernel>(*this);
 }
 
-inline auto GroupKernel::get_type_name() const -> char const* const& {
+inline auto GroupKernel::get_type_name() const -> std::string {
   return TYPE_NAME;
 }
 
