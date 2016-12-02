@@ -1,6 +1,8 @@
 #include "../z.hpp"
 
 namespace qc {
+constexpr GateType const ZKernel::TYPE;
+
 constexpr char const* const ZKernel::TYPE_NAME;
 
 constexpr util::string::Aliases<1> const ZKernel::ALIASES;

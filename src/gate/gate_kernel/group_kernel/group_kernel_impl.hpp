@@ -41,6 +41,10 @@ inline auto GroupKernel::clone() const -> std::unique_ptr<GateKernel> {
   return std::make_unique<GroupKernel>(*this);
 }
 
+inline auto GroupKernel::get_type() const -> GateType {
+  return TYPE;
+}
+
 inline auto GroupKernel::get_type_name() const -> std::string {
   return TYPE_NAME;
 }

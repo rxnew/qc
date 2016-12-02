@@ -13,6 +13,7 @@
 
 namespace qc {
 class GateKernel;
+enum class GateType;
 
 class Gate : public BitsWrapperShell, public GatesWrapperShell {
  public:
@@ -30,6 +31,7 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   auto operator==(Gate const& other) const -> bool;
   auto operator!=(Gate const& other) const -> bool;
 
+  auto get_type() const -> GateType;
   auto get_type_name() const -> std::string;
   auto is_group() const -> bool;
 
