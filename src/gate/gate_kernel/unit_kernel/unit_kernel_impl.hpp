@@ -3,13 +3,17 @@
 namespace qc {
 template <class... Args>
 inline UnitKernel::UnitKernel(Args&&... args)
-  : BitsWrapperKernel(std::forward<Args>(args)...) {}
+  : BitsWrapperKernel(std::forward<Args>(args)...), dagger_(false) {}
+
+template <class... Args>
+inline UnitKernel::UnitKernel(bool dagger, Args&&... args)
+  : BitsWrapperKernel(std::forward<Args>(args)...), dagger_(dagger) {}
 
 inline UnitKernel::UnitKernel(UnitKernel const& other)
-  : BitsWrapperKernel(other) {}
+  : BitsWrapperKernel(other), dagger_(other.dagger_) {}
 
 inline UnitKernel::UnitKernel(UnitKernel&& other) noexcept
-  : BitsWrapperKernel(std::move(other)) {}
+  : BitsWrapperKernel(std::move(other)), dagger_(other.dagger_) {}
 
 inline auto UnitKernel::operator=(UnitKernel const& other) -> UnitKernel& {
   BitsWrapperKernel::operator=(other);
@@ -42,6 +46,10 @@ inline auto UnitKernel::operator!=(GateKernel const& other) const -> bool {
 
 inline auto UnitKernel::is_group() const -> bool {
   return false;
+}
+
+inline auto UnitKernel::is_dagger() const -> bool {
+  return dagger_;
 }
 
 inline auto UnitKernel::get_cbits() -> CBits& {

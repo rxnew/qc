@@ -53,6 +53,10 @@ inline auto GroupKernel::is_group() const -> bool {
   return true;
 }
 
+inline auto GroupKernel::is_dagger() const -> bool {
+  return false;
+}
+
 inline auto GroupKernel::get_cbits() -> CBits& {
   return _get_cbits();
 }

@@ -1,5 +1,7 @@
 #include "../v.hpp"
 
+#include "../../dagger.hpp"
+
 namespace qc {
 constexpr GateType const VKernel::TYPE;
 
@@ -11,13 +13,7 @@ auto VKernel::clone() const -> std::unique_ptr<GateKernel> {
   return std::make_unique<VKernel>(*this);
 }
 
-constexpr GateType const VDaggerKernel::TYPE;
-
-constexpr char const* const VDaggerKernel::TYPE_NAME;
-
-constexpr util::string::Aliases<4> const VDaggerKernel::ALIASES;
-
-auto VDaggerKernel::clone() const -> std::unique_ptr<GateKernel> {
-  return std::make_unique<VDaggerKernel>(*this);
+auto VKernel::get_type_name() const -> std::string {
+  return type_name(TYPE_NAME, dagger_);
 }
 }

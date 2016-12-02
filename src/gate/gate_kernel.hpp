@@ -6,6 +6,8 @@
 #include "../bit/hash.hpp"
 
 namespace qc {
+constexpr bool const dagger = true;
+
 enum class GateType;
 
 class GateKernel {
@@ -21,6 +23,7 @@ class GateKernel {
   virtual auto get_type() const -> GateType = 0;
   virtual auto get_type_name() const -> std::string = 0;
   virtual auto is_group() const -> bool = 0;
+  virtual auto is_dagger() const -> bool = 0;
   virtual auto get_cbits() -> CBits& = 0;
   virtual auto get_cbits() const -> CBits const& = 0;
   virtual auto get_tbits() -> TBits& = 0;

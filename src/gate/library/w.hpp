@@ -27,28 +27,8 @@ class WKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
-class WDaggerKernel : public UnitKernel {
- public:
-  static constexpr GateType const TYPE = GateType::WDagger;
-  static constexpr char const* const TYPE_NAME = "W*";
-  static constexpr util::string::Aliases<4> const ALIASES = {
-    "w*",
-    "w+",
-    "wdagger",
-    "wplus"
-  };
-
-  template <class... Args>
-  WDaggerKernel(Args&&... args);
-
-  virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type() const -> GateType final;
-  virtual auto get_type_name() const -> std::string final;
-};
-
 inline namespace library {
 using W = Unit<WKernel>;
-using WDagger = Unit<WDaggerKernel>;
 }
 }
 

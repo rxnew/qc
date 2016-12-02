@@ -24,6 +24,7 @@ class IKernel : public UnitKernel {
   IKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
+  virtual auto is_dagger() const -> bool final;
   virtual auto get_type() const -> GateType final;
   virtual auto get_type_name() const -> std::string final;
 };

@@ -1,5 +1,7 @@
 #include "../w.hpp"
 
+#include "../../dagger.hpp"
+
 namespace qc {
 constexpr GateType const WKernel::TYPE;
 
@@ -11,13 +13,7 @@ auto WKernel::clone() const -> std::unique_ptr<GateKernel> {
   return std::make_unique<WKernel>(*this);
 }
 
-constexpr GateType const WDaggerKernel::TYPE;
-
-constexpr char const* const WDaggerKernel::TYPE_NAME;
-
-constexpr util::string::Aliases<4> const WDaggerKernel::ALIASES;
-
-auto WDaggerKernel::clone() const -> std::unique_ptr<GateKernel> {
-  return std::make_unique<WDaggerKernel>(*this);
+auto WKernel::get_type_name() const -> std::string {
+  return type_name(TYPE_NAME, dagger_);
 }
 }

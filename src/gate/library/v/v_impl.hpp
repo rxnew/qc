@@ -7,20 +7,4 @@ VKernel::VKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 inline auto VKernel::get_type() const -> GateType {
   return TYPE;
 }
-
-inline auto VKernel::get_type_name() const -> std::string {
-  return TYPE_NAME;
-}
-
-template <class... Args>
-VDaggerKernel::VDaggerKernel(Args&&... args)
-  : UnitKernel(std::forward<Args>(args)...) {}
-
-inline auto VDaggerKernel::get_type() const -> GateType {
-  return TYPE;
-}
-
-inline auto VDaggerKernel::get_type_name() const -> std::string {
-  return TYPE_NAME;
-}
 }

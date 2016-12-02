@@ -1,5 +1,7 @@
 #include "../s.hpp"
 
+#include "../../dagger.hpp"
+
 namespace qc {
 constexpr GateType const SKernel::TYPE;
 
@@ -11,13 +13,7 @@ auto SKernel::clone() const -> std::unique_ptr<GateKernel> {
   return std::make_unique<SKernel>(*this);
 }
 
-constexpr GateType const SDaggerKernel::TYPE;
-
-constexpr char const* const SDaggerKernel::TYPE_NAME;
-
-constexpr util::string::Aliases<4> const SDaggerKernel::ALIASES;
-
-auto SDaggerKernel::clone() const -> std::unique_ptr<GateKernel> {
-  return std::make_unique<SDaggerKernel>(*this);
+auto SKernel::get_type_name() const -> std::string {
+  return type_name(TYPE_NAME, dagger_);
 }
 }

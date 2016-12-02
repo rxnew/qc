@@ -44,6 +44,10 @@ inline auto Gate::is_group() const -> bool {
   return kernel_->is_group();
 }
 
+inline auto Gate::is_dagger() const -> bool {
+  return kernel_->is_dagger();
+}
+
 inline auto Gate::get_cbits() const -> CBits const& {
   return kernel_->get_cbits();
 }
