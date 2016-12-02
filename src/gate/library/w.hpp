@@ -12,7 +12,7 @@
 namespace qc {
 class WKernel : public UnitKernel {
  public:
-  static constexpr char const* const TYPE_NAME = "W";
+  static constexpr util::string::String const TYPE_NAME = "W";
   static constexpr util::string::Aliases<1> const ALIASES = {
     "w"
   };
@@ -21,12 +21,12 @@ class WKernel : public UnitKernel {
   WKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> util::string::String const& final;
 };
 
 class WDaggerKernel : public UnitKernel {
  public:
-  static constexpr char const* const TYPE_NAME = "W*";
+  static constexpr util::string::String const TYPE_NAME = "W*";
   static constexpr util::string::Aliases<4> const ALIASES = {
     "w*",
     "w+",
@@ -38,7 +38,7 @@ class WDaggerKernel : public UnitKernel {
   WDaggerKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> util::string::String const& final;
 };
 
 using W = Unit<WKernel>;

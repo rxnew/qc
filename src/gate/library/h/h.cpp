@@ -1,7 +1,7 @@
 #include "../h.hpp"
 
 namespace qc {
-constexpr char const* const HKernel::TYPE_NAME;
+constexpr util::string::String const HKernel::TYPE_NAME;
 
 constexpr util::string::Aliases<2> const HKernel::ALIASES;
 

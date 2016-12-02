@@ -12,7 +12,7 @@
 namespace qc {
 class SKernel : public UnitKernel {
  public:
-  static constexpr char const* const TYPE_NAME = "S";
+  static constexpr util::string::String const TYPE_NAME = "S";
   static constexpr util::string::Aliases<1> const ALIASES = {
     "s"
   };
@@ -21,12 +21,12 @@ class SKernel : public UnitKernel {
   SKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> util::string::String const& final;
 };
 
 class SDaggerKernel : public UnitKernel {
  public:
-  static constexpr char const* const TYPE_NAME = "S*";
+  static constexpr util::string::String const TYPE_NAME = "S*";
   static constexpr util::string::Aliases<4> const ALIASES = {
     "s*",
     "s+",
@@ -38,7 +38,7 @@ class SDaggerKernel : public UnitKernel {
   SDaggerKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type_name() const -> util::string::String const& final;
 };
 
 using S = Unit<SKernel>;

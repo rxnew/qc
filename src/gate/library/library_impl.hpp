@@ -17,8 +17,11 @@ auto make_gate(std::string const& type_name, Args&&... args)
   return Gate::make_dummy();
 }
 
-constexpr auto decode_alias(char const* const alias) -> char const* const {
+auto decode_alias(util::string::String const& alias)
+  -> util::string::String const& {
   if(X::ALIASES == alias) return X::TYPE_NAME;
-  return "";
+
+  static constexpr util::string::String const dummy = "";
+  return dummy;
 }
 }

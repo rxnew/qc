@@ -4,14 +4,12 @@
 #include <string>
 #include <tuple>
 
+#include "string/basic_string.hpp"
+#include "string/aliases.hpp"
+
 namespace qc {
 namespace util {
 namespace string {
-template <class CharT>
-struct CaseInsensitiveCharCompare {
-  constexpr auto operator()(CharT lhs, CharT rhs) const -> bool;
-};
-
 template <class CharT>
 constexpr auto to_lower(CharT c) -> CharT;
 template <class CharT>
