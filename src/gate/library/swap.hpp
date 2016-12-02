@@ -27,7 +27,9 @@ class SwapKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
+inline namespace library {
 using Swap = Unit<SwapKernel>;
+}
 }
 
 #include "swap/swap_impl.hpp"

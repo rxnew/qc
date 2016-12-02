@@ -3,11 +3,8 @@
 #include "gate.hpp"
 #include "gate/library.hpp"
 
-using qc::operator"" _bit;
-using qc::operator"" _tbit;
-using qc::operator"" _cbit;
-using qc::X;
-using qc::Y;
+using namespace qc::literals;
+using namespace qc::library;
 using qc::Gate;
 
 class XTest : public ::testing::Test {

@@ -46,8 +46,10 @@ class TDaggerKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
+inline namespace library {
 using T = Unit<TKernel>;
 using TDagger = Unit<TDaggerKernel>;
+}
 }
 
 #include "t/t_impl.hpp"

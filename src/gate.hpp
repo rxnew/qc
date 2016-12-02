@@ -10,9 +10,9 @@
 #include "forward_declarations.hpp"
 #include "bit/bits_wrapper/bits_wrapper_shell.hpp"
 #include "gate/gates_wrapper/gates_wrapper_shell.hpp"
+#include "gate/gate_kernel.hpp"
 
 namespace qc {
-class GateKernel;
 enum class GateType;
 
 class Gate : public BitsWrapperShell, public GatesWrapperShell {

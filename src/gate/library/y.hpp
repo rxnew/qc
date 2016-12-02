@@ -27,7 +27,9 @@ class YKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
+inline namespace library {
 using Y = Unit<YKernel>;
+}
 }
 
 #include "y/y_impl.hpp"

@@ -4,10 +4,8 @@
 #include "gate/library.hpp"
 #include "gate/group.hpp"
 
-using qc::operator"" _bit;
-using qc::operator"" _tbit;
-using qc::operator"" _cbit;
-using qc::X;
+using namespace qc::literals;
+using namespace qc::library;
 using qc::Group;
 using qc::Gate;
 

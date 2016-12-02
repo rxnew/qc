@@ -46,8 +46,10 @@ class SDaggerKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
+inline namespace library {
 using S = Unit<SKernel>;
 using SDagger = Unit<SDaggerKernel>;
+}
 }
 
 #include "s/s_impl.hpp"

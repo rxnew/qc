@@ -46,8 +46,10 @@ class WDaggerKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
+inline namespace library {
 using W = Unit<WKernel>;
 using WDagger = Unit<WDaggerKernel>;
+}
 }
 
 #include "w/w_impl.hpp"

@@ -2,7 +2,7 @@
 
 namespace qc {
 inline auto GateKernel::operator==(GateKernel const& other) const -> bool {
-  return get_type_name() == other.get_type_name();
+  return get_type() == other.get_type();
 }
 
 inline auto GateKernel::operator!=(GateKernel const& other) const -> bool {

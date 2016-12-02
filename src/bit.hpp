@@ -78,9 +78,13 @@ auto operator<<(std::ostream& os, Bit const& obj) -> std::ostream&;
 auto operator<<(std::ostream& os, CBit const& obj) -> std::ostream&;
 auto operator<<(std::ostream& os, TBit const& obj) -> std::ostream&;
 
+inline namespace literals {
+inline namespace bit_literals {
 auto operator"" _bit(unsigned long long bit_no_i) -> Bit::No;
 auto operator"" _cbit(unsigned long long bit_no_i) -> CBit;
 auto operator"" _tbit(unsigned long long bit_no_i) -> TBit;
+}
+}
 }
 
 #include "bit/bit_impl.hpp"

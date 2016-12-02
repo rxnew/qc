@@ -31,7 +31,9 @@ class XKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
+inline namespace library {
 using X = Unit<XKernel>;
+}
 }
 
 #include "x/x_impl.hpp"

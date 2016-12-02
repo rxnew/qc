@@ -27,7 +27,9 @@ class ZKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
+inline namespace library {
 using Z = Unit<ZKernel>;
+}
 }
 
 #include "z/z_impl.hpp"

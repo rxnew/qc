@@ -76,6 +76,8 @@ inline auto operator<<(std::ostream& os, TBit const& obj) -> std::ostream& {
   return os << 'T' << obj.get_no();
 }
 
+inline namespace literals {
+inline namespace bit_literals {
 inline auto operator"" _bit(unsigned long long bit_no_i) -> Bit::No {
   return static_cast<Bit::No>(bit_no_i);
 }
@@ -86,5 +88,7 @@ inline auto operator"" _cbit(unsigned long long bit_no_i) -> CBit {
 
 inline auto operator"" _tbit(unsigned long long bit_no_i) -> TBit {
   return TBit(static_cast<Bit::No>(bit_no_i));
+}
+}
 }
 }

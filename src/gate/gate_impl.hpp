@@ -7,7 +7,6 @@
 
 #include <cassert>
 
-#include "gate_kernel.hpp"
 #include "../util/tmpl.hpp"
 
 namespace qc {
