@@ -6,8 +6,6 @@
 #include "../bit/hash.hpp"
 
 namespace qc {
-constexpr bool const dagger = true;
-
 enum class GateType;
 
 class GateKernel {

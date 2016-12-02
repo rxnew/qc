@@ -11,6 +11,13 @@
 #include "forward_declarations.hpp"
 
 namespace qc {
+inline namespace constants {
+inline namespace polarity_constants {
+constexpr bool const positive = true;
+constexpr bool const negative = false;
+}
+}
+
 /**
  * @brief bit class
  */
