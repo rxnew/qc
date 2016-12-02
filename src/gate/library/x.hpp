@@ -12,7 +12,7 @@
 namespace qc {
 class XKernel : public UnitKernel {
  public:
-  static constexpr util::string::String const TYPE_NAME = "X";
+  static constexpr char const* const TYPE_NAME = "X";
   static constexpr util::string::Aliases<5> const ALIASES = {
     "x",
     "not",
@@ -25,7 +25,7 @@ class XKernel : public UnitKernel {
   XKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> util::string::String const& final;
+  virtual auto get_type_name() const -> char const* const& final;
 };
 
 using X = Unit<XKernel>;

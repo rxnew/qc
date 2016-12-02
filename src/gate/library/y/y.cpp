@@ -1,7 +1,7 @@
 #include "../y.hpp"
 
 namespace qc {
-constexpr util::string::String const YKernel::TYPE_NAME;
+constexpr char const* const YKernel::TYPE_NAME;
 
 constexpr util::string::Aliases<1> const YKernel::ALIASES;
 

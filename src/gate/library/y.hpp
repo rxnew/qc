@@ -12,7 +12,7 @@
 namespace qc {
 class YKernel : public UnitKernel {
  public:
-  static constexpr util::string::String const TYPE_NAME = "Y";
+  static constexpr char const* const TYPE_NAME = "Y";
   static constexpr util::string::Aliases<1> const ALIASES = {
     "y"
   };
@@ -21,7 +21,7 @@ class YKernel : public UnitKernel {
   YKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> util::string::String const& final;
+  virtual auto get_type_name() const -> char const* const& final;
 };
 
 using Y = Unit<YKernel>;

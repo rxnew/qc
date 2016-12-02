@@ -10,7 +10,6 @@
 #include "forward_declarations.hpp"
 #include "bit/bits_wrapper/bits_wrapper_shell.hpp"
 #include "gate/gates_wrapper/gates_wrapper_shell.hpp"
-#include "util/string.hpp"
 
 namespace qc {
 class GateKernel;
@@ -31,7 +30,7 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   auto operator==(Gate const& other) const -> bool;
   auto operator!=(Gate const& other) const -> bool;
 
-  auto get_type_name() const -> util::string::String const&;
+  auto get_type_name() const -> char const* const&;
   auto is_group() const -> bool;
 
   virtual auto get_cbits() const -> CBits const& final;

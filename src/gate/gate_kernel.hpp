@@ -4,7 +4,6 @@
 
 #include "../forward_declarations.hpp"
 #include "../bit/hash.hpp"
-#include "../util/string.hpp"
 
 namespace qc {
 class GateKernel {
@@ -17,7 +16,7 @@ class GateKernel {
   virtual auto operator!=(GateKernel const& other) const -> bool;
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> = 0;
-  virtual auto get_type_name() const -> util::string::String const& = 0;
+  virtual auto get_type_name() const -> char const* const& = 0;
   virtual auto is_group() const -> bool = 0;
   virtual auto get_cbits() -> CBits& = 0;
   virtual auto get_cbits() const -> CBits const& = 0;

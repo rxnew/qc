@@ -37,7 +37,7 @@ inline auto Gate::operator!=(const Gate& other) const -> bool {
   return !(*this == other);
 }
 
-inline auto Gate::get_type_name() const -> util::string::String const& {
+inline auto Gate::get_type_name() const -> char const* const& {
   return kernel_->get_type_name();
 }
 

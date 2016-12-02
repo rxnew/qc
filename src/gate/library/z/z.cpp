@@ -1,7 +1,7 @@
 #include "../z.hpp"
 
 namespace qc {
-constexpr util::string::String const ZKernel::TYPE_NAME;
+constexpr char const* const ZKernel::TYPE_NAME;
 
 constexpr util::string::Aliases<1> const ZKernel::ALIASES;
 

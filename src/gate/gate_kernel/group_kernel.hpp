@@ -7,7 +7,7 @@
 namespace qc {
 class GroupKernel : public GateKernel, public GatesWrapperKernel {
  public:
-  static constexpr util::string::String const TYPE_NAME = "Group";
+  static constexpr char const* const TYPE_NAME = "Group";
   static constexpr util::string::Aliases<6> const ALIASES = {
     "group",
     "module",
@@ -30,7 +30,7 @@ class GroupKernel : public GateKernel, public GatesWrapperKernel {
   auto operator!=(GroupKernel const& other) const -> bool;
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> util::string::String const& final;
+  virtual auto get_type_name() const -> char const* const& final;
   virtual auto is_group() const -> bool final;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;

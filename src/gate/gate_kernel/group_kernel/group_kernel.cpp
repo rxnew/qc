@@ -3,7 +3,7 @@
 #include "../../group.hpp"
 
 namespace qc {
-constexpr util::string::String const GroupKernel::TYPE_NAME;
+constexpr char const* const GroupKernel::TYPE_NAME;
 
 constexpr util::string::Aliases<6> const GroupKernel::ALIASES;
 
