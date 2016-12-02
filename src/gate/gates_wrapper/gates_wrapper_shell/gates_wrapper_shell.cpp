@@ -36,6 +36,10 @@ auto GatesWrapperShell::swap_gate(GatesIter pos_a, GatesIter pos_b)
   std::swap(*pos_a, *pos_b);
 }
 
+auto GatesWrapperShell::reverse_gate() noexcept -> void {
+  _get_gates().reverse();
+}
+
 auto GatesWrapperShell::begin_gates() -> GatesIter {
   return std::begin(_get_gates());
 }
@@ -74,6 +78,13 @@ auto GatesWrapperShell::empty() const -> bool {
 
 auto GatesWrapperShell::get_gates_count() const -> size_t {
   return get_gates().size();
+}
+
+auto GatesWrapperShell::invert() -> void {
+  for(auto& gate : _get_gates()) {
+    gate.invert();
+  }
+  reverse_gate();
 }
 
 auto GatesWrapperShell::collect_bits() const -> BitNos {

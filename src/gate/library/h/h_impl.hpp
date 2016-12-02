@@ -4,7 +4,17 @@ namespace qc {
 template <class... Args>
 HKernel::HKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto HKernel::get_type_name() const -> char const* const& {
+inline auto HKernel::be_daggered() const -> bool {
+  return false;
+}
+
+inline auto HKernel::invert() -> void {}
+
+inline auto HKernel::get_type() const -> GateType {
+  return TYPE;
+}
+
+inline auto HKernel::get_type_name() const -> std::string {
   return TYPE_NAME;
 }
 }

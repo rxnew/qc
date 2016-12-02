@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../gate_type.hpp"
 #include "../gate_kernel.hpp"
 #include "../gates_wrapper/gates_wrapper_kernel.hpp"
 #include "../../util/string/aliases.hpp"
@@ -7,6 +8,7 @@
 namespace qc {
 class GroupKernel : public GateKernel, public GatesWrapperKernel {
  public:
+  static constexpr GateType const TYPE = GateType::Group;
   static constexpr char const* const TYPE_NAME = "Group";
   static constexpr util::string::Aliases<6> const ALIASES = {
     "group",
@@ -28,10 +30,15 @@ class GroupKernel : public GateKernel, public GatesWrapperKernel {
   auto operator=(GroupKernel&& other) noexcept -> GroupKernel&;
   auto operator==(GroupKernel const& other) const -> bool;
   auto operator!=(GroupKernel const& other) const -> bool;
+  virtual auto operator==(GateKernel const& other) const -> bool final;
+  virtual auto operator!=(GateKernel const& other) const -> bool final;
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto get_type_name() const -> char const* const& final;
+  virtual auto get_type() const -> GateType final;
+  virtual auto get_type_name() const -> std::string final;
   virtual auto is_group() const -> bool final;
+  virtual auto be_daggered() const -> bool final;
+  virtual auto invert() -> void;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() -> TBits& final;

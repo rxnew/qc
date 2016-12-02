@@ -8,7 +8,5 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
-/bin
-/sample/include
-/sample/share
+/bin/*
 !.gitkeep

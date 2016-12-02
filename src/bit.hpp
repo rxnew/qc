@@ -11,6 +11,13 @@
 #include "forward_declarations.hpp"
 
 namespace qc {
+inline namespace constants {
+inline namespace bit_constants {
+constexpr bool const positive = true;
+constexpr bool const negative = false;
+}
+}
+
 /**
  * @brief bit class
  */
@@ -54,6 +61,7 @@ class CBit : public Bit {
   auto operator!=(CBit const& other) const -> bool;
   auto operator<(CBit const& other) const -> bool;
   auto operator>(CBit const& other) const -> bool;
+  auto operator!() const -> CBit;
 
   auto get_polarity() const -> bool;
   auto invert_polarity() -> bool;
@@ -77,7 +85,13 @@ auto operator<<(std::ostream& os, Bit const& obj) -> std::ostream&;
 auto operator<<(std::ostream& os, CBit const& obj) -> std::ostream&;
 auto operator<<(std::ostream& os, TBit const& obj) -> std::ostream&;
 
+inline namespace literals {
+inline namespace bit_literals {
 auto operator"" _bit(unsigned long long bit_no_i) -> Bit::No;
+auto operator"" _cbit(unsigned long long bit_no_i) -> CBit;
+auto operator"" _tbit(unsigned long long bit_no_i) -> TBit;
+}
+}
 }
 
 #include "bit/bit_impl.hpp"
