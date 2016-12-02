@@ -19,6 +19,8 @@
 
 namespace qc {
 template <class... Args>
+auto make_gate(GateType type, Args&&... args) -> Gate;
+template <class... Args>
 auto make_gate(std::string const& type_name, Args&&... args) -> Gate;
 auto decode_alias(std::string const& alias) -> std::string;
 }

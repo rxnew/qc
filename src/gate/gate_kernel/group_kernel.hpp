@@ -37,7 +37,8 @@ class GroupKernel : public GateKernel, public GatesWrapperKernel {
   virtual auto get_type() const -> GateType final;
   virtual auto get_type_name() const -> std::string final;
   virtual auto is_group() const -> bool final;
-  virtual auto is_dagger() const -> bool final;
+  virtual auto be_daggered() const -> bool final;
+  virtual auto invert() -> void;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() -> TBits& final;

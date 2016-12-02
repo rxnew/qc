@@ -5,8 +5,8 @@ auto decode_alias(std::string const& alias, bool assert_flag) -> std::string {
   auto real_alias = alias;
   auto dagger = exclude_dagger_tag(real_alias);
 
-#define REGIST(type) if(type::ALIASES == real_alias) \
-    return type_name(type::TYPE_NAME, dagger)
+#define REGIST(Type) if(Type::ALIASES == real_alias) \
+    return type_name(Type::TYPE_NAME, dagger)
 
   REGIST(I);
   REGIST(H);

@@ -44,8 +44,8 @@ inline auto Gate::is_group() const -> bool {
   return kernel_->is_group();
 }
 
-inline auto Gate::is_dagger() const -> bool {
-  return kernel_->is_dagger();
+inline auto Gate::be_daggered() const -> bool {
+  return kernel_->be_daggered();
 }
 
 inline auto Gate::get_cbits() const -> CBits const& {
@@ -60,13 +60,17 @@ inline auto Gate::get_gates() const -> Gates const& {
   return kernel_->get_gates();
 }
 
-inline auto Gate::print(std::ostream& os) const -> void {
-  kernel_->print(os);
-}
-
 inline auto Gate::collect_bits() const -> BitNos {
   return is_group() ?
     GatesWrapperShell::collect_bits() : BitsWrapperShell::collect_bits();
+}
+
+inline auto Gate::invert() -> void {
+  kernel_->invert();
+}
+
+inline auto Gate::print(std::ostream& os) const -> void {
+  kernel_->print(os);
 }
 
 inline auto Gate::_get_cbits() -> CBits& {

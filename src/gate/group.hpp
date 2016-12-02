@@ -14,6 +14,7 @@ namespace qc {
 template <>
 class Unit<GroupKernel> : public Gate {
  public:
+  static constexpr auto const& TYPE = GroupKernel::TYPE;
   static constexpr auto const& TYPE_NAME = GroupKernel::TYPE_NAME;
   static constexpr auto const& ALIASES = GroupKernel::ALIASES;
   static constexpr char const* const BEGIN_TAG = R"(Group \)";

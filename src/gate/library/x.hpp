@@ -27,7 +27,8 @@ class XKernel : public UnitKernel {
   XKernel(Args&&... args);
 
   virtual auto clone() const -> std::unique_ptr<GateKernel> final;
-  virtual auto is_dagger() const -> bool final;
+  virtual auto be_daggered() const -> bool final;
+  virtual auto invert() -> void final;
   virtual auto get_type() const -> GateType final;
   virtual auto get_type_name() const -> std::string final;
 };

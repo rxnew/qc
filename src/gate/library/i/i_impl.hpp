@@ -4,9 +4,11 @@ namespace qc {
 template <class... Args>
 IKernel::IKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto IKernel::is_dagger() const -> bool {
+inline auto IKernel::be_daggered() const -> bool {
   return false;
 }
+
+inline auto IKernel::invert() -> void {}
 
 inline auto IKernel::get_type() const -> GateType {
   return TYPE;

@@ -48,8 +48,12 @@ inline auto UnitKernel::is_group() const -> bool {
   return false;
 }
 
-inline auto UnitKernel::is_dagger() const -> bool {
+inline auto UnitKernel::be_daggered() const -> bool {
   return dagger_;
+}
+
+inline auto UnitKernel::invert() -> void {
+  dagger_ ^= true;
 }
 
 inline auto UnitKernel::get_cbits() -> CBits& {

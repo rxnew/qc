@@ -25,7 +25,8 @@ class UnitKernel : public GateKernel, public BitsWrapperKernel {
   virtual auto operator!=(GateKernel const& other) const -> bool;
 
   virtual auto is_group() const -> bool final;
-  virtual auto is_dagger() const -> bool;
+  virtual auto be_daggered() const -> bool;
+  virtual auto invert() -> void;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() -> TBits& final;

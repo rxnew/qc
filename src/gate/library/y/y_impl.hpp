@@ -4,9 +4,11 @@ namespace qc {
 template <class... Args>
 YKernel::YKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto YKernel::is_dagger() const -> bool {
+inline auto YKernel::be_daggered() const -> bool {
   return false;
 }
+
+inline auto YKernel::invert() -> void {}
 
 inline auto YKernel::get_type() const -> GateType {
   return TYPE;

@@ -7,6 +7,13 @@ constexpr char const* const GroupKernel::TYPE_NAME;
 
 constexpr util::string::Aliases<6> const GroupKernel::ALIASES;
 
+auto GroupKernel::invert() -> void {
+  for(auto& gate : get_gates()) {
+    gate.invert();
+  }
+  get_gates().reverse();
+}
+
 auto GroupKernel::print(std::ostream& os) const -> void {
   os << Group::BEGIN_TAG << std::endl;
   for(auto const& gate : get_gates()) {

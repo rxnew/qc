@@ -43,6 +43,7 @@ class GatesWrapperShell {
   auto remove_gate_if(Predicate pred) -> void;
   auto move_gate(GatesCIter to, GatesIter from) -> GatesIter;
   auto swap_gate(GatesIter pos_a, GatesIter pos_b) -> void;
+  auto reverse_gate() noexcept -> void;
   auto begin_gates() -> GatesIter;
   auto end_gates() -> GatesIter;
   auto cbegin_gates() const -> GatesCIter;
@@ -52,7 +53,8 @@ class GatesWrapperShell {
   auto clear() -> void;
   auto empty() const -> bool;
   auto get_gates_count() const -> size_t;
-  auto collect_bits() const -> BitNos;
+  virtual auto invert() -> void;
+  virtual auto collect_bits() const -> BitNos;
   virtual auto print(std::ostream& os = std::cout) const -> void;
 
  protected:
