@@ -5,6 +5,7 @@ project(qc CXX)
 set(TARGET qc)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 include_directories(${INCLUDE_DIR})
 
@@ -27,6 +28,10 @@ install(DIRECTORY ${INCLUDE_DIR}/
 install(EXPORT ${TARGET}-export
         FILE ${TARGET}-config.cmake
         DESTINATION share/cmake/${TARGET})
+
+if(NOT without-test)
+  add_subdirectory(${TEST_DIR})
+endif()
 
 set(CMAKE_CXX_FLAGS "")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")

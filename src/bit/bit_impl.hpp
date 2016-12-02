@@ -48,6 +48,10 @@ inline auto CBit::operator>(CBit const& other) const -> bool {
   return !(*this < other) && *this != other;
 }
 
+inline auto CBit::operator!() const -> CBit {
+  return CBit(no_, !polarity_);
+}
+
 inline auto CBit::get_polarity() const -> bool {
   return polarity_;
 }
@@ -74,5 +78,13 @@ inline auto operator<<(std::ostream& os, TBit const& obj) -> std::ostream& {
 
 inline auto operator"" _bit(unsigned long long bit_no_i) -> Bit::No {
   return static_cast<Bit::No>(bit_no_i);
+}
+
+inline auto operator"" _cbit(unsigned long long bit_no_i) -> CBit {
+  return CBit(static_cast<Bit::No>(bit_no_i));
+}
+
+inline auto operator"" _tbit(unsigned long long bit_no_i) -> TBit {
+  return TBit(static_cast<Bit::No>(bit_no_i));
 }
 }

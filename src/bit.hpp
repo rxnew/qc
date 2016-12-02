@@ -54,6 +54,7 @@ class CBit : public Bit {
   auto operator!=(CBit const& other) const -> bool;
   auto operator<(CBit const& other) const -> bool;
   auto operator>(CBit const& other) const -> bool;
+  auto operator!() const -> CBit;
 
   auto get_polarity() const -> bool;
   auto invert_polarity() -> bool;
@@ -78,6 +79,8 @@ auto operator<<(std::ostream& os, CBit const& obj) -> std::ostream&;
 auto operator<<(std::ostream& os, TBit const& obj) -> std::ostream&;
 
 auto operator"" _bit(unsigned long long bit_no_i) -> Bit::No;
+auto operator"" _cbit(unsigned long long bit_no_i) -> CBit;
+auto operator"" _tbit(unsigned long long bit_no_i) -> TBit;
 }
 
 #include "bit/bit_impl.hpp"
