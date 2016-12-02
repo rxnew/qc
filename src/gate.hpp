@@ -10,9 +10,10 @@
 #include "forward_declarations.hpp"
 #include "bit/bits_wrapper/bits_wrapper_shell.hpp"
 #include "gate/gates_wrapper/gates_wrapper_shell.hpp"
+#include "gate/gate_kernel.hpp"
 
 namespace qc {
-class GateKernel;
+enum class GateType;
 
 class Gate : public BitsWrapperShell, public GatesWrapperShell {
  public:
@@ -29,15 +30,20 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   auto operator=(Gate&&) noexcept -> Gate& = default;
   auto operator==(Gate const& other) const -> bool;
   auto operator!=(Gate const& other) const -> bool;
+  auto operator!() const & -> Gate;
+  auto operator!() && -> Gate;
 
-  auto get_type_name() const -> char const* const&;
+  auto get_type() const -> GateType;
+  auto get_type_name() const -> std::string;
   auto is_group() const -> bool;
+  auto be_daggered() const -> bool;
 
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() const -> TBits const& final;
   virtual auto get_gates() const -> Gates const& final;
-  virtual auto print(std::ostream& os = std::cout) const -> void final;
+  virtual auto invert() -> void final;
   virtual auto collect_bits() const -> BitNos final;
+  virtual auto print(std::ostream& os = std::cout) const -> void final;
 
  protected:
   explicit Gate(std::unique_ptr<GateKernel>&& kernel);
