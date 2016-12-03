@@ -39,8 +39,20 @@ How to use
 それぞれ，コントロールビットとターゲットビットに対応している．
 
 ```cpp
-auto cbit = qc::CBit(0_bit, true);
-auto tbit = qc::TBit(1_bit);
+auto cbit = qc::CBit(qc::BitNo(0)); // デフォルトの極性は正極
+auto cbit = qc::CBit(qc::BitNo(0), qc::positive); 
+auto cbit = qc::CBit(qc::BitNo(0), qc::negative);
+auto tbit = qc::TBit(qc::BitNo(1);
+```
+
+qc::BitNo や qc::CBit, qc::TBit にはリテラルが用意されている．
+
+```cpp
+using namespace qc::literals::bit_literals;
+auto bit_no = 0_bit;
+auto cbit = 0_cbit;
+auto cbit = !0_cbit; // 負極には否定演算子を使用
+auto tbit = 1_tbit;
 ```
 
 qc::Bit クラスの主なメンバを以下にまとめる．
@@ -125,6 +137,28 @@ auto x = qc::make_gate("NOT", cbit, tbit);
 * ***T*** (Rz(pi/4))
 * ___T*___ (***T+***, ***TDagger***, ***TPlus***)
 * ***Swap***
+
+**ダガー行列** (Hermitian adjoint) は，コンストラクタの第1引数に ***qc::dagger*** を渡すか、
+ゲート名の末尾に "*", "+", "dagger", "plus" のいずれかを付けることで生成可能．
+
+```cpp
+auto v_dagger = qc::V(qc::dagger, cbit, tbit);
+auto v_dagger = qc::make_gate("V*", cbit, tbit);
+```
+
+また，否定演算子を用いてダガー行列を生成することも可能です．
+
+```cpp
+auto v = qc::V(cbit, tbit);
+auto v_dagger = !v;
+```
+
+qc::X 等，一部のゲートは X == X* が成り立ちます．
+
+```cpp
+v == !v; // false
+x == !x; // true
+```
 
 qc::Gate クラスの主なメンバ関数を以下にまとめる．
 
