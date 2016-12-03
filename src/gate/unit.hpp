@@ -11,7 +11,7 @@ class Unit : public Gate {
   static constexpr auto const& ALIASES = GateKernelT::ALIASES;
 
   template <class... Args>
-  Unit(Args&&... args);
+  explicit Unit(Args&&... args);
   Unit(Unit const& other);
   Unit(Unit&&) noexcept = default;
 

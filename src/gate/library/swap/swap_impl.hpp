@@ -4,7 +4,7 @@ namespace qc {
 template <class... Args>
 SwapKernel::SwapKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto SwapKernel::be_daggered() const -> bool {
+inline auto SwapKernel::bedaggered() const -> bool {
   return false;
 }
 

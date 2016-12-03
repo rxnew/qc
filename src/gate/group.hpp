@@ -21,7 +21,7 @@ class Unit<GroupKernel> : public Gate {
   static constexpr char const* const END_TAG = R"(\)";
 
   template <class... Args>
-  Unit(Args&&... args);
+  explicit Unit(Args&&... args);
   Unit(Unit const& other);
   Unit(Unit&&) noexcept = default;
 

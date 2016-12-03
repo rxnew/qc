@@ -4,7 +4,7 @@ namespace qc {
 template <class... Args>
 HKernel::HKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto HKernel::be_daggered() const -> bool {
+inline auto HKernel::bedaggered() const -> bool {
   return false;
 }
 

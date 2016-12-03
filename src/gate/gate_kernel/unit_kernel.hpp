@@ -11,7 +11,7 @@ class UnitKernel : public GateKernel, public BitsWrapperKernel {
   template <class... Args>
   UnitKernel(Args&&... args);
   template <class... Args>
-  UnitKernel(bool dagger, Args&&... args);
+  UnitKernel(bool bedaggered, Args&&... args);
   UnitKernel(UnitKernel const& other);
   UnitKernel(UnitKernel&& other) noexcept;
 
@@ -25,7 +25,7 @@ class UnitKernel : public GateKernel, public BitsWrapperKernel {
   virtual auto operator!=(GateKernel const& other) const -> bool;
 
   virtual auto is_group() const -> bool final;
-  virtual auto be_daggered() const -> bool;
+  virtual auto bedaggered() const -> bool;
   virtual auto invert() -> void;
   virtual auto get_cbits() -> CBits& final;
   virtual auto get_cbits() const -> CBits const& final;
@@ -36,7 +36,7 @@ class UnitKernel : public GateKernel, public BitsWrapperKernel {
   virtual auto print(std::ostream& os = std::cout) const -> void final;
 
  protected:
-  bool dagger_;
+  bool bedaggered_;
 };
 }
 

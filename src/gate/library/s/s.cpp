@@ -1,6 +1,6 @@
 #include "../s.hpp"
 
-#include "../../dagger.hpp"
+#include "../../bedaggered.hpp"
 
 namespace qc {
 constexpr GateType const SKernel::TYPE;
@@ -14,6 +14,6 @@ auto SKernel::clone() const -> std::unique_ptr<GateKernel> {
 }
 
 auto SKernel::get_type_name() const -> std::string {
-  return type_name(TYPE_NAME, dagger_);
+  return type_name(TYPE_NAME, bedaggered_);
 }
 }

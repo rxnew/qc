@@ -35,5 +35,20 @@ TEST_F(XTest, GetTypeName) {
 }
 
 TEST_F(XTest, IsNotGroup) {
-  EXPECT_EQ(false, x_.is_group());
+  EXPECT_FALSE(x_.is_group());
 }
+
+/*
+TEST_F(XTest, Bedaggered) {
+  EXPECT_FALSE(x_.bedaggered());
+  auto x = x_;
+  x.invert();
+  EXPECT_FALSE(x.bedaggered());
+}
+
+TEST_F(XTest, Invert) {
+  auto x = x_;
+  x.invert();
+  EXPECT_EQ(x, x_);
+}
+*/

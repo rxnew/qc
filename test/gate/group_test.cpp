@@ -41,3 +41,7 @@ TEST_F(GroupTest, GetTypeName) {
 TEST_F(GroupTest, IsGroup) {
   EXPECT_TRUE(group_.is_group());
 }
+
+TEST_F(GroupTest, Beaggered) {
+  EXPECT_FALSE(group_.bedaggered());
+}

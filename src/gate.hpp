@@ -36,7 +36,7 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   auto get_type() const -> GateType;
   auto get_type_name() const -> std::string;
   auto is_group() const -> bool;
-  auto be_daggered() const -> bool;
+  auto bedaggered() const -> bool;
 
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() const -> TBits const& final;

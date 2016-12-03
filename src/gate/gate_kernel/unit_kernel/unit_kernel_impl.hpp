@@ -3,17 +3,17 @@
 namespace qc {
 template <class... Args>
 inline UnitKernel::UnitKernel(Args&&... args)
-  : BitsWrapperKernel(std::forward<Args>(args)...), dagger_(false) {}
+  : BitsWrapperKernel(std::forward<Args>(args)...), bedaggered_(false) {}
 
 template <class... Args>
-inline UnitKernel::UnitKernel(bool dagger, Args&&... args)
-  : BitsWrapperKernel(std::forward<Args>(args)...), dagger_(dagger) {}
+inline UnitKernel::UnitKernel(bool bedaggered, Args&&... args)
+  : BitsWrapperKernel(std::forward<Args>(args)...), bedaggered_(bedaggered) {}
 
 inline UnitKernel::UnitKernel(UnitKernel const& other)
-  : BitsWrapperKernel(other), dagger_(other.dagger_) {}
+  : BitsWrapperKernel(other), bedaggered_(other.bedaggered_) {}
 
 inline UnitKernel::UnitKernel(UnitKernel&& other) noexcept
-  : BitsWrapperKernel(std::move(other)), dagger_(other.dagger_) {}
+  : BitsWrapperKernel(std::move(other)), bedaggered_(other.bedaggered_) {}
 
 inline auto UnitKernel::operator=(UnitKernel const& other) -> UnitKernel& {
   BitsWrapperKernel::operator=(other);
@@ -48,12 +48,12 @@ inline auto UnitKernel::is_group() const -> bool {
   return false;
 }
 
-inline auto UnitKernel::be_daggered() const -> bool {
-  return dagger_;
+inline auto UnitKernel::bedaggered() const -> bool {
+  return bedaggered_;
 }
 
 inline auto UnitKernel::invert() -> void {
-  dagger_ ^= true;
+  bedaggered_ ^= true;
 }
 
 inline auto UnitKernel::get_cbits() -> CBits& {
