@@ -27,6 +27,17 @@ $ cd ..
 $ ./bin/main
 ```
 
+How to test
+---------------
+[Google Test][googletest] を使用しています．
+
+```
+$ cd build
+$ cmake -DTEST=ON ..
+$ make
+$ ctest
+```
+
 How to use
 ---------------
 ![UML_Class_Diagram](https://raw.github.com/wiki/rxnew/qc/images/uml_class_diagram.png)
@@ -306,5 +317,6 @@ qc::io::output(circuit, filename);
 * [blif][blif] (入力は nand2 のみ)
 
 [cmake]: https://cmake.org/
+[googletest]: http://opencv.jp/googletestdocs/index.html
 [blif]: https://www.cse.iitb.ac.in/~supratik/courses/cs226/spr16/blif.pdf
 [arXiv:quant-ph/0403053]: https://arxiv.org/pdf/quant-ph/0403053v1.pdf
