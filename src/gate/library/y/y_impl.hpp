@@ -4,7 +4,7 @@ namespace qc {
 template <class... Args>
 YKernel::YKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto YKernel::be_daggered() const -> bool {
+inline auto YKernel::bedaggered() const -> bool {
   return false;
 }
 

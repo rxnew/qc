@@ -1,7 +1,9 @@
 #pragma once
 
 namespace qc {
-template <class... Args>
+inline Unit<GroupKernel>::Unit() : Gate(new GroupKernel()) {}
+
+template <class... Args, class>
 inline Unit<GroupKernel>::Unit(Args&&... args)
   : Gate(new GroupKernel(std::forward<Args>(args)...)) {}
 

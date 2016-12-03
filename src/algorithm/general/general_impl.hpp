@@ -8,6 +8,8 @@
 #include "../../debug/assert.hpp"
 
 namespace qc {
+inline namespace algorithm {
+inline namespace general {
 template <class T>
 auto add_gate_front(GatesWrapperShell& target, T&& gate) -> void {
   target.insert_gate(target.cbegin_gates(), std::forward<T>(gate));
@@ -30,5 +32,7 @@ auto insert_gate_after(GatesWrapperShell& target, GatesCIter pos, T&& gate)
   assert_m(pos != target.cend_gates(),
            "Cannot insert a gate after the end of a iterator.");
   return target.insert_gate(++pos, std::forward<T>(gate));
+}
+}
 }
 }

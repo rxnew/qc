@@ -3,13 +3,19 @@
 namespace qc {
 namespace util {
 namespace tmpl {
-template <class T>
+template <class T, class U = void>
 using enable_if_lvalue_t =
-  typename std::enable_if_t<std::is_lvalue_reference<T&&>::value>;
+  typename std::enable_if_t<std::is_lvalue_reference<T&&>::value, U>;
 
-template <class T>
+template <class T, class U = void>
 using enable_if_rvalue_t =
-  typename std::enable_if_t<std::is_rvalue_reference<T&&>::value>;
+  typename std::enable_if_t<std::is_rvalue_reference<T&&>::value, U>;
+
+template <bool Condition, class T = void>
+using disable_if = std::enable_if<!Condition, T>;
+
+template <bool Condition, class T = void>
+using disable_if_t = typename disable_if<Condition, T>::type;
 
 template <class T>
 using remove_qualifier_t =
@@ -20,7 +26,17 @@ using is_same_plain =
   std::is_same<remove_qualifier_t<T>, remove_qualifier_t<U>>;
 
 template <class T, class U>
-bool constexpr is_same_plain_v = is_same_plain<T, U>::value;
+constexpr bool is_same_plain_v = is_same_plain<T, U>::value;
+
+template <class T, class U, class... UArgs>
+struct is_same_plain_variadic;
+
+template <class T, class U>
+struct is_same_plain_variadic<T, U>;
+
+template <class T, class U, class... UArgs>
+constexpr bool is_same_plain_variadic_v =
+  is_same_plain_variadic<T, U, UArgs...>::value;
 
 template <class T, class U>
 using enable_if_same_t = typename std::enable_if_t<std::is_same<T, U>::value>;
@@ -75,7 +91,7 @@ template <class T, class R = remove_qualifier_t<T>>
 struct is_container;
 
 template <class T>
-bool constexpr is_container_v = is_container<T>::value;
+constexpr bool is_container_v = is_container<T>::value;
 
 template <class T>
 using enable_if_container_t = typename std::enable_if_t<is_container_v<T>>;

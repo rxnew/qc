@@ -53,7 +53,7 @@ inline auto GroupKernel::is_group() const -> bool {
   return true;
 }
 
-inline auto GroupKernel::be_daggered() const -> bool {
+inline auto GroupKernel::bedaggered() const -> bool {
   return false;
 }
 

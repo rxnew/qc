@@ -4,7 +4,7 @@ namespace qc {
 template <class... Args>
 ZKernel::ZKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto ZKernel::be_daggered() const -> bool {
+inline auto ZKernel::bedaggered() const -> bool {
   return false;
 }
 

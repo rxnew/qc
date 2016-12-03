@@ -11,6 +11,8 @@
 #include "../../circuit.hpp"
 
 namespace qc {
+inline namespace algorithm {
+inline namespace general {
 auto get_cbit(Gate const& gate) -> CBit const& {
   assert(gate.is_single_controlled());
   return *gate.get_cbits().cbegin();
@@ -52,5 +54,7 @@ auto _decomp_to_single_target_gates(GatesWrapperShell const& target) -> Gates {
     }
   }
   return result_gates;
+}
+}
 }
 }

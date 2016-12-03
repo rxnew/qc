@@ -11,6 +11,12 @@
 namespace qc {
 namespace util {
 namespace tmpl {
+template <class T, class U, class... UArgs>
+struct is_same_plain_variadic : std::false_type {};
+
+template <class T, class U>
+struct is_same_plain_variadic<T, U> : is_same_plain<T, U> {};
+
 template <class T>
 struct template_class {};
  

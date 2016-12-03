@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 
-add_executable(gate-test x_test.cpp group_test.cpp)
+add_executable(gate-test
+  gate_test.cpp
+  library_test.cpp
+  x_test.cpp
+  v_test.cpp
+  group_test.cpp
+  )
+
 target_link_libraries(gate-test
   gtest
   gtest_main
