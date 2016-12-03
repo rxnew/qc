@@ -2,7 +2,10 @@
 
 namespace qc {
 template <class GateKernelT>
-template <class... Args>
+inline Unit<GateKernelT>::Unit() : Gate(new GateKernelT()) {}
+
+template <class GateKernelT>
+template <class... Args, class>
 inline Unit<GateKernelT>::Unit(Args&&... args)
   : Gate(new GateKernelT(std::forward<Args>(args)...)) {}
 

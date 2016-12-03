@@ -7,8 +7,6 @@
 
 #include "gate_kernel/group_kernel.hpp"
 #include "unit.hpp"
-#include "../gate.hpp"
-#include "../util/string/aliases.hpp"
 
 namespace qc {
 template <>
@@ -20,7 +18,10 @@ class Unit<GroupKernel> : public Gate {
   static constexpr char const* const BEGIN_TAG = R"(Group \)";
   static constexpr char const* const END_TAG = R"(\)";
 
-  template <class... Args>
+  Unit();
+  template <class... Args,
+            class = util::tmpl::disable_if_t<
+              util::tmpl::is_same_plain_variadic_v<Unit, Args...>>>
   explicit Unit(Args&&... args);
   Unit(Unit const& other);
   Unit(Unit&&) noexcept = default;

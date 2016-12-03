@@ -14,20 +14,31 @@ class XTest : public ::testing::Test {
   X x_;
 };
 
-TEST_F(XTest, IsEqual) {
-  EXPECT_EQ(X(0_tbit), x_);
-  EXPECT_EQ(Gate::make<X>(0_tbit), x_);
+TEST_F(XTest, Constructor) {
+  EXPECT_EQ(qc::CBits{}, x_.get_cbits());
+  EXPECT_EQ(qc::TBits{0_tbit}, x_.get_tbits());
 }
 
-TEST_F(XTest, IsNotEqual) {
-  EXPECT_NE(X(1_tbit), x_);
-  EXPECT_NE(Y(0_tbit), x_);
+TEST_F(XTest, CopyConstructor) {
+  X x(x_);
+  EXPECT_EQ(x, x_);
 }
 
 TEST_F(XTest, Assignment) {
   auto x = X();
   x = x_;
   EXPECT_EQ(x, x_);
+}
+
+TEST_F(XTest, IsEqual) {
+  EXPECT_EQ(X(0_tbit), x_);
+  EXPECT_EQ(!X(0_tbit), x_);
+  EXPECT_EQ(Gate::make<X>(0_tbit), x_);
+}
+
+TEST_F(XTest, IsNotEqual) {
+  EXPECT_NE(X(1_tbit), x_);
+  EXPECT_NE(Y(0_tbit), x_);
 }
 
 TEST_F(XTest, GetTypeName) {
@@ -38,12 +49,8 @@ TEST_F(XTest, IsNotGroup) {
   EXPECT_FALSE(x_.is_group());
 }
 
-/*
 TEST_F(XTest, Bedaggered) {
   EXPECT_FALSE(x_.bedaggered());
-  auto x = x_;
-  x.invert();
-  EXPECT_FALSE(x.bedaggered());
 }
 
 TEST_F(XTest, Invert) {
@@ -51,4 +58,3 @@ TEST_F(XTest, Invert) {
   x.invert();
   EXPECT_EQ(x, x_);
 }
-*/
