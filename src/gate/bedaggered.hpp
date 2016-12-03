@@ -6,7 +6,7 @@ namespace qc {
 inline namespace constants {
 inline namespace gate_constants {
 constexpr bool const bedaggered = true;
-constexpr char const* const DAGGER_TAG = "*";
+constexpr char const* const BEDAGGERED_TAG = "*";
 }
 }
 

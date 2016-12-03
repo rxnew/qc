@@ -11,7 +11,7 @@ auto type_name(std::string const& type_name, bool bedaggered) -> std::string {
 }
 
 auto append_bedaggered_tag(std::string const& type_name) -> std::string {
-  return type_name + DAGGER_TAG;
+  return type_name + BEDAGGERED_TAG;
 }
 
 auto exclude_bedaggered_tag(std::string& type_name) -> bool {

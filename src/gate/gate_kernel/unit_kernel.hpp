@@ -8,6 +8,11 @@
 namespace qc {
 class UnitKernel : public GateKernel, public BitsWrapperKernel {
  public:
+  UnitKernel(std::initializer_list<CBit> cbits,
+             std::initializer_list<TBit> tbits);
+  UnitKernel(bool bedaggered,
+             std::initializer_list<CBit> cbits,
+             std::initializer_list<TBit> tbits);
   template <class... Args>
   UnitKernel(Args&&... args);
   template <class... Args>

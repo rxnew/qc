@@ -24,6 +24,10 @@ inline BitsWrapperKernel::BitsWrapperKernel(const CBits& cbits, const TBits& tbi
 inline BitsWrapperKernel::BitsWrapperKernel(CBits&& cbits, TBits&& tbits)
   : cbits_(std::move(cbits)), tbits_(std::move(tbits)) {}
 
+inline BitsWrapperKernel::BitsWrapperKernel(std::initializer_list<CBit> cbits,
+                                            std::initializer_list<TBit> tbits)
+  : cbits_(cbits), tbits_(tbits) {}
+
 inline auto BitsWrapperKernel::operator==(BitsWrapperKernel const& other) const
   -> bool {
   return cbits_ == other.cbits_ && tbits_ == other.tbits_;

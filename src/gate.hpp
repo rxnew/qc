@@ -23,6 +23,13 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   ~Gate() noexcept = default;
 
   template <class Type, class... Args>
+  static auto make(std::initializer_list<CBit> cbits,
+                   std::initializer_list<TBit> tbits) -> Gate;
+  template <class Type, class... Args>
+  static auto make(bool bedaggered,
+                   std::initializer_list<CBit> cbits,
+                   std::initializer_list<TBit> tbits) -> Gate;
+  template <class Type, class... Args>
   static auto make(Args&&... args) -> Gate;
   static auto make_dummy(bool assert_flag = true) -> Gate;
 

@@ -1,6 +1,15 @@
 #pragma once
 
 namespace qc {
+inline UnitKernel::UnitKernel(std::initializer_list<CBit> cbits,
+                              std::initializer_list<TBit> tbits)
+  : BitsWrapperKernel(cbits, tbits), bedaggered_(false) {}
+
+inline UnitKernel::UnitKernel(bool bedaggered,
+                              std::initializer_list<CBit> cbits,
+                              std::initializer_list<TBit> tbits)
+  : BitsWrapperKernel(cbits, tbits), bedaggered_(bedaggered) {}
+
 template <class... Args>
 inline UnitKernel::UnitKernel(Args&&... args)
   : BitsWrapperKernel(std::forward<Args>(args)...), bedaggered_(false) {}

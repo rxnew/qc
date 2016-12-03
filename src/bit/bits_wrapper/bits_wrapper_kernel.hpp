@@ -16,6 +16,8 @@ class BitsWrapperKernel {
   BitsWrapperKernel(CBits&& cbits, TBit const& tbit);
   BitsWrapperKernel(CBits const& cbits, TBits const& tbits);
   BitsWrapperKernel(CBits&& cbits, TBits&& tbits);
+  BitsWrapperKernel(std::initializer_list<CBit> cbits,
+                    std::initializer_list<TBit> tbits);
   //template <class... Args>
   //explict BitsWrapperKernel(Args&&... args);
   BitsWrapperKernel(BitsWrapperKernel const&) = default;

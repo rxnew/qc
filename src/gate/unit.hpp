@@ -12,6 +12,9 @@ class Unit : public Gate {
   static constexpr auto const& ALIASES = GateKernelT::ALIASES;
 
   Unit();
+  Unit(std::initializer_list<CBit> cbits, std::initializer_list<TBit> tbits);
+  Unit(bool bedaggered,
+       std::initializer_list<CBit> cbits, std::initializer_list<TBit> tbits);
   template <class... Args,
             class = util::tmpl::disable_if_t<
               util::tmpl::is_same_plain_variadic_v<Unit, Args...>>>
