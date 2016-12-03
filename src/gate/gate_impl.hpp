@@ -13,6 +13,20 @@ namespace qc {
 inline Gate::Gate(Gate const& other) : kernel_(other.kernel_->clone()) {}
 
 template <class Type, class... Args>
+inline auto Gate::make(std::initializer_list<CBit> cbits,
+                       std::initializer_list<TBit> tbits) -> Gate {
+  return make<Type>(false, cbits, tbits);
+}
+
+template <class Type, class... Args>
+inline auto Gate::make(bool bedaggered,
+                       std::initializer_list<CBit> cbits,
+                       std::initializer_list<TBit> tbits) -> Gate {
+  using GateKernelT = util::tmpl::template_parameter_t<Type>;
+  return Gate(new GateKernelT(bedaggered, cbits, tbits));
+}
+
+template <class Type, class... Args>
 inline auto Gate::make(Args&&... args) -> Gate {
   using GateKernelT = util::tmpl::template_parameter_t<Type>;
   return Gate(new GateKernelT(std::forward<Args>(args)...));
@@ -44,8 +58,8 @@ inline auto Gate::is_group() const -> bool {
   return kernel_->is_group();
 }
 
-inline auto Gate::be_daggered() const -> bool {
-  return kernel_->be_daggered();
+inline auto Gate::bedaggered() const -> bool {
+  return kernel_->bedaggered();
 }
 
 inline auto Gate::get_cbits() const -> CBits const& {

@@ -4,7 +4,7 @@ namespace qc {
 template <class... Args>
 XKernel::XKernel(Args&&... args) : UnitKernel(std::forward<Args>(args)...) {}
 
-inline auto XKernel::be_daggered() const -> bool {
+inline auto XKernel::bedaggered() const -> bool {
   return false;
 }
 

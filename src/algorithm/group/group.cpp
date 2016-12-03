@@ -4,6 +4,8 @@
 #include "../../gate/gates_wrapper/gates_wrapper_shell.hpp"
 
 namespace qc {
+inline namespace algorithm {
+inline namespace group {
 auto has_group(GatesWrapperShell const& target) -> bool {
   for(auto const& gate : target.get_gates()) {
     if(gate.is_group()) return true;
@@ -41,5 +43,7 @@ auto expand_groups(GatesWrapperShell& target) -> void {
     }
     ++it;
   }
+}
+}
 }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../gate.hpp"
+#include "../util/tmpl.hpp"
 
 namespace qc {
 template <class GateKernelT>
@@ -10,8 +11,14 @@ class Unit : public Gate {
   static constexpr auto const& TYPE_NAME = GateKernelT::TYPE_NAME;
   static constexpr auto const& ALIASES = GateKernelT::ALIASES;
 
-  template <class... Args>
-  Unit(Args&&... args);
+  Unit();
+  Unit(std::initializer_list<CBit> cbits, std::initializer_list<TBit> tbits);
+  Unit(bool bedaggered,
+       std::initializer_list<CBit> cbits, std::initializer_list<TBit> tbits);
+  template <class... Args,
+            class = util::tmpl::disable_if_t<
+              util::tmpl::is_same_plain_variadic_v<Unit, Args...>>>
+  explicit Unit(Args&&... args);
   Unit(Unit const& other);
   Unit(Unit&&) noexcept = default;
 

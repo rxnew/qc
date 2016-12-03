@@ -8,6 +8,8 @@
 #include "../forward_declarations.hpp"
 
 namespace qc {
+inline namespace algorithm {
+inline namespace oracle {
 auto collect_cbits(Gate const& gate) -> BitNos;
 auto collect_cbits(Circuit const& circuit) -> BitNos;
 auto collect_tbits(Gate const& gate) -> BitNos;
@@ -23,6 +25,8 @@ auto sort_gates_by_tbits(Circuit& circuit) -> void;
 auto sort_gates(Circuit& circuit) -> void;
 auto decomp_to_single_target_circuits(Circuit const& circuit)
   -> std::unordered_map<TBit, Circuit>;
+}
+}
 }
 
 #include "oracle/oracle_impl.hpp"

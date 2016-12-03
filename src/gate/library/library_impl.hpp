@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../dagger.hpp"
+#include "../bedaggered.hpp"
 #include "../../util/string.hpp"
 #include "../../debug/error.hpp"
 
@@ -31,10 +31,10 @@ auto make_gate(std::string const& type_name, Args&&... args) -> Gate {
   static constexpr char const* const _err_msg = "Not found gate type '%s'.";
 
   auto real_type_name = type_name;
-  auto dagger = exclude_dagger_tag(real_type_name);
+  auto bedaggered = exclude_bedaggered_tag(real_type_name);
 
 #define REGIST(Type) if(Type::ALIASES == real_type_name) \
-    return Gate::make<Type>(dagger, std::forward<Args>(args)...)
+    return Gate::make<Type>(bedaggered, std::forward<Args>(args)...)
 
   REGIST(I);
   REGIST(H);

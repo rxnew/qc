@@ -21,7 +21,7 @@ class GateKernel {
   virtual auto get_type() const -> GateType = 0;
   virtual auto get_type_name() const -> std::string = 0;
   virtual auto is_group() const -> bool = 0;
-  virtual auto be_daggered() const -> bool = 0;
+  virtual auto bedaggered() const -> bool = 0;
   virtual auto invert() -> void = 0;
   virtual auto get_cbits() -> CBits& = 0;
   virtual auto get_cbits() const -> CBits const& = 0;

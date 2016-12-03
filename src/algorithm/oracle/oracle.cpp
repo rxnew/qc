@@ -12,6 +12,8 @@
 #include "../../util/math.hpp"
 
 namespace qc {
+inline namespace algorithm {
+inline namespace oracle {
 auto collect_cbits(Gate const& gate) -> BitNos {
   auto bit_nos = BitNos();
   for(auto const& cbit : gate.get_cbits()) {
@@ -121,5 +123,7 @@ auto decomp_to_single_target_circuits(Circuit const& circuit)
     }
   }
   return result_circuit;
+}
+}
 }
 }
