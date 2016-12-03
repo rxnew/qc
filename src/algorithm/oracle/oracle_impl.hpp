@@ -6,4 +6,8 @@
 #pragma once
 
 namespace qc {
+inline namespace algorithm {
+inline namespace oracle {
+}
+}
 }
