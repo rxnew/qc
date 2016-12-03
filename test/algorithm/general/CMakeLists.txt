@@ -19,5 +19,5 @@ add_test(
 # run with: ctest -L lib
 set_property(
   TEST algorithm-general
-  PROPERTY LABELS lib algorithm-general
+  PROPERTY LABELS lib algorithm algorithm-general
   )

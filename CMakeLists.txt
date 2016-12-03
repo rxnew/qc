@@ -30,6 +30,7 @@ install(EXPORT ${TARGET}-export
         DESTINATION share/cmake/${TARGET})
 
 if(NOT without-test)
+  enable_testing()
   add_subdirectory(${TEST_DIR})
 endif()
 
