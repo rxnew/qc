@@ -49,4 +49,10 @@ template <class Predicate>
 auto GatesWrapperShell::remove_gate_if(Predicate pred) -> void {
   _get_gates().remove_if(pred);
 }
+
+template <class Function, class... Args>
+auto GatesWrapperShell::apply_to_gates(Function function, Args&&... args)
+  -> decltype(function(std::declval<Gates&>(), std::declval<Args>()...)) {
+  return function(_get_gates(), std::forward<Args>()...);
+}
 }
