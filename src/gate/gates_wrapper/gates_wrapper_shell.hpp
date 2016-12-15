@@ -57,6 +57,10 @@ class GatesWrapperShell {
   virtual auto collect_bits() const -> BitNos;
   virtual auto print(std::ostream& os = std::cout) const -> void;
 
+  template <class Function, class... Args>
+  auto apply_to_gates(Function function, Args&&... args)
+    -> decltype(function(std::declval<Gates&>(), std::declval<Args>()...));
+
  protected:
   virtual auto _get_gates() -> Gates& = 0;
 };
