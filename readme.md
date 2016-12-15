@@ -149,22 +149,28 @@ auto x = qc::make_gate("NOT", cbit, tbit);
 * ___T*___ (***T+***, ***TDagger***, ***TPlus***)
 * ***Swap***
 
-**ダガー行列** (Hermitian adjoint) は，コンストラクタの第1引数に ***qc::dagger*** を渡すか、
+**ダガー行列** (Hermitian adjoint) は，コンストラクタの第1引数に ***qc::bedaggered*** を渡すか、
 ゲート名の末尾に "*", "+", "dagger", "plus" のいずれかを付けることで生成可能．
 
 ```cpp
-auto v_dagger = qc::V(qc::dagger, cbit, tbit);
+auto v_dagger = qc::V(qc::bedaggered, cbit, tbit);
 auto v_dagger = qc::make_gate("V*", cbit, tbit);
 ```
 
-また，否定演算子を用いてダガー行列を生成することも可能です．
+また，否定演算子を用いてダガー行列を生成することも可能．
 
 ```cpp
 auto v = qc::V(cbit, tbit);
 auto v_dagger = !v;
 ```
 
-qc::X 等，一部のゲートは X == X* が成り立ちます．
+Rvalue に対して否定演算子を用いた場合，この演算は新たなオブジェクトの生成を行わないため，高速に動作する．
+
+```cpp
+auto v_dagger = !qc::V(cbit, tbit);
+```
+
+qc::X 等，一部のゲートは X == X* が成り立つ．
 
 ```cpp
 v == !v; // false
@@ -274,7 +280,7 @@ if(gate.is_group()) gate.add_gate(x);
 ```
 
 qc::Circuit や qc::Gate が持つゲートのリストに対して，メソッドに無い操作を行いたい場合には，***apply_to_gates()*** を利用する．
-apply_to_gates() の第1引数は，ゲートのリストへの参照である．
+function の第1引数は，ゲートのリストへの参照 (qc::Gate&) である必要がある．
 
 ```cpp
 auto function = [](qc::Gates& gates, auto compare) {gates.sort(compare);};
