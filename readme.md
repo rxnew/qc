@@ -274,7 +274,7 @@ if(gate.is_group()) gate.add_gate(x);
 ```
 
 qc::Circuit や qc::Gate が持つゲートのリストに対して，メソッドに無い操作を行いたい場合には，***apply_to_gates()*** を利用する．
-apply_to_gates() の第1引数は，ゲートのリストへの参照である．
+function の第1引数は，ゲートのリストへの参照である．
 
 ```cpp
 auto function = [](qc::Gates& gates, auto compare) {gates.sort(compare);};
