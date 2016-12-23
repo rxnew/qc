@@ -18,11 +18,11 @@ class CsvdEvBase : public CsvdBase<Dependency> {
   using Super = CsvdBase<Dependency>;
 
  public:
-  using Vertex = Super::Vertex;
-  using Graph = Super::Graph;
-  using Vertices = Super::Vertices;
-  using Cliques = Super::Cliques;
-  using DependencyGraph = Super::DependencyGraph;
+  using Vertex = typename Super::Vertex;
+  using Graph = typename Super::Graph;
+  using Vertices = typename Super::Vertices;
+  using Cliques = typename Super::Cliques;
+  using DependencyGraph = typename Super::DependencyGraph;
 
   template <class... Args>
   CsvdEvBase(Args&&... args);

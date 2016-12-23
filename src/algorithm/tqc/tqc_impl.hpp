@@ -1,6 +1,7 @@
 #pragma once
 
 #include "parallel.hpp"
+#include "../../gate/group.hpp"
 
 namespace qc {
 inline namespace algorithm {

@@ -11,7 +11,7 @@
 namespace qc {
 inline namespace algorithm {
 inline namespace tqc {
-template <class Engine = CsvdEv1>
+template <class Engine = CsvdEv1<>>
 auto parallelize(Circuit& circuit) -> void;
 }
 }

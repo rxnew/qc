@@ -18,19 +18,19 @@ class CsvdEv1 : public CsvdEvBase<Dependency> {
   using Super = CsvdEvBase<Dependency>;
 
  public:
-  using Vertex = Super::Vertex;
-  using Graph = Super::Graph;
-  using Vertices = Super::Vertices;
-  using Cliques = Super::Cliques;
-  using DependencyGraph = Super::DependencyGraph;
+  using Vertex = typename Super::Vertex;
+  using Graph = typename Super::Graph;
+  using Vertices = typename Super::Vertices;
+  using Cliques = typename Super::Cliques;
+  using DependencyGraph = typename Super::DependencyGraph;
 
   template <class... Args>
   CsvdEv1(Args&&... args);
   virtual ~CsvdEv1() = default;
 
  protected:
-  virtual auto calculate_evalution_value(Vertices const& clique) const override
-    -> int;
+  virtual auto calculate_evalution_value(Vertices const& clique) const
+    -> int override;
 };
 }
 }

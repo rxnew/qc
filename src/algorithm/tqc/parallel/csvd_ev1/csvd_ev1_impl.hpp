@@ -12,7 +12,7 @@ inline CsvdEv1<Dependency>::CsvdEv1(Args&&... args)
 template <class Dependency>
 inline auto CsvdEv1<Dependency>::
 calculate_evalution_value(Vertices const& clique) const -> int {
-  return dependency_graph_.count_dependent_vertices(clique);
+  return this->dependency_graph_.count_dependent_vertices(clique);
 }
 
 }

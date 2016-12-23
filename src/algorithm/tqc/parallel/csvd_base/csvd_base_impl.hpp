@@ -49,7 +49,8 @@ auto CsvdBase<Dependency>::_create_cliques(Layout const& layout) const
 }
 
 template <class Dependency>
-auto CsvdBase<Dependency>::_create_group(Layout const& layout) -> Group {
+auto CsvdBase<Dependency>::_create_group(Layout const& layout)
+  -> std::list<Vertices> {
   auto cliques = _create_cliques(layout);
   dependency_graph_.remove_vertex(cliques);
   return _select_clique(cliques);

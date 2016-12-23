@@ -39,7 +39,7 @@ class CsvdBase {
   virtual auto _create_cliques(Layout const& layout) const -> Cliques;
   virtual auto _select_clique(Cliques const& cliques) const
     -> Vertices const& = 0;
-  virtual auto _create_group(Layout const& layout) -> Group;
+  virtual auto _create_group(Layout const& layout) -> std::list<Vertices>;
 };
 }
 }
