@@ -9,6 +9,7 @@
 #include "../../gate/library.hpp"
 #include "../../gate/group.hpp"
 #include "../../circuit.hpp"
+#include "../../util/set.hpp"
 
 namespace qc {
 inline namespace algorithm {
@@ -21,6 +22,16 @@ auto get_cbit(Gate const& gate) -> CBit const& {
 auto get_tbit(Gate const& gate) -> TBit const& {
   assert(gate.is_single_target());
   return *gate.get_tbits().cbegin();
+}
+
+// Xゲートのみ実装
+auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool {
+  if(lhs.get_type() == GateType::X && lhs.get_type() == GateType::X) {
+    return
+      util::is_intersected(lhs.get_cbits(), rhs.get_tbits()) ||
+      util::is_intersected(lhs.get_tbits(), rhs.get_cbits());
+  }
+  return true;
 }
 
 auto decomp_to_single_target_gates(Gate const& gate) -> Gates {
@@ -39,7 +50,6 @@ auto decomp_to_single_target_gates(Gate const& gate) -> Gates {
 auto decomp_to_single_target_gates(Circuit const& circuit) -> Circuit {
   return Circuit(_decomp_to_single_target_gates(circuit));
 }
-
 
 auto _decomp_to_single_target_gates(GatesWrapperShell const& target) -> Gates {
   auto result_gates = Gates();

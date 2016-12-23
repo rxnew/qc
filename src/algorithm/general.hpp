@@ -23,6 +23,7 @@ auto insert_gate_before(GatesWrapperShell& target, GatesCIter pos, T&& gate)
 template <class T>
 auto insert_gate_after(GatesWrapperShell& target, GatesCIter pos, T&& gate)
   -> GatesIter;
+auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool;
 auto decomp_to_single_target_gates(Gate const& gate) -> Gates;
 auto decomp_to_single_target_gates(Circuit const& circuit) -> Circuit;
 }
