@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../general.hpp"
+#include "../../general.hpp"
 
 namespace qc {
 inline namespace algorithm {

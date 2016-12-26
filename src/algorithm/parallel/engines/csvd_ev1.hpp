@@ -12,10 +12,10 @@
 namespace qc {
 inline namespace algorithm {
 inline namespace tqc {
-template <class Dependency = GateDependency>
-class CsvdEv1 : public CsvdEvBase<Dependency> {
+template <class Predicate, class Dependency = GateDependency>
+class CsvdEv1 : public CsvdEvBase<Predicate, Dependency> {
  protected:
-  using Super = CsvdEvBase<Dependency>;
+  using Super = CsvdEvBase<Predicate, Dependency>;
 
  public:
   using Vertex = typename Super::Vertex;
@@ -23,13 +23,15 @@ class CsvdEv1 : public CsvdEvBase<Dependency> {
   using Vertices = typename Super::Vertices;
   using Cliques = typename Super::Cliques;
   using DependencyGraph = typename Super::DependencyGraph;
+  using predicate = Predicate;
+  using dependency = Dependency;
 
   template <class... Args>
   CsvdEv1(Args&&... args);
   virtual ~CsvdEv1() = default;
 
  protected:
-  virtual auto calculate_evalution_value(Vertices const& clique) const
+  virtual auto _calculate_evalution_value(Vertices const& clique) const
     -> int override;
 };
 }

@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "../../../gate.hpp"
+#include "../../gate.hpp"
 
 namespace qc {
 inline namespace algorithm {

@@ -3,15 +3,15 @@
 namespace qc {
 inline namespace algorithm {
 inline namespace tqc {
-template <class Dependency>
+template <class Predicate, class Dependency>
 template <class... Args>
-inline CsvdEvBase<Dependency>::CsvdEvBase(Args&&... args)
+inline CsvdEvBase<Predicate, Dependency>::CsvdEvBase(Args&&... args)
   : Super(std::forward<Args>(args)...) {
 }
 
-template <class Dependency>
-auto CsvdEvBase<Dependency>::_select_clique(Cliques const& cliques) const
-  -> const Vertices& {
+template <class Predicate, class Dependency>
+auto CsvdEvBase<Predicate, Dependency>::
+_select_clique(Cliques const& cliques) const -> const Vertices& {
   assert(!cliques.empty());
 
   auto result = cliques.cbegin();

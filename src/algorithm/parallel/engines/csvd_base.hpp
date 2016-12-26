@@ -9,12 +9,13 @@
 #include "graph/dependency_graph.hpp"
 #include "graph/algorithm/bron_kerbosch.hpp"
 
-#include "gate_dependency.hpp"
+#include "../../../layout.hpp"
+#include "../gate_dependency.hpp"
 
 namespace qc {
 inline namespace algorithm {
 inline namespace tqc {
-template <class Dependency = GateDependency>
+template <class Predicate, class Dependency = GateDependency>
 class CsvdBase {
  public:
   using Vertex = std::shared_ptr<Gate>;
@@ -22,24 +23,29 @@ class CsvdBase {
   using Vertices = Graph::Vertices;
   using Cliques = graph::BronKerboschPivot<Graph>::Cliques;
   using DependencyGraph = graph::DependencyGraph<Vertex, Dependency>;
+  using predicate = Predicate;
+  using dependency = Dependency;
 
   CsvdBase(DependencyGraph const& dependency_graph);
   CsvdBase(DependencyGraph&& dependency_graph);
   virtual ~CsvdBase() = default;
 
-  auto parallelize(Layout const& layout) -> std::list<Vertices>;
+  template <int dim>
+  auto parallelize(Layout<dim> const& layout) -> std::list<Vertices>;
 
  protected:
   DependencyGraph dependency_graph_;
   DependencyGraph dependency_graph_origin_;
 
-  virtual auto _create_non_overlapped_graph(Vertices const& vertices,
-                                            Layout const& layout) const
+  template <int dim>
+  auto _create_graph(Vertices const& vertices, Layout<dim> const& layout) const
     -> Graph;
-  virtual auto _create_cliques(Layout const& layout) const -> Cliques;
+  template <int dim>
+  auto _create_cliques(Layout<dim> const& layout) const -> Cliques;
+  template <int dim>
+  auto _create_group(Layout<dim> const& layout) -> std::list<Vertices>;
   virtual auto _select_clique(Cliques const& cliques) const
     -> Vertices const& = 0;
-  virtual auto _create_group(Layout const& layout) -> std::list<Vertices>;
 };
 }
 }

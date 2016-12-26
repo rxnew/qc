@@ -9,7 +9,7 @@
 
 namespace qc {
 namespace util {
-inline namespace set {
+namespace set {
 template <class T>
 auto set_union(std::unordered_set<T> const& set, const T& value)
   -> std::unordered_set<T>;

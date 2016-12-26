@@ -27,9 +27,13 @@ auto get_tbit(Gate const& gate) -> TBit const& {
 // Xゲートのみ実装
 auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool {
   if(lhs.get_type() == GateType::X && lhs.get_type() == GateType::X) {
-    return
-      util::is_intersected(lhs.get_cbits(), rhs.get_tbits()) ||
-      util::is_intersected(lhs.get_tbits(), rhs.get_cbits());
+    for(auto const& cbit : lhs.get_cbits()) {
+      if(rhs.has_tbit(cbit.get_no())) return true;
+    }
+    for(auto const& cbit : rhs.get_cbits()) {
+      if(lhs.has_tbit(cbit.get_no())) return true;
+    }
+    return false;
   }
   return true;
 }
