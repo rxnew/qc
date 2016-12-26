@@ -11,7 +11,7 @@
 namespace qc {
 inline namespace algorithm {
 inline namespace tqc {
-template <int dim, class Real = float>
+template <int dim, class Real = int>
 class Layout {
  private:
   using Point = util::vector::Point<dim, Real>;
@@ -32,12 +32,33 @@ class Layout {
   auto operator[](BitNo bit) const -> Point const&;
 
   auto get_coords() const -> std::map<BitNo, Point> const&;
-  auto print(std::ostream& os) const -> void;
+  auto find_min_corner() const -> Point;
+  auto find_max_corner() const -> Point;
+  auto find_bit_no(Point const& point) const -> std::tuple<bool, BitNo>;
+  auto print(std::ostream& os = std::cout) const -> void;
   auto output(std::string const& filename) const -> void;
   auto input(std::string const& filename) -> bool;
 
  private:
   std::map<BitNo, Point> coords_;
+};
+
+template <int dim, class Real, class Enable = void>
+struct LayoutPrinter {
+  static auto print(Layout<dim, Real> const& layout,
+                    std::ostream& os = std::cout) -> void;
+};
+
+template <class T>
+struct LayoutPrinter<1, T, std::enable_if_t<std::is_integral<T>::value>> {
+  static auto print(Layout<1, T> const& layout,
+                    std::ostream& os = std::cout) -> void;
+};
+
+template <class T>
+struct LayoutPrinter<2, T, std::enable_if_t<std::is_integral<T>::value>> {
+  static auto print(Layout<2, T> const& layout,
+                    std::ostream& os = std::cout) -> void;
 };
 
 using Layout1d = Layout<1>;

@@ -10,8 +10,7 @@ template <int dim, class Real = float>
 class Point {
 public:
   Point() = default;
-  template <class... Args>
-  Point(Args... args);
+  Point(std::initializer_list<Real> list);
   Point(Point const&) = default;
   Point(Point&&) noexcept = default;
   ~Point() = default;
@@ -29,7 +28,8 @@ public:
 
   auto dimension() const -> int;
   auto inner_product() const -> Real;
-  auto norm() const -> Real;
+  template <class T = Real>
+  auto norm() const -> T;
 
  private:
   Point(std::array<Real, dim>&& p);

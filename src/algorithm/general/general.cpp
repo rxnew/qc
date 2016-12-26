@@ -9,7 +9,6 @@
 #include "../../gate/library.hpp"
 #include "../../gate/group.hpp"
 #include "../../circuit.hpp"
-#include "../../util/set.hpp"
 
 namespace qc {
 inline namespace algorithm {

@@ -17,9 +17,7 @@ auto _ccw(Point<2, Real> const& a,
 
 // implementations
 template <int dim, class Real>
-template <class... Args>
-Point<dim, Real>::Point(Args... args) {
-
+Point<dim, Real>::Point(std::initializer_list<Real> list) : p_(list) {
 }
 
 template <int dim, class Real>
@@ -95,8 +93,9 @@ auto Point<dim, Real>::inner_product() const -> Real {
 }
 
 template <int dim, class Real>
-auto Point<dim, Real>::norm() const -> Real {
-  return std::sqrt(inner_product());
+template <class T>
+auto Point<dim, Real>::norm() const -> T {
+  return std::sqrt(static_cast<T>(inner_product()));
 }
 
 template <int dim, class Real>
@@ -115,10 +114,10 @@ auto is_intersected(Point<1, Real> const& a1,
                     Point<1, Real> const& a2,
                     Point<1, Real> const& b1,
                     Point<1, Real> const& b2) -> bool {
-  Point<1, Real> a_max = std::max(a1, a2); 
-  Point<1, Real> a_min = std::min(a1, a2);
-  Point<1, Real> b_max = std::max(b1, b2);
-  Point<1, Real> b_min = std::min(b1, b2);
+  Point<1, Real> const& a_max = std::max(a1, a2); 
+  Point<1, Real> const& a_min = std::min(a1, a2);
+  Point<1, Real> const& b_max = std::max(b1, b2);
+  Point<1, Real> const& b_min = std::min(b1, b2);
   return !(a_min > b_max || a_max < b_min);
 }
 
@@ -148,10 +147,16 @@ auto _ccw(Point<2, Real> const& a,
           Point<2, Real> const& c) -> int {
   b = b - a;
   c = c - a;
-  if(_cross(b, c) > 0)    return +1;       // counter clockwise
-  if(_cross(b, c) < 0)    return -1;       // clockwise
-  if(_dot(b, c) < 0)      return +2;       // c--a--b on line
-  if(b.norm() < c.norm()) return -2;       // a--b--c on line
+  if(_cross(b, c) > 0) return +1;       // counter clockwise
+  if(_cross(b, c) < 0) return -1;       // clockwise
+  if(_dot(b, c) < 0)   return +2;       // c--a--b on line
+  // a--b--c on line
+  if(std::is_floating_point<Real>::value) {
+    if(b.norm() < c.norm()) return -2;
+  }
+  else {
+    if(b.template norm<double>() < c.template norm<double>()) return -2;
+  }
   return 0;
 }
 }
