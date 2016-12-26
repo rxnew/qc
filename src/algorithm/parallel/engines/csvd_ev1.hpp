@@ -11,7 +11,7 @@
 
 namespace qc {
 inline namespace algorithm {
-inline namespace tqc {
+inline namespace parallel {
 template <class Predicate, class Dependency = GateDependency>
 class CsvdEv1 : public CsvdEvBase<Predicate, Dependency> {
  protected:

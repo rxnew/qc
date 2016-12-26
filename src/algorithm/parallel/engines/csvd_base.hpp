@@ -14,7 +14,7 @@
 
 namespace qc {
 inline namespace algorithm {
-inline namespace tqc {
+inline namespace parallel {
 template <class Predicate, class Dependency = GateDependency>
 class CsvdBase {
  public:
@@ -26,24 +26,27 @@ class CsvdBase {
   using predicate = Predicate;
   using dependency = Dependency;
 
-  CsvdBase(DependencyGraph const& dependency_graph);
-  CsvdBase(DependencyGraph&& dependency_graph);
+  CsvdBase(DependencyGraph const& dependency_graph,
+           Predicate predicate = Predicate());
+  CsvdBase(DependencyGraph&& dependency_graph,
+           Predicate predicate = Predicate());
   virtual ~CsvdBase() = default;
 
-  template <int dim>
-  auto parallelize(Layout<dim> const& layout) -> std::list<Vertices>;
+  template <int dim, class Real>
+  auto parallelize(Layout<dim, Real> const& layout) -> std::list<Vertices>;
 
  protected:
   DependencyGraph dependency_graph_;
   DependencyGraph dependency_graph_origin_;
+  Predicate predicate_;
 
-  template <int dim>
-  auto _create_graph(Vertices const& vertices, Layout<dim> const& layout) const
-    -> Graph;
-  template <int dim>
-  auto _create_cliques(Layout<dim> const& layout) const -> Cliques;
-  template <int dim>
-  auto _create_group(Layout<dim> const& layout) -> std::list<Vertices>;
+  template <int dim, class Real>
+  auto _create_graph(Vertices const& vertices, Layout<dim, Real> const& layout)
+    const -> Graph;
+  template <int dim, class Real>
+  auto _create_cliques(Layout<dim, Real> const& layout) const -> Cliques;
+  template <int dim, class Real>
+  auto _create_group(Layout<dim, Real> const& layout) -> Vertices;
   virtual auto _select_clique(Cliques const& cliques) const
     -> Vertices const& = 0;
 };

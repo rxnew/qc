@@ -1,15 +1,19 @@
 #pragma once
 
-#include "../../group.hpp"
+#include "../group.hpp"
 
 namespace qc {
 inline namespace algorithm {
-inline namespace tqc {
-template <int dim, class Engine>
-auto parallelize(Circuit const& circuit, Layout<dim> const& layout) -> Circuit {
+inline namespace parallel {
+template <class Engine, int dim, class Real>
+auto parallelize(Circuit const& circuit, Layout<dim, Real> const& layout)
+  -> Circuit {
+  using dependency = typename Engine::dependency;
+
   auto parallelized_circuit = Circuit();
-  auto engine = Engine(create_dependency_graph<Engine::dependency>(circuit));
+  auto engine = Engine(create_dependency_graph<dependency>(circuit));
   auto cliques = engine.parallelize(layout);
+
   for(auto& vertices : cliques) {
     auto group = Group();
     for(auto& v : vertices) {
@@ -17,6 +21,7 @@ auto parallelize(Circuit const& circuit, Layout<dim> const& layout) -> Circuit {
     }
     parallelized_circuit.add_gate(std::move(group));
   }
+
   return parallelized_circuit;
 }
 

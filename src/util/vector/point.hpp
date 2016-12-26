@@ -10,13 +10,15 @@ template <int dim, class Real = float>
 class Point {
 public:
   Point() = default;
-  Point(std::initializer_list<Real> list);
+  template <class T, class... Args,
+            class = std::enable_if_t<!std::is_convertible<T, Point>::value>>
+  Point(T&& t, Args&&... args);
   Point(Point const&) = default;
   Point(Point&&) noexcept = default;
   ~Point() = default;
 
-  auto operator=(Point const&) -> Point const& = default;
-  auto operator=(Point&&) -> Point const& = default;
+  auto operator=(Point const&) -> Point& = default;
+  auto operator=(Point&&) -> Point& = default;
   auto operator==(Point const& other) const -> bool;
   auto operator!=(Point const& other) const -> bool;
   auto operator<(Point const& other) const -> bool;

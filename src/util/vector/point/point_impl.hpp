@@ -17,16 +17,18 @@ auto _ccw(Point<2, Real> const& a,
 
 // implementations
 template <int dim, class Real>
-Point<dim, Real>::Point(std::initializer_list<Real> list) : p_(list) {
+template <class T, class... Args, class>
+inline Point<dim, Real>::Point(T&& t, Args&&... args)
+  : p_{{std::forward<T>(t), std::forward<Args>(args)...}} {
 }
 
 template <int dim, class Real>
-auto Point<dim, Real>::operator==(Point const& other) const -> bool {
+inline auto Point<dim, Real>::operator==(Point const& other) const -> bool {
   return p_ == other.p_;
 }
 
 template <int dim, class Real>
-auto Point<dim, Real>::operator!=(Point const& other) const -> bool {
+inline auto Point<dim, Real>::operator!=(Point const& other) const -> bool {
   return p_ != other.p_;
 }
 
@@ -145,17 +147,17 @@ template <class Real>
 auto _ccw(Point<2, Real> const& a,
           Point<2, Real> const& b,
           Point<2, Real> const& c) -> int {
-  b = b - a;
-  c = c - a;
-  if(_cross(b, c) > 0) return +1;       // counter clockwise
-  if(_cross(b, c) < 0) return -1;       // clockwise
-  if(_dot(b, c) < 0)   return +2;       // c--a--b on line
+  auto ba = b - a;
+  auto ca = c - a;
+  if(_cross(ba, ca) > 0) return +1;       // counter clockwise
+  if(_cross(ba, ca) < 0) return -1;       // clockwise
+  if(_dot(ba, ca) < 0)   return +2;       // c--a--b on line
   // a--b--c on line
   if(std::is_floating_point<Real>::value) {
-    if(b.norm() < c.norm()) return -2;
+    if(ba.norm() < ca.norm()) return -2;
   }
   else {
-    if(b.template norm<double>() < c.template norm<double>()) return -2;
+    if(ba.template norm<double>() < ca.template norm<double>()) return -2;
   }
   return 0;
 }

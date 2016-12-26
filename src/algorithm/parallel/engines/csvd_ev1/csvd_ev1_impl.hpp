@@ -2,7 +2,7 @@
 
 namespace qc {
 inline namespace algorithm {
-inline namespace tqc {
+inline namespace parallel {
 template <class Predicate, class Dependency>
 template <class... Args>
 inline CsvdEv1<Predicate, Dependency>::CsvdEv1(Args&&... args)

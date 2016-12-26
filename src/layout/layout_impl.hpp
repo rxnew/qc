@@ -4,8 +4,6 @@
 #include <limits>
 
 namespace qc {
-inline namespace algorithm {
-inline namespace tqc {
 template <int dim, class Real>
 inline Layout<dim, Real>::
 Layout(std::map<BitNo, Point> const& coords) : coords_(coords) {
@@ -33,7 +31,7 @@ inline auto Layout<dim, Real>::operator[](BitNo bit) -> Point& {
 
 template <int dim, class Real>
 inline auto Layout<dim, Real>::operator[](BitNo bit) const -> Point const& {
-  return coords_[bit];
+  return coords_.at(bit);
 }
 
 template <int dim, class Real>
@@ -76,9 +74,9 @@ template <int dim, class Real>
 auto Layout<dim, Real>::find_bit_no(Point const& point) const
   -> std::tuple<bool, BitNo> {
   for(auto const& e : coords_) {
-    if(e.second == point) return std::make_tuple<true, e.first>;
+    if(e.second == point) return std::make_tuple(true, e.first);
   }
-  return std::make_tuple<false, BitNo()>;
+  return std::make_tuple(false, BitNo());
 }
 
 template <int dim, class Real>
@@ -136,7 +134,5 @@ print(Layout<2, T> const& layout, std::ostream& os) -> void {
     os << std::endl;
     ++current_point[1];
   }
-}
-}
 }
 }

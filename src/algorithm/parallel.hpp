@@ -7,12 +7,15 @@
 
 namespace qc {
 inline namespace algorithm {
-inline namespace tqc {
-template <int dim, class Engine>
-auto parallelize(Circuit const& circuit, Layout<dim> const& layout) -> Circuit;
+inline namespace parallel {
+template <class Engine, int dim, class Real>
+auto parallelize(Circuit const& circuit, Layout<dim, Real> const& layout)
+  -> Circuit;
 template <class Dependency = GateDependency>
 auto create_dependency_graph(Circuit circuit)
   -> graph::DependencyGraph<std::shared_ptr<Gate>, Dependency>;
 }
 }
 }
+
+#include "parallel/parallel_impl.hpp"

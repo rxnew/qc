@@ -9,14 +9,11 @@
 #include "util/vector/point.hpp"
 
 namespace qc {
-inline namespace algorithm {
-inline namespace tqc {
 template <int dim, class Real = int>
 class Layout {
- private:
+ public:
   using Point = util::vector::Point<dim, Real>;
 
- public:
   Layout() = default;
   Layout(std::map<BitNo, Point> const& coords);
   Layout(std::map<BitNo, Point>&& coords);
@@ -63,8 +60,6 @@ struct LayoutPrinter<2, T, std::enable_if_t<std::is_integral<T>::value>> {
 
 using Layout1d = Layout<1>;
 using Layout2d = Layout<2>;
-}
-}
 }
 
 #include "layout/layout_impl.hpp"

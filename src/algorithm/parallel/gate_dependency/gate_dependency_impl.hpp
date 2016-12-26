@@ -4,7 +4,7 @@
 
 namespace qc {
 inline namespace algorithm {
-inline namespace tqc {
+inline namespace parallel {
 inline auto GateDependency::operator()(std::shared_ptr<Gate> const& lhs,
                                        std::shared_ptr<Gate> const& rhs) const
   -> bool {
