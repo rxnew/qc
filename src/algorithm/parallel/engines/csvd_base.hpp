@@ -37,7 +37,7 @@ class CsvdBase {
 
  protected:
   DependencyGraph dependency_graph_;
-  DependencyGraph dependency_graph_origin_;
+  DependencyGraph const dependency_graph_origin_;
   Predicate predicate_;
 
   template <int dim, class Real>
