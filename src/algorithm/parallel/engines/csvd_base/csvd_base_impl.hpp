@@ -64,7 +64,7 @@ auto CsvdBase<Predicate, Dependency>::
 _create_group(Layout<dim, Real> const& layout) -> Vertices {
   auto cliques = _create_cliques(layout);
   auto clique = _select_clique(cliques);
-  std::cout << cliques.front().size() << std::endl;
+  std::cout << cliques.size() << std::endl;
   dependency_graph_.remove_vertices(clique);
   return clique;
 }
