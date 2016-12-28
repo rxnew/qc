@@ -5,7 +5,7 @@
 #include "algorithm/oracle.hpp"
 
 using namespace qc::literals;
-using namespace qc::library;
+using namespace qc::library_gates;
 using qc::is_mct_circuit;
 using qc::Gate;
 

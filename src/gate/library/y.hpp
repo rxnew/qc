@@ -29,7 +29,7 @@ class YKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
-inline namespace library {
+inline namespace library_gates {
 using Y = Unit<YKernel>;
 }
 }

@@ -4,7 +4,7 @@
 #include "gate/library.hpp"
 
 using namespace qc::literals;
-using namespace qc::library;
+using namespace qc::library_gates;
 using qc::Gate;
 
 class XTest : public ::testing::Test {

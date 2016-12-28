@@ -5,7 +5,7 @@
 #include "gate/group.hpp"
 
 using namespace qc::literals;
-using namespace qc::library;
+using namespace qc::library_gates;
 using qc::Group;
 using qc::Gate;
 
