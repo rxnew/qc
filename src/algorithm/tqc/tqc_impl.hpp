@@ -13,7 +13,7 @@ auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout)
   using namespace std::placeholders;
   auto overlapped =
     std::bind(is_tqc_overlapped<dim, Real>, _1, _2, layout, allow_mtc);
-  return parallelize<Engine<decltype(overlapped)>>(circuit, layout, overlapped);
+  return parallelize<Engine<decltype(overlapped)>>(circuit, overlapped);
 }
 
 template <template <class...> class Engine, int dim, class Real>

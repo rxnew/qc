@@ -9,7 +9,6 @@
 #include "graph/dependency_graph.hpp"
 #include "graph/algorithm/bron_kerbosch.hpp"
 
-#include "../../../layout.hpp"
 #include "../predicates.hpp"
 
 namespace qc {
@@ -32,25 +31,18 @@ class CsvdBase {
                     Overlapped overlapped = Overlapped());
   virtual ~CsvdBase() = default;
 
-  template <int dim, class Real>
-  auto parallelize(Layout<dim, Real> const& layout) & -> std::list<Vertices>;
-  template <int dim, class Real>
-  auto parallelize(Layout<dim, Real> const& layout) && -> std::list<Vertices>;
+  auto parallelize() & -> std::list<Vertices>;
+  auto parallelize() && -> std::list<Vertices>;
 
  protected:
   DependencyGraph dependency_graph_;
   DependencyGraph const dependency_graph_origin_;
   Overlapped overlapped_;
 
-  template <int dim, class Real>
-  auto _parallelize(Layout<dim, Real> const& layout) -> std::list<Vertices>;
-  template <int dim, class Real>
-  auto _create_graph(Vertices const& vertices, Layout<dim, Real> const& layout)
-    const -> Graph;
-  template <int dim, class Real>
-  auto _create_cliques(Layout<dim, Real> const& layout) const -> Cliques;
-  template <int dim, class Real>
-  auto _create_group(Layout<dim, Real> const& layout) -> Vertices;
+  auto _parallelize() -> std::list<Vertices>;
+  auto _create_group() -> Vertices;
+  auto _create_cliques() const -> Cliques;
+  auto _create_graph(Vertices const& vertices) const -> Graph;
   virtual auto _select_clique(Cliques const& cliques) const
     -> Vertices const& = 0;
 };

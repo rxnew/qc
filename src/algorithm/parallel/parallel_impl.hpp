@@ -6,15 +6,14 @@
 namespace qc {
 inline namespace algorithm {
 inline namespace parallel {
-template <class Engine, int dim, class Real, class Overlapped>
-auto parallelize(Circuit const& circuit, Layout<dim, Real> const& layout,
-                 Overlapped overlapped) -> Circuit {
+template <class Engine, class Overlapped>
+auto parallelize(Circuit const& circuit, Overlapped overlapped) -> Circuit {
   using dependency = typename Engine::dependency;
 
   auto parallelized_circuit = Circuit();
   auto dependency_graph = create_dependency_graph<dependency>(circuit);
   auto engine = Engine(std::move(dependency_graph), overlapped);
-  auto cliques = std::move(engine).parallelize(layout);
+  auto cliques = std::move(engine).parallelize();
 
   for(auto& vertices : cliques) {
     auto group = Group();
