@@ -5,6 +5,23 @@
 #include "../../debug/error.hpp"
 
 namespace qc {
+template <class Type, class... Args>
+inline auto make_gate(Args&&... args) -> Gate {
+  return Gate::make<Type>(std::forward<Args>(args)...);
+}
+template <class Type>
+inline auto make_gate(std::initializer_list<CBit> cbits,
+                      std::initializer_list<TBit> tbits) -> Gate {
+  return Gate::make<Type>(CBits(cbits), TBits(tbits));
+}
+
+template <class Type>
+inline auto make_gate(bool bedaggered,
+                      std::initializer_list<CBit> cbits,
+                      std::initializer_list<TBit> tbits) -> Gate {
+  return Gate::make<Type>(bedaggered, CBits(cbits), TBits(tbits));
+}
+
 template <class... Args>
 auto make_gate(GateType type, Args&&... args) -> Gate {
 #define REGIST(Type) if(Type::TYPE == type) \

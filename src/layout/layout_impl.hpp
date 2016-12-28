@@ -119,9 +119,9 @@ print(Layout<2, T> const& layout, std::ostream& os) -> void {
   auto min_corner_point = layout.find_min_corner();
   auto max_corner_point = layout.find_max_corner();
   auto current_point = min_corner_point;
-  while(current_point[1] <= max_corner_point[1]) {
-    current_point[0] = min_corner_point[0];
-    while(current_point[0] <= max_corner_point[0]) {
+  while(current_point[0] <= max_corner_point[0]) {
+    current_point[1] = min_corner_point[1];
+    while(current_point[1] <= max_corner_point[1]) {
       auto found = layout.find_bit_no(current_point);
       if(std::get<0>(found)) {
         os << std::setw(4) << std::right << std::get<1>(found);
@@ -129,10 +129,42 @@ print(Layout<2, T> const& layout, std::ostream& os) -> void {
       else {
         os << std::string(4, ' ');
       }
-      ++current_point[0];
+      ++current_point[1];
     }
     os << std::endl;
-    ++current_point[1];
+    ++current_point[0];
   }
+}
+
+template <int dim, class Real = int>
+auto make_regular_lattice_layout(int side_bit_count) -> Layout<dim, Real> {
+  auto layout = Layout<dim, Real>();
+  auto point = typename Layout<dim, Real>::Point();
+  auto bit_count = 0_bit;
+
+  std::function<void(int)> f = [&](auto d) {
+    if(d == dim) {
+      layout[bit_count++] = point;
+      return;
+    }
+    for(auto i = 0; i < side_bit_count; ++i) {
+      point[d] = i;
+      f(d + 1);
+    }
+  };
+
+  f(0);
+
+  return layout;
+}
+
+template <class Real = int>
+auto make_line_layout(int bit_count) -> Layout<1, Real> {
+  return make_regular_lattice_layout<1, Real>(bit_count);
+}
+
+template <class Real = int>
+auto make_square_layout(int side_bit_count) -> Layout<2, Real> {
+  return make_regular_lattice_layout<2, Real>(side_bit_count);
 }
 }

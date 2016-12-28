@@ -60,6 +60,15 @@ struct LayoutPrinter<2, T, std::enable_if_t<std::is_integral<T>::value>> {
 
 using Layout1d = Layout<1>;
 using Layout2d = Layout<2>;
+
+template <int dim, class Real = int>
+auto make_regular_lattice_layout(int side_bit_count) -> Layout<dim, Real>;
+
+template <class Real = int>
+auto make_line_layout(int bit_count) -> Layout<1, Real>;
+
+template <class Real = int>
+auto make_square_layout(int side_bit_count) -> Layout<2, Real>;
 }
 
 #include "layout/layout_impl.hpp"

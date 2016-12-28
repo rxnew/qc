@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../gate/group.hpp"
 #include "../group.hpp"
 
 namespace qc {

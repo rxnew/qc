@@ -20,4 +20,9 @@ inline auto Unit<GroupKernel>::operator=(Unit const& gate)
   kernel_ = gate.kernel_->clone();
   return *this;
 }
+
+template <class... Args>
+inline auto make_group(Args&&... args) -> Gate {
+  return Group::make(std::forward<Args>(args)...);
+}
 }

@@ -34,6 +34,7 @@ public:
   auto norm() const -> T;
 
  private:
+  Point(std::array<Real, dim> const& p);
   Point(std::array<Real, dim>&& p);
 
   std::array<Real, dim> p_;

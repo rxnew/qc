@@ -101,6 +101,14 @@ auto Point<dim, Real>::norm() const -> T {
 }
 
 template <int dim, class Real>
+inline Point<dim, Real>::Point(std::array<Real, dim> const& p) : p_(p) {
+}
+
+template <int dim, class Real>
+inline Point<dim, Real>::Point(std::array<Real, dim>&& p) : p_(std::move(p)) {
+}
+
+template <int dim, class Real>
 auto operator<<(std::ostream& os, Point<dim, Real> const& point)
   -> std::ostream& {
   os << "(";
