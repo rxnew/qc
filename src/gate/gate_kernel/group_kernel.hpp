@@ -46,6 +46,8 @@ class GroupKernel : public GateKernel, public GatesWrapperKernel {
   virtual auto get_gates() -> Gates& final;
   virtual auto get_gates() const -> Gates const& final;
   virtual auto print(std::ostream& os = std::cout) const -> void final;
+  virtual auto print_simple(std::ostream& os = std::cout,
+                            bool line_break = false) const -> void final;
 
  private:
   auto _get_cbits() const -> CBits&;

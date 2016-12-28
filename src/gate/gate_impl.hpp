@@ -62,6 +62,11 @@ inline auto Gate::bedaggered() const -> bool {
   return kernel_->bedaggered();
 }
 
+inline auto Gate::print_simple(std::ostream& os, bool line_break) const
+  -> void {
+  return kernel_->print_simple(os, line_break);
+}
+
 inline auto Gate::get_cbits() const -> CBits const& {
   return kernel_->get_cbits();
 }
@@ -100,7 +105,14 @@ inline auto Gate::_get_gates() -> Gates& {
 }
 
 inline Gate::Gate(std::unique_ptr<GateKernel>&& kernel)
-  : kernel_(std::move(kernel)) {}
+  : kernel_(std::move(kernel)) {
+}
 
-inline Gate::Gate(GateKernel*&& kernel) : kernel_(std::move(kernel)) {}
+inline Gate::Gate(GateKernel*&& kernel) : kernel_(std::move(kernel)) {
+}
+
+inline auto operator<<(std::ostream& os, Gate const& obj) -> std::ostream& {
+  obj.print_simple(os);
+  return os;
+}
 }

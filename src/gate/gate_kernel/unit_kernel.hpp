@@ -39,6 +39,8 @@ class UnitKernel : public GateKernel, public BitsWrapperKernel {
   virtual auto get_gates() -> Gates& final;
   virtual auto get_gates() const -> Gates const& final;
   virtual auto print(std::ostream& os = std::cout) const -> void final;
+  virtual auto print_simple(std::ostream& os = std::cout,
+                            bool line_break = false) const -> void final;
 
  protected:
   bool bedaggered_;

@@ -30,6 +30,8 @@ class GateKernel {
   virtual auto get_gates() -> Gates& = 0;
   virtual auto get_gates() const -> Gates const& = 0;
   virtual auto print(std::ostream& os = std::cout) const -> void = 0;
+  virtual auto print_simple(std::ostream& os = std::cout,
+                            bool line_break = false) const -> void = 0;
 };
 }
 

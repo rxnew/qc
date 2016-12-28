@@ -23,10 +23,8 @@ parallelize(Layout<dim, Real> const& layout)
   -> std::list<Vertices> {
   auto groups = std::list<Vertices>();
   dependency_graph_ = dependency_graph_origin_;
-  int i = 0;
   while(!dependency_graph_.is_empty()) {
     groups.push_back(_create_group(layout));
-    if(i++ > 1) break;
   }
   return groups;
 }
@@ -45,7 +43,6 @@ _create_graph(Vertices const& vertices, Layout<dim, Real> const& layout) const
       }
     }
   }
-  //std::cout << graph.exist_edge(*vertices.cbegin(), *(++vertices.cbegin())) << std::endl;
   return graph;
 }
 
@@ -64,7 +61,6 @@ auto CsvdBase<Predicate, Dependency>::
 _create_group(Layout<dim, Real> const& layout) -> Vertices {
   auto cliques = _create_cliques(layout);
   auto clique = _select_clique(cliques);
-  std::cout << cliques.size() << std::endl;
   dependency_graph_.remove_vertices(clique);
   return clique;
 }

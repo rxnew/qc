@@ -7,8 +7,6 @@ namespace util {
 namespace vector {
 // prototype declarations
 template <class Real>
-auto _dot(Point<2, Real> const& a, Point<2, Real> const& b) -> Real;
-template <class Real>
 auto _cross(Point<2, Real> const& a, Point<2, Real> const& b) -> Real;
 template <class Real>
 auto _ccw(Point<2, Real> const& a,
@@ -63,21 +61,21 @@ inline auto Point<dim, Real>::operator[](size_t n) const -> Real const& {
 template <int dim, class Real>
 auto Point<dim, Real>::operator+(Point<dim, Real> const& other) const
   -> Point {
-  std::array<Real, dim> p;
+  auto point = Point<dim, Real>();
   for(auto i = 0; i < dim; ++i) {
-    p[i] = (*this)[i] + other[i];
+    point[i] = (*this)[i] + other[i];
   }
-  return Point(std::move(other));
+  return point;
 }
 
 template <int dim, class Real>
 auto Point<dim, Real>::operator-(Point<dim, Real> const& other) const
   -> Point {
-  std::array<Real, dim> p;
+  auto point = Point<dim, Real>();
   for(auto i = 0; i < dim; ++i) {
-    p[i] = (*this)[i] - other[i];
+    point[i] = (*this)[i] - other[i];
   }
-  return Point(std::move(other));
+  return point;
 }
 
 template <int dim, class Real>
@@ -86,18 +84,23 @@ inline auto Point<dim, Real>::dimension() const -> int {
 }
 
 template <int dim, class Real>
-auto Point<dim, Real>::inner_product() const -> Real {
-  auto result = Real(0);
+template <class>
+auto Point<dim, Real>::norm(int n) const -> Real {
+  auto inner = Real(0);
   for(auto const& e : p_) {
-    result += e * e;
+    inner += std::pow(e, n);
   }
-  return result;
+  return std::pow(inner, Real(1) / n);
 }
 
 template <int dim, class Real>
-template <class T>
-auto Point<dim, Real>::norm() const -> T {
-  return std::sqrt(static_cast<T>(inner_product()));
+template <class>
+auto Point<dim, Real>::norm(int n) const -> long double {
+  auto inner = 0;
+  for(auto const& e : p_) {
+    inner += std::pow(e, n);
+  }
+  return std::pow(static_cast<long double>(inner), 1.0l / n);
 }
 
 template <int dim, class Real>
@@ -117,6 +120,16 @@ auto operator<<(std::ostream& os, Point<dim, Real> const& point)
     os << point[i];
   }
   return os << ")";
+}
+
+template <int dim, class Real>
+auto inner_product(Point<dim, Real> const& a, Point<dim, Real> const& b)
+  -> Real {
+  auto result = Real(0);
+  for(auto i = 0; i < dim; ++i) {
+    result += a[i] * b[i];
+  }
+  return result;
 }
 
 template <class Real>
@@ -142,11 +155,6 @@ auto is_intersected(Point<2, Real> const& a1,
 }
 
 template <class Real>
-auto _dot(Point<2, Real> const& a, Point<2, Real> const& b) -> Real {
-  return a[0] * b[0] + a[1] * b[1];
-}
-
-template <class Real>
 auto _cross(Point<2, Real> const& a, Point<2, Real> const& b) -> Real {
   return a[0] * b[1] - a[1] * b[0];
 }
@@ -157,16 +165,10 @@ auto _ccw(Point<2, Real> const& a,
           Point<2, Real> const& c) -> int {
   auto ba = b - a;
   auto ca = c - a;
-  if(_cross(ba, ca) > 0) return +1;       // counter clockwise
-  if(_cross(ba, ca) < 0) return -1;       // clockwise
-  if(_dot(ba, ca) < 0)   return +2;       // c--a--b on line
-  // a--b--c on line
-  if(std::is_floating_point<Real>::value) {
-    if(ba.norm() < ca.norm()) return -2;
-  }
-  else {
-    if(ba.template norm<double>() < ca.template norm<double>()) return -2;
-  }
+  if(_cross(ba, ca) > 0)        return +1; // counter clockwise
+  if(_cross(ba, ca) < 0)        return -1; // clockwise
+  if(inner_product(ba, ca) < 0) return +2; // c--a--b on line
+  if(ba.norm() < ca.norm())     return -2; // a--b--c on line
   return 0;
 }
 }

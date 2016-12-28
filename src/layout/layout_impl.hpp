@@ -1,7 +1,10 @@
 #pragma once
 
+#include <functional>
 #include <iomanip>
 #include <limits>
+
+#include "../bit.hpp"
 
 namespace qc {
 template <int dim, class Real>

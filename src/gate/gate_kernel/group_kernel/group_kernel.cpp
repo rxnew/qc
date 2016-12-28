@@ -22,6 +22,18 @@ auto GroupKernel::print(std::ostream& os) const -> void {
   os << Group::END_TAG << std::endl;
 }
 
+auto GroupKernel::print_simple(std::ostream& os, bool line_break) const -> void {
+  os << '{';
+  auto first = true;
+  for(auto const& gate : get_gates()) {
+    if(!first) os << ',';
+    else first = false;
+    gate.print_simple(os);
+  }
+  os << '}';
+  if(line_break) os << std::endl;
+}
+
 auto GroupKernel::_get_cbits() const -> CBits& {
   static auto cbits = CBits();
 

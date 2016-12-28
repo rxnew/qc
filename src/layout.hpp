@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include <iostream>
+#include <map>
+
 #include "forward_declarations.hpp"
 #include "util/vector/point.hpp"
 

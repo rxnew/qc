@@ -29,9 +29,10 @@ public:
   auto operator[](size_t n) const -> Real const&;
 
   auto dimension() const -> int;
-  auto inner_product() const -> Real;
-  template <class T = Real>
-  auto norm() const -> T;
+  template <class = std::enable_if_t<std::is_floating_point<Real>::value>>
+  auto norm(int n = 2) const -> Real;
+  template <class = std::enable_if_t<!std::is_floating_point<Real>::value>>
+  auto norm(int n = 2) const -> long double;
 
  private:
   Point(std::array<Real, dim> const& p);
@@ -46,6 +47,9 @@ using Point2d = Point<2>;
 template <int dim, class Real>
 auto operator<<(std::ostream& os, Point<dim, Real> const& point)
   -> std::ostream&;
+template <int dim, class Real>
+auto inner_product(Point<dim, Real> const& a, Point<dim, Real> const& b)
+  -> Real;
 template <class Real>
 auto is_intersected(Point<1, Real> const& a1,
                     Point<1, Real> const& a2,
