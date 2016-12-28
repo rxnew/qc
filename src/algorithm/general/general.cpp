@@ -42,6 +42,24 @@ auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool {
   return true;
 }
 
+auto find_min_bit(Circuit const& circuit) -> BitNo {
+  auto bits = circuit.collect_bits();
+  auto min_bit = std::numeric_limits<unsigned int>::max();
+  for(auto const& bit : bits) {
+    min_bit = std::min(min_bit, bit);
+  }
+  return min_bit;
+}
+
+auto find_max_bit(Circuit const& circuit) -> BitNo {
+  auto bits = circuit.collect_bits();
+  auto max_bit = 0_bit;
+  for(auto const& bit : bits) {
+    max_bit = std::max(max_bit, bit);
+  }
+  return max_bit;
+}
+
 auto decomp_to_single_target_gates(Gate const& gate) -> Gates {
   if(gate.is_group()) return _decomp_to_single_target_gates(gate);
 

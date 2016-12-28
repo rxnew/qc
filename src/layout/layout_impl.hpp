@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <limits>
 
-#include "../bit.hpp"
+#include "../algorithm/general.hpp"
 
 namespace qc {
 template <int dim, class Real>
@@ -139,15 +139,22 @@ print(Layout<2, T> const& layout, std::ostream& os) -> void {
   }
 }
 
-template <int dim, class Real = int>
-auto make_regular_lattice_layout(int side_bit_count) -> Layout<dim, Real> {
+template <int dim, class Real, template <class...> class Container>
+auto make_regular_lattice_layout(Container<BitNo> const& bit_sequence)
+  -> Layout<dim, Real> {
+  auto side_bit_count = static_cast<unsigned int>
+    (std::ceil(std::pow(static_cast<float>(bit_sequence.size()), 1.0f / dim)));
+  auto bit_count = std::pow(side_bit_count, dim);
+
+  assert(bit_count == bit_sequence.size());
+
   auto layout = Layout<dim, Real>();
   auto vector = typename Layout<dim, Real>::Vector();
-  auto bit_count = 0_bit;
+  auto count = 0u;
 
   std::function<void(int)> f = [&](auto d) {
     if(d == dim) {
-      layout[bit_count++] = vector;
+      layout[bit_sequence[count++]] = vector;
       return;
     }
     for(auto i = 0; i < side_bit_count; ++i) {
@@ -161,13 +168,31 @@ auto make_regular_lattice_layout(int side_bit_count) -> Layout<dim, Real> {
   return layout;
 }
 
-template <class Real = int>
-auto make_line_layout(int bit_count) -> Layout<1, Real> {
-  return make_regular_lattice_layout<1, Real>(bit_count);
+template <int dim, class Real>
+auto make_regular_lattice_layout(int side_bit_count) -> Layout<dim, Real> {
+  auto bit_count = std::pow(side_bit_count, dim);
+  auto bit_sequence = std::vector<BitNo>(bit_count);
+  for(auto i = 0u; i < bit_sequence.size(); ++i) {
+    bit_sequence[i] = static_cast<BitNo>(i);
+  }
+  return make_regular_lattice_layout<dim, Real>(bit_sequence);
 }
 
-template <class Real = int>
-auto make_square_layout(int side_bit_count) -> Layout<2, Real> {
-  return make_regular_lattice_layout<2, Real>(side_bit_count);
+template <int dim, class Real>
+auto make_regular_lattice_layout(Circuit const& circuit) -> Layout<dim, Real> {
+  auto max_bit = find_max_bit(circuit);
+  auto side_bit_count = static_cast<unsigned int>
+    (std::ceil(std::pow(static_cast<float>(max_bit), 1.0f / dim)));
+  return make_regular_lattice_layout<dim, Real>(side_bit_count);
+}
+
+template <class Real, class... Args>
+auto make_line_layout(Args&&... args) -> Layout<1, Real> {
+  return make_regular_lattice_layout<1, Real>(std::forward<Args>(args)...);
+}
+
+template <class Real, class... Args>
+auto make_square_layout(Args&&... args) -> Layout<2, Real> {
+  return make_regular_lattice_layout<2, Real>(std::forward<Args>(args)...);
 }
 }

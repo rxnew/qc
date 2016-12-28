@@ -16,7 +16,7 @@ template <template <class...> class Engine = CsvdEv1, bool allow_mtc,
           int dim, class Real>
 auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout)
   -> Circuit;
-template <template <class...> class Engine, int dim, class Real>
+template <template <class...> class Engine = CsvdEv1, int dim, class Real>
 auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout)
   -> Circuit;
 template <int dim, class Real>

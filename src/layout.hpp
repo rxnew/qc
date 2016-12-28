@@ -8,7 +8,7 @@
 #include <iostream>
 #include <map>
 
-#include "forward_declarations.hpp"
+#include "circuit.hpp"
 #include "util/vector.hpp"
 
 namespace qc {
@@ -64,14 +64,18 @@ struct LayoutPrinter<2, T, std::enable_if_t<std::is_integral<T>::value>> {
 using Layout1d = Layout<1>;
 using Layout2d = Layout<2>;
 
+template <int dim, class Real = int,
+          template <class...> class Container = std::vector>
+auto make_regular_lattice_layout(Container<BitNo> const& bit_sequence)
+  -> Layout<dim, Real>;
 template <int dim, class Real = int>
 auto make_regular_lattice_layout(int side_bit_count) -> Layout<dim, Real>;
-
-template <class Real = int>
-auto make_line_layout(int bit_count) -> Layout<1, Real>;
-
-template <class Real = int>
-auto make_square_layout(int side_bit_count) -> Layout<2, Real>;
+template <int dim, class Real = int>
+auto make_regular_lattice_layout(Circuit const& circuit) -> Layout<dim, Real>;
+template <class Real = int, class... Args>
+auto make_line_layout(Args&&... args) -> Layout<1, Real>;
+template <class Real = int, class... Args>
+auto make_square_layout(Args&&... args) -> Layout<2, Real>;
 }
 
 #include "layout/layout_impl.hpp"

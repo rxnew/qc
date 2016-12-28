@@ -8,26 +8,15 @@ inline namespace algorithm {
 inline namespace parallel {
 template <class Engine, class Overlapped>
 auto parallelize(Circuit const& circuit, Overlapped overlapped) -> Circuit {
-  using dependency = typename Engine::dependency;
-
-  auto parallelized_circuit = Circuit();
-  auto dependency_graph = create_dependency_graph<dependency>(circuit);
+  using Dependency = typename Engine::Dependency;
+  auto dependency_graph = make_dependency_graph<Dependency>(circuit);
   auto engine = Engine(std::move(dependency_graph), overlapped);
   auto cliques = std::move(engine).parallelize();
-
-  for(auto& vertices : cliques) {
-    auto group = Group();
-    for(auto& v : vertices) {
-      group.add_gate(std::move(*v));
-    }
-    parallelized_circuit.add_gate(std::move(group));
-  }
-
-  return parallelized_circuit;
+  return make_circuit(std::move(cliques));
 }
 
 template <class Dependency>
-auto create_dependency_graph(Circuit circuit)
+auto make_dependency_graph(Circuit circuit)
   -> graph::DependencyGraph<std::shared_ptr<Gate>, Dependency> {
   auto graph = graph::DependencyGraph<std::shared_ptr<Gate>, Dependency>();
   expand_groups(circuit);
