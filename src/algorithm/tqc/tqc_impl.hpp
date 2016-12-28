@@ -2,7 +2,7 @@
 
 #include "../general.hpp"
 #include "../parallel.hpp"
-#include "../../util/vector/point.hpp"
+#include "../../util/vector.hpp"
 
 namespace qc {
 inline namespace algorithm {

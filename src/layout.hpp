@@ -9,17 +9,17 @@
 #include <map>
 
 #include "forward_declarations.hpp"
-#include "util/vector/point.hpp"
+#include "util/vector.hpp"
 
 namespace qc {
 template <int dim, class Real = int>
 class Layout {
  public:
-  using Point = util::vector::Point<dim, Real>;
+  using Vector = util::vector::Vector<dim, Real>;
 
   Layout() = default;
-  Layout(std::map<BitNo, Point> const& coords);
-  Layout(std::map<BitNo, Point>&& coords);
+  Layout(std::map<BitNo, Vector> const& coords);
+  Layout(std::map<BitNo, Vector>&& coords);
   Layout(Layout const&) = default;
   Layout(Layout&&) noexcept = default;
   ~Layout() = default;
@@ -28,19 +28,19 @@ class Layout {
   auto operator=(Layout&&) noexcept -> Layout& = default;
   auto operator==(Layout const& other) const -> bool;
   auto operator!=(Layout const& other) const -> bool;
-  auto operator[](BitNo bit) -> Point&;
-  auto operator[](BitNo bit) const -> Point const&;
+  auto operator[](BitNo bit) -> Vector&;
+  auto operator[](BitNo bit) const -> Vector const&;
 
-  auto get_coords() const -> std::map<BitNo, Point> const&;
-  auto find_min_corner() const -> Point;
-  auto find_max_corner() const -> Point;
-  auto find_bit_no(Point const& point) const -> std::tuple<bool, BitNo>;
+  auto get_coords() const -> std::map<BitNo, Vector> const&;
+  auto find_min_corner() const -> Vector;
+  auto find_max_corner() const -> Vector;
+  auto find_bit_no(Vector const& vector) const -> std::tuple<bool, BitNo>;
   auto print(std::ostream& os = std::cout) const -> void;
   auto output(std::string const& filename) const -> void;
   auto input(std::string const& filename) -> bool;
 
  private:
-  std::map<BitNo, Point> coords_;
+  std::map<BitNo, Vector> coords_;
 };
 
 template <int dim, class Real, class Enable = void>
