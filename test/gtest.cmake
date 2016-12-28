@@ -30,8 +30,6 @@ set_property(
   PROPERTY IMPORTED_LOCATION ${binary_dir}/googlemock/gtest/libgtest.a
   )
 
-message(${binary_dir})
-
 add_library(gtest_main STATIC IMPORTED)
 
 set_property(

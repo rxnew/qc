@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 project(qc CXX)
 
 set(TARGET qc)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/graph.cmake)
+
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 include_directories(${INCLUDE_DIR})
@@ -28,6 +31,8 @@ install(DIRECTORY ${INCLUDE_DIR}/
 install(EXPORT ${TARGET}-export
         FILE ${TARGET}-config.cmake
         DESTINATION share/cmake/${TARGET})
+
+cmake_policy(SET CMP0054 NEW)
 
 if(${TEST})
   enable_testing()

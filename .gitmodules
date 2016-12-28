@@ -1,3 +1,0 @@
-[submodule "include/graph"]
-	path = include/graph
-	url = https://github.com/rxnew/graph.git
