@@ -10,36 +10,40 @@
 #include "graph/algorithm/bron_kerbosch.hpp"
 
 #include "../../../layout.hpp"
-#include "../gate_dependency.hpp"
+#include "../predicates.hpp"
 
 namespace qc {
 inline namespace algorithm {
 inline namespace parallel {
-template <class Predicate, class Dependency = GateDependency>
+template <class Predicate1 = GateOverlapped, class Predicate2 = GateDependency>
 class CsvdBase {
  public:
+  using Overlapped = Predicate1;
+  using Dependency = Predicate2;
   using Vertex = std::shared_ptr<Gate>;
   using Graph = graph::UndirectedGraph<Vertex>;
   using Vertices = Graph::Vertices;
   using Cliques = graph::BronKerboschPivot<Graph>::Cliques;
   using DependencyGraph = graph::DependencyGraph<Vertex, Dependency>;
-  using predicate = Predicate;
-  using dependency = Dependency;
 
-  CsvdBase(DependencyGraph const& dependency_graph,
-           Predicate predicate = Predicate());
-  CsvdBase(DependencyGraph&& dependency_graph,
-           Predicate predicate = Predicate());
+  explicit CsvdBase(DependencyGraph const& dependency_graph,
+                    Overlapped overlapped = Overlapped());
+  explicit CsvdBase(DependencyGraph&& dependency_graph,
+                    Overlapped overlapped = Overlapped());
   virtual ~CsvdBase() = default;
 
   template <int dim, class Real>
-  auto parallelize(Layout<dim, Real> const& layout) -> std::list<Vertices>;
+  auto parallelize(Layout<dim, Real> const& layout) & -> std::list<Vertices>;
+  template <int dim, class Real>
+  auto parallelize(Layout<dim, Real> const& layout) && -> std::list<Vertices>;
 
  protected:
   DependencyGraph dependency_graph_;
   DependencyGraph const dependency_graph_origin_;
-  Predicate predicate_;
+  Overlapped overlapped_;
 
+  template <int dim, class Real>
+  auto _parallelize(Layout<dim, Real> const& layout) -> std::list<Vertices>;
   template <int dim, class Real>
   auto _create_graph(Vertices const& vertices, Layout<dim, Real> const& layout)
     const -> Graph;

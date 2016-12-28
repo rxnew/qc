@@ -3,14 +3,14 @@
 namespace qc {
 inline namespace algorithm {
 inline namespace parallel {
-template <class Predicate, class Dependency>
+template <class Overlapped, class Dependency>
 template <class... Args>
-inline CsvdEvBase<Predicate, Dependency>::CsvdEvBase(Args&&... args)
+inline CsvdEvBase<Overlapped, Dependency>::CsvdEvBase(Args&&... args)
   : Super(std::forward<Args>(args)...) {
 }
 
-template <class Predicate, class Dependency>
-auto CsvdEvBase<Predicate, Dependency>::
+template <class Overlapped, class Dependency>
+auto CsvdEvBase<Overlapped, Dependency>::
 _select_clique(Cliques const& cliques) const -> const Vertices& {
   assert(!cliques.empty());
 

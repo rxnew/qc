@@ -23,12 +23,6 @@ template <int dim, class Real>
 auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
                        Layout<dim, Real> const& layout, bool allow_mtc = true)
   -> bool;
-template <bool allow_mtc>
-struct TqcOverlapped {
-  template <int dim, class Real>
-  auto operator()(Gate const& gate_a, Gate const& gate_b,
-                  Layout<dim, Real> const& layout) const -> bool;
-};
 }
 }
 }

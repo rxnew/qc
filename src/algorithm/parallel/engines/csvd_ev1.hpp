@@ -12,10 +12,14 @@
 namespace qc {
 inline namespace algorithm {
 inline namespace parallel {
-template <class Predicate, class Dependency = GateDependency>
-class CsvdEv1 : public CsvdEvBase<Predicate, Dependency> {
+template <class Predicate1 = GateOverlapped, class Predicate2 = GateDependency>
+class CsvdEv1 : public CsvdEvBase<Predicate1, Predicate2> {
+ public:
+  using Overlapped = Predicate1;
+  using Dependency = Predicate2;
+
  protected:
-  using Super = CsvdEvBase<Predicate, Dependency>;
+  using Super = CsvdEvBase<Overlapped, Dependency>;
 
  public:
   using Vertex = typename Super::Vertex;
@@ -23,11 +27,11 @@ class CsvdEv1 : public CsvdEvBase<Predicate, Dependency> {
   using Vertices = typename Super::Vertices;
   using Cliques = typename Super::Cliques;
   using DependencyGraph = typename Super::DependencyGraph;
-  using predicate = Predicate;
+  using overlapped = Overlapped;
   using dependency = Dependency;
 
   template <class... Args>
-  CsvdEv1(Args&&... args);
+  explicit CsvdEv1(Args&&... args);
   virtual ~CsvdEv1() = default;
 
  protected:

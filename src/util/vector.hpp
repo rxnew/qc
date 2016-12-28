@@ -54,7 +54,6 @@ auto cross(Vector<2, Real> const& a, Vector<2, Real> const& b) -> Real;
 template <class Real>
 auto cross(Vector<3, Real> const& a, Vector<3, Real> const& b)
   -> Vector<3, Real>;
-
 template <class Real>
 auto is_intersected(Vector<1, Real> const& a1,
                     Vector<1, Real> const& a2,

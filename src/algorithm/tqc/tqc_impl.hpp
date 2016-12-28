@@ -8,9 +8,12 @@ namespace qc {
 inline namespace algorithm {
 inline namespace tqc {
 template <template <class...> class Engine, bool allow_mtc, int dim, class Real>
-inline auto tqc_parallelize(Circuit const& circuit,
-                            Layout<dim, Real> const& layout) -> Circuit {
-  return parallelize<Engine<TqcOverlapped<allow_mtc>>>(circuit, layout);
+auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout)
+  -> Circuit {
+  using namespace std::placeholders;
+  auto overlapped =
+    std::bind(is_tqc_overlapped<dim, Real>, _1, _2, layout, allow_mtc);
+  return parallelize<Engine<decltype(overlapped)>>(circuit, layout, overlapped);
 }
 
 template <template <class...> class Engine, int dim, class Real>
@@ -31,14 +34,6 @@ auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
   if(is_intersected(layout[cbit_a], layout[tbit_a],
                     layout[cbit_b], layout[tbit_b])) return true;
   return false;
-}
-
-template <bool allow_mtc>
-template <int dim, class Real>
-auto TqcOverlapped<allow_mtc>::
-operator()(Gate const& gate_a, Gate const& gate_b,
-           Layout<dim, Real> const& layout) const -> bool {
-  return is_tqc_overlapped(gate_a, gate_b, layout, allow_mtc);
 }
 }
 }

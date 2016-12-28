@@ -23,6 +23,11 @@ auto get_tbit(Gate const& gate) -> TBit const& {
   return *gate.get_tbits().cbegin();
 }
 
+// 未実装
+auto is_overlapped(Gate const& lhs, Gate const & rhs) -> bool {
+  return true;
+}
+
 // Xゲートのみ実装
 auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool {
   if(lhs.get_type() == GateType::X && lhs.get_type() == GateType::X) {
