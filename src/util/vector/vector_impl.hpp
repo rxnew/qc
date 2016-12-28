@@ -7,8 +7,6 @@ namespace util {
 namespace vector {
 // prototype declarations
 template <class Real>
-auto _cross(Vector<2, Real> const& a, Vector<2, Real> const& b) -> Real;
-template <class Real>
 auto _ccw(Vector<2, Real> const& a,
           Vector<2, Real> const& b,
           Vector<2, Real> const& c) -> int;
@@ -123,13 +121,25 @@ auto operator<<(std::ostream& os, Vector<dim, Real> const& vector)
 }
 
 template <int dim, class Real>
-auto inner_product(Vector<dim, Real> const& a, Vector<dim, Real> const& b)
-  -> Real {
+auto dot(Vector<dim, Real> const& a, Vector<dim, Real> const& b) -> Real {
   auto result = Real(0);
   for(auto i = 0; i < dim; ++i) {
     result += a[i] * b[i];
   }
   return result;
+}
+
+template <class Real>
+auto cross(Vector<2, Real> const& a, Vector<2, Real> const& b) -> Real {
+  return a[0] * b[1] - a[1] * b[0];
+}
+
+template <class Real>
+auto cross(Vector<3, Real> const& a, Vector<3, Real> const& b)
+  -> Vector<3, Real> {
+  return Vector<3, Real>(a[1] * b[2] - a[2] * b[1],
+                         a[2] * b[0] - a[0] * b[2],
+                         a[0] * b[1] - a[1] * b[0]);
 }
 
 template <class Real>
@@ -155,20 +165,15 @@ auto is_intersected(Vector<2, Real> const& a1,
 }
 
 template <class Real>
-auto _cross(Vector<2, Real> const& a, Vector<2, Real> const& b) -> Real {
-  return a[0] * b[1] - a[1] * b[0];
-}
-
-template <class Real>
 auto _ccw(Vector<2, Real> const& a,
           Vector<2, Real> const& b,
           Vector<2, Real> const& c) -> int {
   auto ba = b - a;
   auto ca = c - a;
-  if(_cross(ba, ca) > 0)        return +1; // counter clockwise
-  if(_cross(ba, ca) < 0)        return -1; // clockwise
-  if(inner_product(ba, ca) < 0) return +2; // c--a--b on line
-  if(ba.norm() < ca.norm())     return -2; // a--b--c on line
+  if(cross(ba, ca) > 0)     return +1; // counter clockwise
+  if(cross(ba, ca) < 0)     return -1; // clockwise
+  if(dot(ba, ca) < 0)       return +2; // c--a--b on line
+  if(ba.norm() < ca.norm()) return -2; // a--b--c on line
   return 0;
 }
 }
