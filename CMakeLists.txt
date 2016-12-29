@@ -32,8 +32,6 @@ install(EXPORT ${TARGET}-export
         FILE ${TARGET}-config.cmake
         DESTINATION share/cmake/${TARGET})
 
-cmake_policy(SET CMP0054 NEW)
-
 if(${TEST})
   enable_testing()
   add_subdirectory(${TEST_DIR})

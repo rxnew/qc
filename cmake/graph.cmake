@@ -8,7 +8,7 @@ include(ExternalProject)
 ExternalProject_Add(
   graph
   GIT_REPOSITORY https://github.com/rxnew/graph.git
-  #GIT_TAG release-1.8.0
+  GIT_TAG v1.0
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/lib
   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_CURRENT_BINARY_DIR}
   #INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/include/graph
