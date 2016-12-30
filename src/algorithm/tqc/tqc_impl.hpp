@@ -37,19 +37,18 @@ auto _is_tqc_overlapped_arbitrary(Gate const& gate_a, Gate const& gate_b,
                                   Layout<1, Real> const& layout) -> bool;
 
 // implementations
-template <template <class...> class Engine, bool allow_mtc, int dim, class Real>
-auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout)
-  -> Circuit {
+template <template <class...> class Engine, int dim, class Real>
+auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout,
+                     bool allow_mtc) -> Circuit {
   using namespace std::placeholders;
   auto overlapped =
     std::bind(is_tqc_overlapped<dim, Real>, _1, _2, layout, allow_mtc);
-  return parallelize<Engine<decltype(overlapped)>>(circuit, overlapped);
-}
-
-template <template <class...> class Engine, int dim, class Real>
-inline auto tqc_parallelize(Circuit const& circuit,
-                            Layout<dim, Real> const& layout) -> Circuit {
-  return tqc_parallelize<Engine, true>(circuit, layout);
+  auto parallelized_circuit =
+    parallelize<Engine<decltype(overlapped)>>(circuit, overlapped);
+  if(allow_mtc) {
+    parallelized_circuit = combine_cnot_into_mtc(parallelized_circuit);
+  }
+  return parallelized_circuit;
 }
 
 template <int dim, class Real>
