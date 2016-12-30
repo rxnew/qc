@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "../../algorithm/oracle.hpp"
-
 namespace qc {
 namespace io {
 inline auto Json::_get_error_message(std::string const& code)
