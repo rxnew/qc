@@ -9,7 +9,7 @@ ExternalProject_Add(
   GoogleTest
   GIT_REPOSITORY https://github.com/google/googletest
   GIT_TAG release-1.8.0
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/lib
+  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/projects/gtest
   INSTALL_COMMAND ""
   LOG_DOWNLOAD ON
   )
