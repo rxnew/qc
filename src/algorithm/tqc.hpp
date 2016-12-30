@@ -23,6 +23,24 @@ template <int dim, class Real>
 auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
                        Layout<dim, Real> const& layout, bool allow_mtc = true)
   -> bool;
+template <class Real>
+auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
+                       Layout<1, Real> const& layout, bool allow_mtc = true)
+  -> bool;
+template <int dim, class Real>
+auto is_tqc_overlapped_braiding(Gate const& gate_a, Gate const& gate_b,
+                                Layout<dim, Real> const& layout,
+                                bool allow_mtc = true) -> bool;
+template <class Real>
+auto is_tqc_overlapped_braiding(Gate const& gate_a, Gate const& gate_b,
+                                Layout<1, Real> const& layout,
+                                bool allow_mtc = true) -> bool;
+template <int dim, class Real>
+auto is_tqc_overlapped_arbitrary(Gate const& gate_a, Gate const& gate_b,
+                                 Layout<dim, Real> const& layout) -> bool;
+template <class Real>
+auto is_tqc_overlapped_arbitrary(Gate const& gate_a, Gate const& gate_b,
+                                 Layout<1, Real> const& layout) -> bool;
 }
 }
 }

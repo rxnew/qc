@@ -23,7 +23,10 @@ auto insert_gate_before(GatesWrapperShell& target, GatesCIter pos, T&& gate)
 template <class T>
 auto insert_gate_after(GatesWrapperShell& target, GatesCIter pos, T&& gate)
   -> GatesIter;
+auto is_cnot(Gate const& gate, bool allow_mtc = false) -> bool;
 auto is_overlapped(Gate const& lhs, Gate const & rhs) -> bool;
+auto is_overlapped_control(Gate const& lhs, Gate const & rhs) -> bool;
+auto is_overlapped_target(Gate const& lhs, Gate const & rhs) -> bool;
 auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool;
 auto find_min_bit(Circuit const& circuit) -> BitNo;
 auto find_max_bit(Circuit const& circuit) -> BitNo;

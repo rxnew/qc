@@ -26,14 +26,63 @@ template <int dim, class Real>
 auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
                        Layout<dim, Real> const& layout, bool allow_mtc)
   -> bool {
+  if(is_cnot(gate_a) && is_cnot(gate_b)) {
+    return is_tqc_overlapped_braiding(gate_b, gate_b, layout, allow_mtc);
+  }
+  return is_tqc_overlapped_arbitrary(gate_a, gate_b, layout);
+}
+
+template <class Real>
+auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
+                       Layout<1, Real> const& layout, bool allow_mtc)
+  -> bool {
+  if(is_cnot(gate_a, true) && is_cnot(gate_b, true)) {
+    return is_tqc_overlapped_braiding(gate_b, gate_b, layout, allow_mtc);
+  }
+  return is_tqc_overlapped_arbitrary(gate_a, gate_b, layout);
+}
+
+template <int dim, class Real>
+auto is_tqc_overlapped_braiding(Gate const& gate_a, Gate const& gate_b,
+                                Layout<dim, Real> const& layout, bool allow_mtc)
+  -> bool {
   auto cbit_a = get_cbit(gate_a).get_no();
   auto cbit_b = get_cbit(gate_b).get_no();
   auto tbit_a = get_tbit(gate_a).get_no();
   auto tbit_b = get_tbit(gate_b).get_no();
   if(allow_mtc && cbit_a == cbit_b && tbit_a != tbit_b) return false;
-  if(is_intersected(layout[cbit_a], layout[tbit_a],
-                    layout[cbit_b], layout[tbit_b])) return true;
-  return false;
+  return is_intersected(layout[cbit_a], layout[tbit_a],
+                        layout[cbit_b], layout[tbit_b]);
+}
+
+template <class Real>
+auto is_tqc_overlapped_braiding(Gate const& gate_a, Gate const& gate_b,
+                                Layout<1, Real> const& layout, bool allow_mtc)
+  -> bool {
+  if(allow_mtc) {
+    auto cbit_a = get_cbit(gate_a).get_no();
+    auto cbit_b = get_cbit(gate_b).get_no();
+    if(cbit_a == cbit_b && !is_overlapped_target(gate_a, gate_b)) return false;
+  }
+  return is_tqc_overlapped_arbitrary(gate_a, gate_b, layout);
+}
+
+// 未実装
+template <int dim, class Real>
+auto is_tqc_overlapped_arbitrary(Gate const& gate_a, Gate const& gate_b,
+                                 Layout<dim, Real> const& layout) -> bool {
+  return true;
+}
+
+template <class Real>
+auto is_tqc_overlapped_arbitrary(Gate const& gate_a, Gate const& gate_b,
+                                 Layout<1, Real> const& layout) -> bool {
+  auto min_bit_a = find_min_bit(gate_a, layout).get_no();
+  auto min_bit_b = find_min_bit(gate_b, layout).get_no();
+  auto max_bit_a = find_max_bit(gate_a, layout).get_no();
+  auto max_bit_b = find_max_bit(gate_b, layout).get_no();
+  return is_intersected(layout[min_bit_a], layout[max_bit_a],
+                        layout[min_bit_b], layout[max_bit_b]);
 }
 }
 }
