@@ -5,11 +5,9 @@
 
 #pragma once
 
+#include "json11.hpp"
+
 #include "../json.hpp"
-
-#include <vector>
-
-#include "../../circuit.hpp"
 
 namespace qc {
 namespace io {
@@ -22,18 +20,27 @@ class Json::Parser {
     throw(IfExc, std::ios_base::failure) -> Circuit;
 
  private:
+  auto _parse(json11::Json const& json)
+    throw(IfExc) -> Circuit;
+  auto _get_type_name(json11::Json const& json)
+    throw(IfExc) -> std::string const&;
+  auto _get_cbits(json11::Json const& json)
+    throw(IfExc) -> CBits;
+  auto _get_tbits(json11::Json const& json)
+    throw(IfExc) -> TBits;
   auto _error(std::string const& code)
     throw(IfExc) -> void;
+  /*
   template <class... Args>
   auto _error(std::string const& code, Args&&... args)
     throw(IfExc) -> void;
   auto _warn(std::string const& code) -> void;
   template <class... Args>
   auto _warn(std::string const& code, Args&&... args) -> void;
+  */
 
   std::string filename_;
 
-  mutable Circuit circuit_;
   mutable std::ifstream ifs_;
 };
 }

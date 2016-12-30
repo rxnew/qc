@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "../../issue.hpp"
+#include "../../../debug/issue.hpp"
 #include "../../../util/string.hpp"
 
 namespace qc {
@@ -13,14 +13,14 @@ namespace io {
 inline Json::Parser::Parser(std::string const& filename)
   : filename_(filename) {}
 
-/*
 inline auto Json::Parser::_error(std::string const& code)
   throw(IfExc) -> void {
   auto const& msg = _get_error_message(code);
-  error::issue(msg, line_, filename_, lines_counter_);
+  debug::error::issue(msg);
   throw exc::IllegalFormatException("Cannot parse a json file.");
 }
 
+/*
 template <class... Args>
 auto Json::Parser::_error(std::string const& code, Args&&... args)
   throw(IfExc) -> void {

@@ -7,17 +7,12 @@
 namespace qc {
 namespace io {
 Json::Messages const Json::_err_msgs = {
-  {"E000", "Illegal format. Unknown terminology."},
-  {"E010", "Illegal format. Incomplete description of '%s'."},
-  {"E020", "Illegal format. The format of parameters of the gate is 'formal=actual'."},
-  {"E021", "Illegal format. Parameters of the gate is different."}
+  {"E000", "Illegal format. The operation type is not a string."},
+  {"E001", "Illegal format. Controls or targets is not an array."},
+  {"E002", "Illegal format. The control or target is not a number."}
 };
 
 Json::Messages const Json::_warn_msgs = {
-  {"W000",  "'%s' is not supported yet."},
-  {"W010",  "The gate, '%s' is not supported yet."},
-  {"W020",  "The output line, '%s' is duplicated."},
-  {"W100",  "This circuit contains gates other than MCT (multiple-control Toffoli)."}
 };
 
 auto Json::input(Circuit& circuit, std::string const& filename)

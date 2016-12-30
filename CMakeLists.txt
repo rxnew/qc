@@ -8,7 +8,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/graph.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/json11.cmake)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-#set(INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include)
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 include_directories(${INCLUDE_DIR})
@@ -27,9 +26,6 @@ install(TARGETS ${TARGET}
 install(DIRECTORY ${SOURCE_DIR}/
         DESTINATION include/${TARGET}
         FILES_MATCHING PATTERN *.hpp)
-
-#install(DIRECTORY ${INCLUDE_DIR}/
-#        DESTINATION include)
 
 install(EXPORT ${TARGET}-export
         FILE ${TARGET}-config.cmake
