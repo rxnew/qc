@@ -30,7 +30,7 @@ auto is_cnot(Gate const& gate, bool allow_mtc) -> bool {
     (allow_mtc || gate.is_single_target());
 }
 
-auto is_overlapped(Gate const& lhs, Gate const & rhs) -> bool {
+auto is_overlapped(Gate const& lhs, Gate const& rhs) -> bool {
   for(auto const& cbit : lhs.get_cbits()) {
     if(rhs.has_cbit(cbit.get_no())) return true;
     if(rhs.has_tbit(cbit.get_no())) return true;
@@ -42,14 +42,14 @@ auto is_overlapped(Gate const& lhs, Gate const & rhs) -> bool {
   return false;
 }
 
-auto is_overlapped_control(Gate const& lhs, Gate const & rhs) -> bool {
+auto is_overlapped_control(Gate const& lhs, Gate const& rhs) -> bool {
   for(auto const& cbit : lhs.get_cbits()) {
     if(rhs.has_cbit(cbit.get_no())) return true;
   }
   return false;
 }
 
-auto is_overlapped__target(Gate const& lhs, Gate const & rhs) -> bool {
+auto is_overlapped_target(Gate const& lhs, Gate const& rhs) -> bool {
   for(auto const& tbit : lhs.get_tbits()) {
     if(rhs.has_tbit(tbit.get_no())) return true;
   }
@@ -57,7 +57,7 @@ auto is_overlapped__target(Gate const& lhs, Gate const & rhs) -> bool {
 }
 
 // Xゲートのみ実装
-auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool {
+auto is_dependent(Gate const& lhs, Gate const& rhs) -> bool {
   if(lhs.get_type() == GateType::X && lhs.get_type() == GateType::X) {
     for(auto const& cbit : lhs.get_cbits()) {
       if(rhs.has_tbit(cbit.get_no())) return true;
@@ -67,25 +67,7 @@ auto is_dependent(Gate const& lhs, Gate const & rhs) -> bool {
     }
     return false;
   }
-  return is_overlapped();
-}
-
-auto find_min_bit(Circuit const& circuit) -> BitNo {
-  auto bits = circuit.collect_bits();
-  auto min_bit = std::numeric_limits<unsigned int>::max();
-  for(auto const& bit : bits) {
-    min_bit = std::min(min_bit, bit);
-  }
-  return min_bit;
-}
-
-auto find_max_bit(Circuit const& circuit) -> BitNo {
-  auto bits = circuit.collect_bits();
-  auto max_bit = 0_bit;
-  for(auto const& bit : bits) {
-    max_bit = std::max(max_bit, bit);
-  }
-  return max_bit;
+  return is_overlapped(lhs, rhs);
 }
 
 auto decomp_to_single_target_gates(Gate const& gate) -> Gates {

@@ -3,7 +3,7 @@
 #include "graph/dependency_graph.hpp"
 
 #include "parallel/engines.hpp"
-#include "../circuit.hpp"
+#include "../forward_declarations.hpp"
 
 namespace qc {
 inline namespace algorithm {

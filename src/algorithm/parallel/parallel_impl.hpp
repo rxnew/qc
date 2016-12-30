@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../circuit.hpp"
 #include "../../gate/group.hpp"
 #include "../group.hpp"
 

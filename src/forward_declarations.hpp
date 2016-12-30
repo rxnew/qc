@@ -10,6 +10,8 @@ class CBit;
 class TBit;
 class Gate;
 class Circuit;
+template <int dim, class Real>
+class Layout;
 
 using BitNo = unsigned int;
 using BitNos = std::unordered_set<BitNo>;
