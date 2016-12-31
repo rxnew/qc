@@ -1,6 +1,6 @@
 #include "../json.hpp"
 #include "parser.hpp"
-//#include "dumper.hpp"
+#include "dumper.hpp"
 
 #include "../../circuit.hpp"
 
@@ -36,7 +36,7 @@ auto Json::open(std::string const& filename)
 }
 
 auto Json::print(Circuit const& circuit, std::ostream& os) -> void {
-  //Dumper(circuit, os).dump();
+  Dumper(circuit, os).dump();
 }
 }
 }

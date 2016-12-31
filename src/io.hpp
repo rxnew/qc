@@ -8,6 +8,7 @@
 #include "io/qo.hpp"
 #include "io/blif.hpp"
 #include "io/esop.hpp"
+#include "io/json.hpp"
 
 namespace qc {
 namespace io {

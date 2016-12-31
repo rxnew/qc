@@ -14,6 +14,7 @@ auto input(Circuit& circuit, std::string const& filename)
   if(extension == Qo::extension)   return Qo::input(circuit, filename);
   if(extension == Blif::extension) return Blif::input(circuit, filename);
   if(extension == Esop::extension) return Esop::input(circuit, filename);
+  if(extension == Json::extension) return Json::input(circuit, filename);
   throw _get_unknown_format_exception(extension);
 }
 
@@ -24,6 +25,7 @@ auto output(Circuit const& circuit, std::string const& filename)
   if(extension == Qo::extension)   return Qo::output(circuit, filename);
   if(extension == Blif::extension) return Blif::output(circuit, filename);
   if(extension == Esop::extension) return Esop::output(circuit, filename);
+  if(extension == Json::extension) return Json::output(circuit, filename);
   throw _get_unknown_format_exception(extension);
 }
 

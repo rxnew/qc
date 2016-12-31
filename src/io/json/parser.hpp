@@ -22,6 +22,8 @@ class Json::Parser {
  private:
   auto _parse(json11::Json const& json)
     throw(IfExc) -> Circuit;
+  auto _make_gate(json11::Json const& json)
+    throw(IfExc) -> Gate;
   auto _get_type_name(json11::Json const& json)
     throw(IfExc) -> std::string const&;
   auto _get_cbits(json11::Json const& json)

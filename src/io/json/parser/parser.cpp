@@ -3,6 +3,7 @@
 #include <queue>
 
 #include "../../../circuit.hpp"
+#include "../../../gate/group.hpp"
 #include "../../../gate/library.hpp"
 
 namespace qc {
@@ -22,6 +23,8 @@ auto Json::Parser::parse()
   auto err = std::string();
   auto json = json11::Json::parse(buf, err);
 
+  if(!json["elements"].is_null()) json = json["elements"];
+
   return _parse(json);
 }
 
@@ -29,12 +32,24 @@ auto Json::Parser::_parse(json11::Json const& json)
   throw(IfExc) -> Circuit {
   auto circuit = Circuit();
   for(auto const& operation : json["operations"].array_items()) {
-    auto const& type_name = _get_type_name(operation);
-    auto cbits = _get_cbits(operation);
-    auto tbits = _get_tbits(operation);
-    circuit.add_gate(make_gate(type_name, cbits, tbits));
+    circuit.add_gate(_make_gate(operation));
   }
   return circuit;
+}
+
+auto Json::Parser::_make_gate(json11::Json const& json)
+  throw(IfExc) -> Gate {
+  if(json.is_object()) {
+    auto const& type_name = _get_type_name(json);
+    auto cbits = _get_cbits(json);
+    auto tbits = _get_tbits(json);
+    return make_gate(type_name, cbits, tbits);
+  }
+  auto group = make_group();
+  for(auto const& operation : json.array_items()) {
+    group.add_gate(_make_gate(operation));
+  }
+  return group;
 }
 
 auto Json::Parser::_get_type_name(json11::Json const& json)
