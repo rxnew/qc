@@ -38,10 +38,10 @@ auto Json::Dumper::_make_json_object(Gate const& gate) -> json11::Json {
     targets_json_array.push_back(static_cast<int>(tbit.get_no()));
   }
   return json11::Json::object{
-      {"type",     gate.get_type_name()},
-      {"controls", controls_json_array},
-      {"targets",  targets_json_array}
-    };
+    {"type",     gate.get_type_name()},
+    {"controls", controls_json_array},
+    {"targets",  targets_json_array}
+  };
 }
 }
 }
