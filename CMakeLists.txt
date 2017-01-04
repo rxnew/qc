@@ -11,15 +11,7 @@ file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
 
 add_library(${TARGET} STATIC ${SOURCES})
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/find_graph.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/find_json11.cmake)
-
-set(EXTERNAL_PROJECTS_INCLUDE_PATHS
-    ${GRAPH_INCLUDE_PATH}
-    ${JSON11_INCLUDE_PATH})
-
-set(EXTERNAL_PROJECTS_LIBRARIES
-    JSON11_LIBRARY)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/qc_external_projects.cmake)
 
 include_directories(${EXTERNAL_PROJECTS_INCLUDE_PATHS})
 
