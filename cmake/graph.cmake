@@ -3,15 +3,36 @@ cmake_minimum_required(VERSION 2.8)
 # graph settings
 include(ExternalProject)
 
-ExternalProject_Add(
-  graph
-  GIT_REPOSITORY https://github.com/rxnew/graph.git
-  GIT_TAG v1.0
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/projects/graph
-  INSTALL_COMMAND ""
-  LOG_DOWNLOAD ON
-  )
+set(GRAPH_PROJECT_NAME graph)
+set(GRAPH_GIT_REPOSITORY https://github.com/rxnew/graph.git)
+set(GRAPH_GIT_TAG v1.0)
 
-ExternalProject_Get_Property(graph source_dir)
+if(INSTALL_EXTERNAL_PROJECTS_PREFIX)
+  set(INSTALL_EXTERNAL_PROJECTS_PREFIX ${CMAKE_INSTALL_PREFIX})
+endif()
 
-set(GRAPH_INCLUDE_PATH ${source_dir})
+if(INSTALL_EXTERNAL_PROJECTS)
+  ExternalProject_Add(
+    ${GRAPH_PROJECT_NAME}
+    GIT_REPOSITORY ${GRAPH_GIT_REPOSITORY}
+    GIT_TAG ${GRAPH_GIT_TAG}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/projects/${GRAPH_PROJECT_NAME}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${INSTALL_EXTERNAL_PROJECTS_PREFIX}
+    LOG_DOWNLOAD ON
+    )
+
+  set(GRAPH_INCLUDE_PATH ${CMAKE_INSTALL_PREFIX}/include)
+else()
+  ExternalProject_Add(
+    ${GRAPH_PROJECT_NAME}
+    GIT_REPOSITORY ${GRAPH_GIT_REPOSITORY}
+    GIT_TAG ${GRAPH_GIT_TAG}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/projects/${GRAPH_PROJECT_NAME}
+    INSTALL_COMMAND ""
+    LOG_DOWNLOAD ON
+    )
+
+  ExternalProject_Get_Property(${GRAPH_PROJECT_NAME} source_dir)
+
+  set(GRAPH_INCLUDE_PATH ${source_dir})
+endif()

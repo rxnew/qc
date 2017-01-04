@@ -3,25 +3,44 @@ cmake_minimum_required(VERSION 2.8)
 # json11 settings
 include(ExternalProject)
 
-ExternalProject_Add(
-  json11
-  GIT_REPOSITORY https://github.com/dropbox/json11.git
-  GIT_TAG a501d06b98a5cd0cbe1ca1ea584adb4a5fbf2857
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/projects/json11
-  INSTALL_COMMAND ""
-  LOG_DOWNLOAD ON
-  )
+set(JSON11_PROJECT_NAME json11)
+set(JSON11_GIT_REPOSITORY https://github.com/ngc-developers/json11.git)
+set(JSON11_GIT_TAG v1.1)
 
-ExternalProject_Get_Property(json11 source_dir)
-ExternalProject_Get_Property(json11 binary_dir)
+if(INSTALL_EXTERNAL_PROJECTS_PREFIX)
+  set(INSTALL_EXTERNAL_PROJECTS_PREFIX ${CMAKE_INSTALL_PREFIX})
+endif()
 
-set(JSON11_INCLUDE_PATH ${source_dir})
+if(INSTALL_EXTERNAL_PROJECTS)
+  ExternalProject_Add(
+    ${JSON11_PROJECT_NAME}
+    GIT_REPOSITORY ${JSON11_GIT_REPOSITORY}
+    GIT_TAG ${JSON11_GIT_TAG}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/projects/${JSON11_PROJECT_NAME}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${INSTALL_EXTERNAL_PROJECTS_PREFIX}
+    LOG_DOWNLOAD ON
+    )
 
-add_library(libjson11 STATIC IMPORTED GLOBAL)
+  set(JSON11_INCLUDE_PATH ${CMAKE_INSTALL_PREFIX}/include)
+  set(JSON11_LIBRARY ${CMAKE_INSTALL_PREFIX}/lib/libjson11.a)
+else()
+  ExternalProject_Add(
+    ${JSON11_PROJECT_NAME}
+    GIT_REPOSITORY ${JSON11_GIT_REPOSITORY}
+    GIT_TAG ${JSON11_GIT_TAG}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/projects/${JSON11_PROJECT_NAME}
+    INSTALL_COMMAND ""
+    LOG_DOWNLOAD ON
+    )
 
-set_property(
-  TARGET libjson11
-  PROPERTY IMPORTED_LOCATION ${binary_dir}/libjson11.a
-  )
+  ExternalProject_Get_Property(${JSON11_PROJECT_NAME} source_dir)
+  ExternalProject_Get_Property(${JSON11_PROJECT_NAME} binary_dir)
 
-set(JSON11_LIBRARY libjson11)
+  set(JSON11_INCLUDE_PATH ${source_dir})
+
+  add_library(JSON11_LIBRARY STATIC IMPORTED GLOBAL)
+  set_property(
+    TARGET JSON11_LIBRARY
+    PROPERTY IMPORTED_LOCATION ${binary_dir}/libjson11.a
+    )
+endif()

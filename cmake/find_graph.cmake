@@ -10,9 +10,6 @@ find_path(GRAPH_INCLUDE_PATH
           NAMES graph
           PATHS ${GRAPH_INCLUDE_PATHS})
 
-message(${GRAPH_INCLUDE_PATHS})
-message(${GRAPH_INCLUDE_PATH})
-
 if(NOT GRAPH_INCLUDE_PATH)
   include(${CMAKE_CURRENT_LIST_DIR}/graph.cmake)
 endif()
