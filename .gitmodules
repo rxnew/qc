@@ -1,0 +1,6 @@
+[submodule "lib/graph"]
+	path = lib/graph
+	url = https://github.com/rxnew/graph.git
+[submodule "lib/json11"]
+	path = lib/json11
+	url = https://github.com/ngc-developers/json11.git

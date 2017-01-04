@@ -4,26 +4,23 @@ project(qc CXX)
 
 set(TARGET qc)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/graph)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/lib/json11)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/graph)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/json11)
+
+set(LIBS ${CMAKE_CURRENT_BINARY_DIR}/lib/json11/libjson11.a)
 
 file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
 
 add_library(${TARGET} STATIC ${SOURCES})
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/find_graph.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/find_json11.cmake)
-
-set(EXTERNAL_PROJECTS_INCLUDE_PATHS
-    ${GRAPH_INCLUDE_PATH}
-    ${JSON11_INCLUDE_PATH})
-
-set(EXTERNAL_PROJECTS_LIBRARIES
-    JSON11_LIBRARY)
-
-include_directories(${EXTERNAL_PROJECTS_INCLUDE_PATHS})
-
-target_link_libraries(${TARGET} PUBLIC ${EXTERNAL_PROJECTS_LIBRARIES})
+target_link_libraries(${TARGET} PUBLIC ${LIBS})
 
 install(TARGETS ${TARGET}
         EXPORT ${TARGET}-export
