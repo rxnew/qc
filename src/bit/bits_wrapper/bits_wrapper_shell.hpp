@@ -17,8 +17,16 @@ class BitsWrapperShell {
   auto set_tbits(TBits&& tbits) -> void;
   auto add_cbit(CBit const& cbit) -> void;
   auto add_cbit(BitNo bit_no, bool polarity = true) -> void;
+  template <template <class...> class Container>
+  auto add_cbit(Container<BitNo> const& bit_nos, bool polarity = true) -> void;
+  template <template <class...> class Container>
+  auto add_cbit(Container<CBit> const& cbits) -> void;
   auto add_tbit(TBit const& tbit) -> void;
   auto add_tbit(BitNo bit_no) -> void;
+  template <template <class...> class Container>
+  auto add_tbit(Container<BitNo> const& bit_nos) -> void;
+  template <template <class...> class Container>
+  auto add_tbit(Container<TBit> const& tbits) -> void;
   auto has_bit(BitNo bit_no) const -> bool;
   auto has_cbit(CBit const& cbit) const -> bool;
   auto has_cbit(BitNo bit_no) const -> bool;

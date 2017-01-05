@@ -6,7 +6,7 @@
 #include "algorithm/general.hpp"
 
 using namespace qc::literals;
-using namespace qc::library;
+using namespace qc::library_gates;
 using qc::decomp_to_single_target_gates;
 using qc::Gate;
 

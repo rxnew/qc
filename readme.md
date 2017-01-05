@@ -5,26 +5,18 @@ This program is quantum circuit simulator.
 Requirements
 ---------------
 * g++ 6.2.0 or later
-* [CMake][cmake] 2.8 or later
+* [CMake][cmake] 3.2 or later
+* [graphc][graphc] v1.0 or later
+* [json11][json11] v1.3 or later
 
 How to install
 ---------------
+依存ライブラリが見つからない場合，自動でダウンロードされ，ビルドディレクトリにインストールされます．
+
 ```
 $ cd build
 $ cmake [-DCMAKE_INSTALL_PREFIX=<dir>] [-DCMAKE_BUILD_TYPE=(Debug|Release)] ..
 $ make install
-```
-
-How to run a sample program
----------------
-```
-$ cd build
-$ cmake -DCMAKE_INSTALL_PREFIX=../sample ..
-$ make install
-$ cd ../sample/build
-$ make
-$ cd ..
-$ ./bin/main
 ```
 
 How to test
@@ -33,9 +25,22 @@ How to test
 
 ```
 $ cd build
-$ cmake -DTEST=ON ..
+$ cmake -DQC_BUILD_TESTS=ON ..
 $ make
 $ ctest
+```
+
+How to run a sample program
+---------------
+QC ライブラリを利用するプロジェクトのサンプルです．  
+すでにインストールされたライブラリを利用する場合は，***INSTALL_EXTERNAL_PROJECTS_PREFIX*** を設定します．
+
+```
+$ cd sample/build
+$ cmake [-DINSTALL_EXTERNAL_PROJECTS_PREFIX=<dir>] ..
+$ make
+$ cd ..
+$ ./bin/main
 ```
 
 How to use
@@ -329,8 +334,11 @@ qc::io::output(circuit, filename);
 * qo
 * esop
 * [blif][blif] (入力は nand2 のみ)
+* json
 
 [cmake]: https://cmake.org/
+[graphc]: https://github.com/rxnew/graph.git
+[json11]: https://github.com/ngc-developers/json11.git
 [googletest]: http://opencv.jp/googletestdocs/index.html
 [blif]: https://www.cse.iitb.ac.in/~supratik/courses/cs226/spr16/blif.pdf
 [arXiv:quant-ph/0403053]: https://arxiv.org/pdf/quant-ph/0403053v1.pdf

@@ -18,6 +18,15 @@
 #include "library/swap.hpp"
 
 namespace qc {
+template <class Type, class... Args>
+auto make_gate(Args&&... args) -> Gate;
+template <class Type>
+auto make_gate(std::initializer_list<CBit> cbits,
+               std::initializer_list<TBit> tbits) -> Gate;
+template <class Type>
+auto make_gate(bool bedaggered,
+               std::initializer_list<CBit> cbits,
+               std::initializer_list<TBit> tbits) -> Gate;
 auto make_gate(GateType type,
                std::initializer_list<CBit> cbits,
                std::initializer_list<TBit> tbits) -> Gate;

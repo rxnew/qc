@@ -29,12 +29,42 @@ inline auto BitsWrapperShell::add_cbit(BitNo bit_no, bool polarity) -> void {
   _get_cbits().emplace(bit_no, polarity);
 }
 
+template <template <class...> class Container>
+auto BitsWrapperShell::add_cbit(Container<BitNo> const& bit_nos, bool polarity)
+  -> void {
+  for(auto const& bit : bit_nos) {
+    add_cbit(bit, polarity);
+  }
+}
+
+template <template <class...> class Container>
+auto BitsWrapperShell::add_cbit(Container<CBit> const& cbits) -> void {
+  for(auto const& cbit : cbits) {
+    add_cbit(cbit);
+  }
+}
+
 inline auto BitsWrapperShell::add_tbit(TBit const& tbit) -> void {
   _get_tbits().insert(tbit);
 }
 
 inline auto BitsWrapperShell::add_tbit(BitNo bit_no) -> void {
   _get_tbits().emplace(bit_no);
+}
+
+template <template <class...> class Container>
+auto BitsWrapperShell::add_tbit(Container<BitNo> const& bit_nos)
+  -> void {
+  for(auto const& bit : bit_nos) {
+    add_tbit(bit);
+  }
+}
+
+template <template <class...> class Container>
+auto BitsWrapperShell::add_tbit(Container<TBit> const& tbits) -> void {
+  for(auto const& tbit : tbits) {
+    add_tbit(tbit);
+  }
 }
 
 inline auto BitsWrapperShell::has_bit(BitNo bit_no) const -> bool {

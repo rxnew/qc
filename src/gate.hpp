@@ -44,6 +44,8 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   auto get_type_name() const -> std::string;
   auto is_group() const -> bool;
   auto bedaggered() const -> bool;
+  auto print_simple(std::ostream& os = std::cout, bool line_break = false) const
+    -> void;
 
   virtual auto get_cbits() const -> CBits const& final;
   virtual auto get_tbits() const -> TBits const& final;
@@ -62,6 +64,8 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
 
   std::unique_ptr<GateKernel> kernel_;
 };
+
+auto operator<<(std::ostream& os, Gate const& obj) -> std::ostream&;
 }
 
 #include "gate/gate_impl.hpp"

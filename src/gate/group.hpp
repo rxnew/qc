@@ -36,6 +36,9 @@ class Unit<GroupKernel> : public Gate {
 };
 
 using Group = Unit<GroupKernel>;
+
+template <class... Args>
+auto make_group(Args&&... args) -> Gate;
 }
 
 #include "group/group_impl.hpp"

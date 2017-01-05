@@ -15,12 +15,13 @@ class XKernel : public UnitKernel {
  public:
   static constexpr GateType const TYPE = GateType::X;
   static constexpr char const* const TYPE_NAME = "X";
-  static constexpr util::string::Aliases<5> const ALIASES = {
+  static constexpr util::string::Aliases<6> const ALIASES = {
     "x",
     "not",
     "toffoli",
     "mct",
-    "mpmct"
+    "mpmct",
+    "braiding"
   };
 
   template <class... Args>
@@ -33,7 +34,7 @@ class XKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string final;
 };
 
-inline namespace library {
+inline namespace library_gates {
 using X = Unit<XKernel>;
 }
 }
