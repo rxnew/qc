@@ -11,7 +11,7 @@ file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
 
 add_library(${TARGET} STATIC ${SOURCES})
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/qc_external_projects.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/external_projects.cmake)
 
 include_directories(${EXTERNAL_PROJECTS_INCLUDE_PATHS})
 
