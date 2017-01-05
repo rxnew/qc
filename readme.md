@@ -334,6 +334,7 @@ qc::io::output(circuit, filename);
 * qo
 * esop
 * [blif][blif] (入力は nand2 のみ)
+* json
 
 [cmake]: https://cmake.org/
 [graphc]: https://github.com/rxnew/graph.git
