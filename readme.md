@@ -5,7 +5,7 @@ This program is quantum circuit simulator.
 Requirements
 ---------------
 * g++ 6.2.0 or later
-* [CMake][cmake] 2.8 or later
+* [CMake][cmake] 3.2 or later
 * [graphc][graphc] v1.0 or later
 * [json11][json11] v1.3 or later
 
