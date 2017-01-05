@@ -27,6 +27,7 @@ auto decode_alias(std::string const& alias, bool assert_flag) -> std::string {
 #define REGIST(Type) if(Type::ALIASES == real_alias) \
     return type_name(Type::TYPE_NAME, bedaggered)
 
+  REGIST(U);
   REGIST(I);
   REGIST(H);
   REGIST(X);

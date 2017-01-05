@@ -9,6 +9,7 @@ template <class Type, class... Args>
 inline auto make_gate(Args&&... args) -> Gate {
   return Gate::make<Type>(std::forward<Args>(args)...);
 }
+
 template <class Type>
 inline auto make_gate(std::initializer_list<CBit> cbits,
                       std::initializer_list<TBit> tbits) -> Gate {
@@ -27,6 +28,7 @@ auto make_gate(GateType type, Args&&... args) -> Gate {
 #define REGIST(Type) if(Type::TYPE == type) \
     return Gate::make<Type>(std::forward<Args>(args)...)
 
+  REGIST(U);
   REGIST(I);
   REGIST(H);
   REGIST(X);
@@ -45,7 +47,7 @@ auto make_gate(GateType type, Args&&... args) -> Gate {
 
 template <class... Args>
 auto make_gate(std::string const& type_name, Args&&... args) -> Gate {
-  static constexpr char const* const _err_msg = "Not found gate type '%s'.";
+  //static constexpr char const* const _err_msg = "Not found gate type '%s'.";
 
   auto real_type_name = type_name;
   auto bedaggered = exclude_bedaggered_tag(real_type_name);
@@ -53,6 +55,7 @@ auto make_gate(std::string const& type_name, Args&&... args) -> Gate {
 #define REGIST(Type) if(Type::ALIASES == real_type_name) \
     return Gate::make<Type>(bedaggered, std::forward<Args>(args)...)
 
+  REGIST(U);
   REGIST(I);
   REGIST(H);
   REGIST(X);
@@ -66,7 +69,8 @@ auto make_gate(std::string const& type_name, Args&&... args) -> Gate {
 
 #undef REGIST
 
-  debug::error::issue(util::string::format(_err_msg, type_name));
-  return Gate::make_dummy();
+  return Gate::make<U>(real_type_name, bedaggered, std::forward<Args>(args)...);
+  //debug::error::issue(util::string::format(_err_msg, type_name));
+  //return Gate::make_dummy();
 }
 }

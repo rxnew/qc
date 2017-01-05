@@ -5,6 +5,7 @@
 namespace qc {
 enum class GateType {
   Group,
+  U,
   I,
   H,
   X,
