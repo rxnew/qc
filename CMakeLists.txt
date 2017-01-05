@@ -17,6 +17,10 @@ include_directories(${EXTERNAL_PROJECTS_INCLUDE_PATHS})
 
 target_link_libraries(${TARGET} PUBLIC ${EXTERNAL_PROJECTS_LIBRARIES})
 
+if(BUILD_EXTERNAL_PROJECT_NAMES)
+  add_dependencies(${TARGET} ${BUILD_EXTERNAL_PROJECT_NAMES})
+endif()
+
 install(TARGETS ${TARGET}
         EXPORT ${TARGET}-export
         ARCHIVE        DESTINATION lib
