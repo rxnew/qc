@@ -2,13 +2,12 @@
 *~
 \#*\#
 *.bak
+.DS_Store
 .svn/
 gitflow/
 GPATH
 GRTAGS
 GSYMS
 GTAGS
-/bin
-/sample/include
-/sample/share
+/bin/
 !.gitkeep
