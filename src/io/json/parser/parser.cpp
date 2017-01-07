@@ -23,6 +23,8 @@ auto Json::Parser::parse()
   auto err = std::string();
   auto json = json11::Json::parse(buf, err);
 
+  _check_format_type(json);
+
   if(!json["circuit"].is_null()) json = json["circuit"];
 
   return _parse(json);
@@ -81,6 +83,16 @@ auto Json::Parser::_get_tbits(json11::Json const& json)
     tbits.insert(CBit(static_cast<BitNo>(bit_no.int_value())));
   }
   return tbits;
+}
+
+auto Json::Parser::_check_format_type(json11::Json const& json)
+  throw(IfExc) -> void {
+  if(json["format"].is_null()) {
+    _warn("W100");
+  }
+  else if(json["format"].string_value() != format_type) {
+    _error("E100", json["format"].string_value());
+  }
 }
 }
 }

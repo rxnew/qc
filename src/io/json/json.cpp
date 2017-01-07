@@ -9,10 +9,12 @@ namespace io {
 Json::Messages const Json::_err_msgs = {
   {"E000", "Illegal format. The operation type is not a string."},
   {"E001", "Illegal format. Controls or targets is not an array."},
-  {"E002", "Illegal format. The control or target is not a number."}
+  {"E002", "Illegal format. The control or target is not a number."},
+  {"E100", "Illegal format. \"%s\" format is not supported."}
 };
 
 Json::Messages const Json::_warn_msgs = {
+  {"W100", "The format type not declared."}
 };
 
 auto Json::input(Circuit& circuit, std::string const& filename)

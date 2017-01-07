@@ -20,27 +20,25 @@ inline auto Json::Parser::_error(std::string const& code)
   throw exc::IllegalFormatException("Cannot parse a json file.");
 }
 
-/*
 template <class... Args>
 auto Json::Parser::_error(std::string const& code, Args&&... args)
   throw(IfExc) -> void {
   auto const& raw_msg = _get_error_message(code);
   auto const& msg = util::string::format(raw_msg, std::forward<Args>(args)...);
-  error::issue(msg, line_, filename_, lines_counter_);
+  debug::error::issue(msg);
   throw exc::IllegalFormatException("Cannot parse a json file.");
 }
 
 inline auto Json::Parser::_warn(std::string const& code) -> void {
   auto const& msg = _get_warn_message(code);
-  warn::issue(msg, line_, filename_, lines_counter_);
+  debug::warn::issue(msg);
 }
 
 template <class... Args>
 auto Json::Parser::_warn(std::string const& code, Args&&... args) -> void {
   auto const& raw_msg = _get_warn_message(code);
   auto const& msg = util::string::format(raw_msg, std::forward<Args>(args)...);
-  warn::issue(msg, line_, filename_, lines_counter_);
+  debug::warn::issue(msg);
 }
-*/
 }
 }

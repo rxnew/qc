@@ -30,16 +30,16 @@ class Json::Parser {
     throw(IfExc) -> CBits;
   auto _get_tbits(json11::Json const& json)
     throw(IfExc) -> TBits;
+  auto _check_format_type(json11::Json const& json)
+    throw(IfExc) -> void;
   auto _error(std::string const& code)
     throw(IfExc) -> void;
-  /*
   template <class... Args>
   auto _error(std::string const& code, Args&&... args)
     throw(IfExc) -> void;
   auto _warn(std::string const& code) -> void;
   template <class... Args>
   auto _warn(std::string const& code, Args&&... args) -> void;
-  */
 
   std::string filename_;
 

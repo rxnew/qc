@@ -20,6 +20,7 @@ class Json {
 
  public:
   static constexpr char const* const extension = ".json";
+  static constexpr char const* const format_type = "qc";
 
   static auto input(Circuit& circuit, std::string const& filename)
     throw(IfExc, std::ios_base::failure) -> void;
