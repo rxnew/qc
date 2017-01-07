@@ -58,7 +58,7 @@ How to use
 auto cbit = qc::CBit(qc::BitNo(0)); // デフォルトの極性は正極
 auto cbit = qc::CBit(qc::BitNo(0), qc::positive); 
 auto cbit = qc::CBit(qc::BitNo(0), qc::negative);
-auto tbit = qc::TBit(qc::BitNo(1);
+auto tbit = qc::TBit(qc::BitNo(1));
 ```
 
 qc::BitNo や qc::CBit, qc::TBit にはリテラルが用意されている．
@@ -153,6 +153,7 @@ auto x = qc::make_gate("NOT", cbit, tbit);
 * ***T*** (Rz(pi/4))
 * ___T*___ (***T+***, ***TDagger***, ***TPlus***)
 * ***Swap***
+* ***U*** (任意のユニタリ行列)
 
 **ダガー行列** (Hermitian adjoint) は，コンストラクタの第1引数に ***qc::bedaggered*** を渡すか、
 ゲート名の末尾に "*", "+", "dagger", "plus" のいずれかを付けることで生成可能．
@@ -180,6 +181,15 @@ qc::X 等，一部のゲートは X == X* が成り立つ．
 ```cpp
 v == !v; // false
 x == !x; // true
+```
+
+qc::U は，ゲート名 (type_name) を設定できる．
+ゲート名の異なるゲートは等価ではない．
+
+```cpp
+auto u_a = qc::U("type_a", cbit, tbit);
+auto u_b = qc::U("type_b", cbit, tbit);
+u_a == u_b; // false
 ```
 
 qc::Gate クラスの主なメンバ関数を以下にまとめる．
@@ -261,10 +271,11 @@ group.add_gate(h);
 circuit.add_gate(group);
 ```
 
-直接 qc::Gate オブジェクトを生成する場合は，qc::Gate::make() または，***qc::Group::make()*** を利用する．
+直接 qc::Gate オブジェクトを生成する場合は，qc::Gate::make() または，***qc::Group::make()***，***qc::make_group()*** を利用する．
 
 ```cpp
 auto group = qc::Group::make();
+auto group = qc::make_group();
 group.add_gate(h);
 ```
 
