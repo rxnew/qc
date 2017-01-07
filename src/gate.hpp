@@ -20,7 +20,7 @@ class Gate : public BitsWrapperShell, public GatesWrapperShell {
   Gate(Gate const& other);
   Gate(Gate&& other) noexcept = default;
 
-  ~Gate() noexcept = default;
+  virtual ~Gate() noexcept = default;
 
   template <class Type, class... Args>
   static auto make(std::initializer_list<CBit> cbits,

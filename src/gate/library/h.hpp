@@ -15,9 +15,10 @@ class HKernel : public UnitKernel {
  public:
   static constexpr GateType const TYPE = GateType::H;
   static constexpr char const* const TYPE_NAME = "H";
-  static constexpr util::string::Aliases<2> const ALIASES = {
+  static constexpr util::string::Aliases<3> const ALIASES = {
     "h",
-    "hadamard"
+    "hadamard",
+    "snot"
   };
 
   template <class... Args>

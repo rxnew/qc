@@ -15,13 +15,9 @@ class XKernel : public UnitKernel {
  public:
   static constexpr GateType const TYPE = GateType::X;
   static constexpr char const* const TYPE_NAME = "X";
-  static constexpr util::string::Aliases<6> const ALIASES = {
+  static constexpr util::string::Aliases<2> const ALIASES = {
     "x",
-    "not",
-    "toffoli",
-    "mct",
-    "mpmct",
-    "braiding"
+    "not"
   };
 
   template <class... Args>
