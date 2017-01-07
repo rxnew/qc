@@ -32,6 +32,8 @@ class Layout {
   auto operator[](BitNo bit) const -> Vector const&;
 
   auto get_coords() const -> std::map<BitNo, Vector> const&;
+  auto find_min_bit() const -> BitNo;
+  auto find_max_bit() const -> BitNo;
   auto find_min_corner() const -> Vector;
   auto find_max_corner() const -> Vector;
   auto find_bit_no(Vector const& vector) const -> std::tuple<bool, BitNo>;

@@ -90,7 +90,7 @@ inline auto find_max_bit(Circuit const& circuit,
 
 template <class T>
 auto _find_min_bit(T const& target) -> BitNo {
-  auto min_bit = std::numeric_limits<unsigned int>::max();
+  auto min_bit = std::numeric_limits<BitNo>::max();
   for(auto const& bit : target.collect_bits()) {
     min_bit = std::min(min_bit, bit);
   }
@@ -100,9 +100,11 @@ auto _find_min_bit(T const& target) -> BitNo {
 template <class T, int dim, class Real>
 auto _find_min_bit(T const& target,
                    Layout<dim, Real> const& layout) -> BitNo {
-  auto min_bit = std::numeric_limits<unsigned int>::max();
+  static constexpr auto const INF = std::numeric_limits<BitNo>::max();
+  auto min_bit = INF;
   for(auto const& bit : target.collect_bits()) {
-    if(layout[bit] < layout[min_bit]) min_bit = bit;
+    if(min_bit == INF) min_bit = bit;
+    else if(layout[bit] < layout[min_bit]) min_bit = bit;
   }
   return min_bit;
 }

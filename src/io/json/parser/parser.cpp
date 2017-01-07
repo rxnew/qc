@@ -23,7 +23,7 @@ auto Json::Parser::parse()
   auto err = std::string();
   auto json = json11::Json::parse(buf, err);
 
-  if(!json["elements"].is_null()) json = json["elements"];
+  if(!json["circuit"].is_null()) json = json["circuit"];
 
   return _parse(json);
 }
@@ -31,8 +31,8 @@ auto Json::Parser::parse()
 auto Json::Parser::_parse(json11::Json const& json)
   throw(IfExc) -> Circuit {
   auto circuit = Circuit();
-  for(auto const& operation : json["operations"].array_items()) {
-    circuit.add_gate(_make_gate(operation));
+  for(auto const& gate : json["gates"].array_items()) {
+    circuit.add_gate(_make_gate(gate));
   }
   return circuit;
 }
@@ -46,8 +46,8 @@ auto Json::Parser::_make_gate(json11::Json const& json)
     return make_gate(type_name, cbits, tbits);
   }
   auto group = make_group();
-  for(auto const& operation : json.array_items()) {
-    group.add_gate(_make_gate(operation));
+  for(auto const& gate : json.array_items()) {
+    group.add_gate(_make_gate(gate));
   }
   return group;
 }
@@ -61,7 +61,7 @@ auto Json::Parser::_get_type_name(json11::Json const& json)
 auto Json::Parser::_get_cbits(json11::Json const& json)
   throw(IfExc) -> CBits {
   auto cbits = CBits();
-  auto const& controls = json["bits"]["controls"];
+  auto const& controls = json["controls"];
   if(controls.is_null()) return CBits();
   if(!controls.is_array()) _error("E001");
   for(auto const& bit_no : controls.array_items()) {
@@ -74,7 +74,7 @@ auto Json::Parser::_get_cbits(json11::Json const& json)
 auto Json::Parser::_get_tbits(json11::Json const& json)
   throw(IfExc) -> TBits {
   auto tbits = TBits();
-  auto const& targets = json["bits"]["targets"];
+  auto const& targets = json["targets"];
   if(!targets.is_array()) _error("E001");
   for(auto const& bit_no : targets.array_items()) {
     if(!bit_no.is_number()) _error("E002");

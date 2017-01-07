@@ -14,6 +14,8 @@ inline namespace tqc {
 template <template <class...> class Engine = CsvdEv1, int dim, class Real>
 auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout,
                      bool allow_mtc = true) -> Circuit;
+template <template <class...> class Engine = CsvdEv1>
+auto tqc_parallelize(Circuit const& circuit, bool allow_mtc = true) -> Circuit;
 template <int dim, class Real>
 auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
                        Layout<dim, Real> const& layout, bool allow_mtc = true)

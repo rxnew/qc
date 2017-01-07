@@ -33,11 +33,11 @@ $ ctest
 How to run a sample program
 ---------------
 QC ライブラリを利用するプロジェクトのサンプルです．  
-すでにインストールされたライブラリを利用する場合は，***INSTALL_EXTERNAL_PROJECTS_PREFIX*** を設定します．
+すでにインストールされたライブラリを利用する場合は，***EXTERNAL_PROJECTS_PATHS*** を設定します．
 
 ```
 $ cd sample/build
-$ cmake [-DINSTALL_EXTERNAL_PROJECTS_PREFIX=<dir>] ..
+$ cmake [-EXTERNAL_PROJECTS_PATHS=<dir>] ..
 $ make
 $ cd ..
 $ ./bin/main

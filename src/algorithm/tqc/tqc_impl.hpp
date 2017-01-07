@@ -51,6 +51,12 @@ auto tqc_parallelize(Circuit const& circuit, Layout<dim, Real> const& layout,
   return parallelized_circuit;
 }
 
+template <template <class...> class Engine = CsvdEv1>
+auto tqc_parallelize(Circuit const& circuit, bool allow_mtc) -> Circuit {
+  auto const layout = make_line_layout(circuit);
+  return tqc_parallelize<CsvdEv1>(circuit, layout, allow_mtc);
+}
+
 template <int dim, class Real>
 auto is_tqc_overlapped(Gate const& gate_a, Gate const& gate_b,
                        Layout<dim, Real> const& layout, bool allow_mtc)
@@ -140,10 +146,10 @@ auto _is_tqc_overlapped_arbitrary(Gate const& gate_a, Gate const& gate_b,
 template <class Real>
 auto _is_tqc_overlapped_arbitrary(Gate const& gate_a, Gate const& gate_b,
                                   Layout<1, Real> const& layout) -> bool {
-  auto min_bit_a = find_min_bit(gate_a, layout).get_no();
-  auto min_bit_b = find_min_bit(gate_b, layout).get_no();
-  auto max_bit_a = find_max_bit(gate_a, layout).get_no();
-  auto max_bit_b = find_max_bit(gate_b, layout).get_no();
+  auto min_bit_a = find_min_bit(gate_a, layout);
+  auto min_bit_b = find_min_bit(gate_b, layout);
+  auto max_bit_a = find_max_bit(gate_a, layout);
+  auto max_bit_b = find_max_bit(gate_b, layout);
   return is_intersected(layout[min_bit_a], layout[max_bit_a],
                         layout[min_bit_b], layout[max_bit_b]);
 }

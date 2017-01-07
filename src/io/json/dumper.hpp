@@ -19,6 +19,8 @@ class Json::Dumper {
   auto dump() -> void;
 
  private:
+  auto _make_json(std::string const& format, Circuit const& circuit)
+    -> json11::Json;
   auto _make_json(Circuit const& circuit) -> json11::Json;
   auto _make_json(Gate const& gate) -> json11::Json;
   auto _make_json_object(Gate const& gate) -> json11::Json;

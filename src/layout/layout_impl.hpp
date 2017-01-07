@@ -44,6 +44,24 @@ inline auto Layout<dim, Real>::get_coords() const
 }
 
 template <int dim, class Real>
+auto Layout<dim, Real>::find_min_bit() const -> BitNo {
+  auto min_bit = std::numeric_limits<BitNo>::max();
+  for(auto const& e : coords_) {
+    min_bit = std::min(min_bit, e.first);
+  }
+  return min_bit;
+}
+
+template <int dim, class Real>
+auto Layout<dim, Real>::find_max_bit() const -> BitNo {
+  auto max_bit = 0_bit;
+  for(auto const& e : coords_) {
+    max_bit = std::max(max_bit, e.first);
+  }
+  return max_bit;
+}
+
+template <int dim, class Real>
 auto Layout<dim, Real>::find_min_corner() const -> Vector {
   auto corner_vector = Vector();
   for(auto i = 0; i < dim; ++i) {
@@ -157,7 +175,7 @@ auto make_regular_lattice_layout(Container<BitNo> const& bit_sequence)
       layout[bit_sequence[count++]] = vector;
       return;
     }
-    for(auto i = 0; i < side_bit_count; ++i) {
+    for(auto i = 0u; i < side_bit_count; ++i) {
       vector[d] = i;
       f(d + 1);
     }
@@ -182,7 +200,7 @@ template <int dim, class Real>
 auto make_regular_lattice_layout(Circuit const& circuit) -> Layout<dim, Real> {
   auto max_bit = find_max_bit(circuit);
   auto side_bit_count = static_cast<unsigned int>
-    (std::ceil(std::pow(static_cast<float>(max_bit), 1.0f / dim)));
+    (std::ceil(std::pow(static_cast<float>(max_bit + 1), 1.0f / dim)));
   return make_regular_lattice_layout<dim, Real>(side_bit_count);
 }
 
