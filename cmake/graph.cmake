@@ -5,7 +5,7 @@ include(ExternalProject)
 
 set(GRAPH_PROJECT_NAME graph)
 set(GRAPH_GIT_REPOSITORY https://github.com/rxnew/graph.git)
-set(GRAPH_GIT_TAG v1.0)
+set(GRAPH_GIT_TAG v1.0.1)
 
 ExternalProject_Add(
   ${GRAPH_PROJECT_NAME}

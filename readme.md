@@ -6,7 +6,7 @@ Requirements
 ---------------
 * g++ 6.2.0 or later
 * [CMake][cmake] 3.2 or later
-* [graphc][graphc] v1.0 or later
+* [graphc][graphc] v1.0.1 or later
 * [json11][json11] v1.3 or later
 
 How to install
