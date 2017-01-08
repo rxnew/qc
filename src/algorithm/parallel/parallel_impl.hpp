@@ -18,8 +18,8 @@ auto parallelize(Circuit const& circuit, Overlapped overlapped) -> Circuit {
 
 template <class Dependency>
 auto make_dependency_graph(Circuit circuit)
-  -> graph::DependencyGraph<std::shared_ptr<Gate>, Dependency> {
-  auto graph = graph::DependencyGraph<std::shared_ptr<Gate>, Dependency>();
+  -> mathutils::DependencyGraph<std::shared_ptr<Gate>, Dependency> {
+  auto graph = mathutils::DependencyGraph<std::shared_ptr<Gate>, Dependency>();
   expand_groups(circuit);
   auto f = [&graph](Gates& gates) {
     for(auto& gate : gates) {

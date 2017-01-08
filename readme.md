@@ -6,7 +6,7 @@ Requirements
 ---------------
 * g++ 6.2.0 or later
 * [CMake][cmake] 3.2 or later
-* [graphc][graphc] v1.0.1 or later
+* [mathutils][mathutils] v1.0 or later
 * [json11][json11] v1.3 or later
 
 How to install
@@ -348,7 +348,7 @@ qc::io::output(circuit, filename);
 * json
 
 [cmake]: https://cmake.org/
-[graphc]: https://github.com/rxnew/graph.git
+[mathutils]: https://github.com/rxnew/mathutils.git
 [json11]: https://github.com/ngc-developers/json11.git
 [googletest]: http://opencv.jp/googletestdocs/index.html
 [blif]: https://www.cse.iitb.ac.in/~supratik/courses/cs226/spr16/blif.pdf

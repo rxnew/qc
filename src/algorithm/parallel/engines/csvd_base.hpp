@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "graph/dependency_graph.hpp"
-#include "graph/algorithm/bron_kerbosch.hpp"
+#include "mathutils/graph.hpp"
 
 #include "../predicates.hpp"
 
@@ -20,10 +19,10 @@ class CsvdBase {
   using Overlapped = Predicate1;
   using Dependency = Predicate2;
   using Vertex = std::shared_ptr<Gate>;
-  using Graph = graph::UndirectedGraph<Vertex>;
+  using Graph = mathutils::UndirectedGraph<Vertex>;
   using Vertices = Graph::Vertices;
-  using Cliques = graph::BronKerboschPivot<Graph>::Cliques;
-  using DependencyGraph = graph::DependencyGraph<Vertex, Dependency>;
+  using Cliques = mathutils::BronKerboschPivot<Graph>::Cliques;
+  using DependencyGraph = mathutils::DependencyGraph<Vertex, Dependency>;
 
   explicit CsvdBase(DependencyGraph const& dependency_graph,
                     Overlapped overlapped = Overlapped());

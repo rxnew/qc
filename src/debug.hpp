@@ -3,8 +3,7 @@
 #include <iostream>
 #include <memory>
 
-#include "graph/directed_graph.hpp"
-#include "graph/undirected_graph.hpp"
+#include "mathutils/graph.hpp"
 
 #include "forward_declarations.hpp"
 #include "util/tmpl.hpp"
@@ -40,7 +39,7 @@ template <class K, class V>
 auto print(std::pair<K, V> const& p, std::ostream& os = std::cout,
            bool line_break = true) -> void;
 
-auto print_graph(graph::Graph<std::shared_ptr<Gate>> const& g,
+auto print_graph(mathutils::Graph<std::shared_ptr<Gate>> const& g,
                  std::ostream& os = std::cout) -> void;
 }
 }

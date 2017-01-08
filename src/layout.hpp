@@ -8,14 +8,15 @@
 #include <iostream>
 #include <map>
 
+#include "mathutils/vector.hpp"
+
 #include "circuit.hpp"
-#include "util/vector.hpp"
 
 namespace qc {
 template <int dim, class Real = int>
 class Layout {
  public:
-  using Vector = util::vector::Vector<dim, Real>;
+  using Vector = mathutils::Vector<dim, Real>;
 
   Layout() = default;
   Layout(std::map<BitNo, Vector> const& coords);

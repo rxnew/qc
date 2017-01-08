@@ -1,8 +1,9 @@
 #pragma once
 
+#include "mathutils/vector.hpp"
+
 #include "../general.hpp"
 #include "../parallel.hpp"
-#include "../../util/vector.hpp"
 
 namespace qc {
 inline namespace algorithm {

@@ -49,7 +49,7 @@ template <class Overlapped, class Dependency>
 auto CsvdBase<Overlapped, Dependency>::_create_cliques() const -> Cliques {
   auto const& vertices = dependency_graph_.get_independent_vertices();
   auto graph = _create_graph(vertices);
-  return graph::bron_kerbosch_pivot(graph);
+  return mathutils::bron_kerbosch_pivot(graph);
 }
 
 template <class Overlapped, class Dependency>

@@ -4,7 +4,7 @@
 
 namespace qc {
 namespace debug {
-auto print_graph(graph::Graph<std::shared_ptr<Gate>> const& g, std::ostream& os)
+auto print_graph(mathutils::Graph<std::shared_ptr<Gate>> const& g, std::ostream& os)
   -> void {
   for(auto const& v : g.get_vertices()) {
     os << *v << ": {";
