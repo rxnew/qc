@@ -44,7 +44,7 @@ class UKernel : public UnitKernel {
   virtual auto get_type_name() const -> std::string;
 
  private:
-  char const* type_name_;
+  std::string type_name_;
 };
 
 inline namespace library_gates {

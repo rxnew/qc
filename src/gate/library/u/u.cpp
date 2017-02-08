@@ -25,7 +25,7 @@ auto UKernel::operator==(UKernel const& other) const -> bool {
   return
     GateKernel::operator==(static_cast<UnitKernel const&>(other)) &&
     BitsWrapperKernel::operator==(other) &&
-    std::strcmp(type_name_, other.type_name_) == 0;
+    type_name_ == other.type_name_;
 }
 
 auto UKernel::operator==(GateKernel const& other) const -> bool {
